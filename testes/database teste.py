@@ -1,4 +1,6 @@
 import sqlite3
+
+
 banco = sqlite3.connect("database.db")
 
 cursor = banco.cursor()
@@ -71,9 +73,11 @@ cursor.execute("CREATE TABLE sessoes (id_sessao INTEGER PRIMARY KEY,"
                "FOREIGN KEY (pessoa_sessao) REFERENCES pessoas(id_pessoa),"
                "FOREIGN KEY (plano_contratado) REFERENCES planos(id_plano))")
 #OBS pagamentos vai ter que mudar o jeito que está sendo construido, tem de ser uma lista de referencias a pagamentos, o sqlite não suporta isso
-'''
+
+
 cursor.execute("INSERT INTO sessoes (pessoa_sessao,plano_contratado,produto_extra,pagamento,condicao_pagamento) VAlUES (1,1,'batatas','1/2','3 vezes')")
 cursor.execute("SELECT * FROM sessoes")
 print(cursor.fetchall())
+'''
 
 banco.commit()
