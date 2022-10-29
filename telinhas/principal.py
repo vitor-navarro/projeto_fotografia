@@ -62,9 +62,42 @@ def janela_pessoas():
     excluir = Button(barra_alteracoes, text="Excluir",font=("monospace", 10), command=sem_comando, padx=5, pady=10)
     excluir.pack(side=LEFT)
 
-    #to do
+
+
     barra_filtros = ttk.Separator(janela_pessoas,orient="horizontal")
     barra_filtros.pack(fill="x")
+
+    barra_filtro_opcoes = ttk.Separator(barra_filtros,orient="vertical")
+    barra_filtro_opcoes.pack(fill="x")
+
+    varaivel_opcoes = StringVar()
+
+    label_opcoes = Label(barra_filtro_opcoes, text="Opções")
+    label_opcoes.grid(column=0, row=0, columnspan=2, sticky="W")
+
+    rb_codigo = Radiobutton(barra_filtro_opcoes, text="Código", value="codigo", variable=varaivel_opcoes)
+    rb_codigo.grid(column=0, row=1, sticky="W")
+
+    rb_nome_fantasia = Radiobutton(barra_filtro_opcoes, text="nome_fantasia", value="nome_fantasia", variable=varaivel_opcoes)
+    rb_nome_fantasia.grid(column=0, row=2, sticky="W")
+
+    rb_nome = Radiobutton(barra_filtro_opcoes, text="nome", value="nome", variable=varaivel_opcoes)
+    rb_nome.grid(column=0, row=3, sticky="W")
+
+    rb_fantasia = Radiobutton(barra_filtro_opcoes, text="fantasia", value="fantasia", variable=varaivel_opcoes)
+    rb_fantasia.grid(column=0, row=4, sticky="W")
+
+    rb_cidade = Radiobutton(barra_filtro_opcoes, text="cidade", value="cidade", variable=varaivel_opcoes)
+    rb_cidade.grid(column=1, row=1, sticky="W")
+
+    rb_endereco = Radiobutton(barra_filtro_opcoes, text="endereco", value="endereco", variable=varaivel_opcoes)
+    rb_endereco.grid(column=1, row=2, sticky="W")
+
+    rb_cpf_cnpj = Radiobutton(barra_filtro_opcoes, text="cpf_cnpj", value="cpf_cnpj", variable=varaivel_opcoes)
+    rb_cpf_cnpj.grid(column=1, row=3, sticky="W")
+
+    rb_bairro = Radiobutton(barra_filtro_opcoes, text="bairro", value="bairro", variable=varaivel_opcoes)
+    rb_bairro.grid(column=1, row=4, sticky="W")
 
 
 
