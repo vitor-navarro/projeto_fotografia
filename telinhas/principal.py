@@ -68,9 +68,9 @@ def janela_pessoas():
     barra_filtros.pack(fill="x")
 
     barra_filtro_opcoes = ttk.Separator(barra_filtros,orient="vertical")
-    barra_filtro_opcoes.pack(fill="x")
+    barra_filtro_opcoes.grid(column=0, row=0,sticky="W")
 
-    varaivel_opcoes = StringVar()
+    varaivel_opcoes = StringVar(barra_filtro_opcoes, value="nome_fantasia")
 
     label_opcoes = Label(barra_filtro_opcoes, text="Opções")
     label_opcoes.grid(column=0, row=0, columnspan=2, sticky="W")
@@ -78,7 +78,7 @@ def janela_pessoas():
     rb_codigo = Radiobutton(barra_filtro_opcoes, text="Código", value="codigo", variable=varaivel_opcoes)
     rb_codigo.grid(column=0, row=1, sticky="W")
 
-    rb_nome_fantasia = Radiobutton(barra_filtro_opcoes, text="nome_fantasia", value="nome_fantasia", variable=varaivel_opcoes)
+    rb_nome_fantasia = Radiobutton(barra_filtro_opcoes, text="nome/fantasia", value="nome_fantasia", variable=varaivel_opcoes)
     rb_nome_fantasia.grid(column=0, row=2, sticky="W")
 
     rb_nome = Radiobutton(barra_filtro_opcoes, text="nome", value="nome", variable=varaivel_opcoes)
@@ -93,22 +93,41 @@ def janela_pessoas():
     rb_endereco = Radiobutton(barra_filtro_opcoes, text="endereco", value="endereco", variable=varaivel_opcoes)
     rb_endereco.grid(column=1, row=2, sticky="W")
 
-    rb_cpf_cnpj = Radiobutton(barra_filtro_opcoes, text="cpf_cnpj", value="cpf_cnpj", variable=varaivel_opcoes)
+    rb_cpf_cnpj = Radiobutton(barra_filtro_opcoes, text="cpf/cnpj", value="cpf_cnpj", variable=varaivel_opcoes)
     rb_cpf_cnpj.grid(column=1, row=3, sticky="W")
 
     rb_bairro = Radiobutton(barra_filtro_opcoes, text="bairro", value="bairro", variable=varaivel_opcoes)
     rb_bairro.grid(column=1, row=4, sticky="W")
 
+    rb_nome_fantasia.select()
 
 
-    #to do
-    barra_lista_pessoas = ttk.Separator(janela_pessoas,orient="horizontal")
-    barra_lista_pessoas.pack(fill="x")
+    barra_filtro_opcoes2 = ttk.Separator(barra_filtros,orient="vertical")
+    barra_filtro_opcoes2.grid(column=1, row=0,sticky="W")
 
+    varaivel_opcoes2 = StringVar(barra_filtro_opcoes2, value="nome_fantasia")
+
+    label_opcoes = Label(barra_filtro_opcoes2, text="Status")
+    label_opcoes.grid(column=0, row=0, columnspan=2, sticky="W")
+
+    rb_ativo = Radiobutton(barra_filtro_opcoes2, text="ativos", value="ativo", variable=varaivel_opcoes2)
+    rb_ativo.grid(column=0, row=1, sticky="W")
+
+    rb_terminado = Radiobutton(barra_filtro_opcoes2, text="Terminados", value="terminado",variable=varaivel_opcoes2)
+    rb_terminado.grid(column=0, row=2, sticky="W")
+
+    rb_todos = Radiobutton(barra_filtro_opcoes2, text="Todos", value="todos",
+                                   variable=varaivel_opcoes2)
+    rb_todos.grid(column=0, row=3, sticky="W")
+
+    label_vazio = Label(barra_filtro_opcoes2, text="")
+    label_vazio.grid(column=0, row=4, sticky="W")
+
+    rb_ativo.select()
 
 
     janela_pessoas.title("Pesquisa de Pessoas")
-
+    seleciona()
 def janela_trabalhos():
     janela_trabalhos = Toplevel()
 
