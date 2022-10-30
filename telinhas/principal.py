@@ -4,9 +4,28 @@ class Funcs():
     def sem_comando(self):
         print("Tela ainda não cadastrada")
 
+    def configurar_janela_auxiliar(self,janela):
+        janela.update_idletasks()
+
+        screen_width = janela.winfo_screenwidth()
+        screen_height = janela.winfo_screenheight()
+
+        x = int((screen_width / 2) - (964 / 2) - 50)
+        y = int((screen_height / 2) - (580 / 2) - 50)
+
+        janela.geometry("+%d+%d" % (x, y))
+
+        janela.geometry("1024x624")
     def novo_cadastro(self):
-        print("Tela ainda não cadastrada")
-        pass
+        janela = Toplevel()
+        lb_style = ("monospace",12)
+
+        lb_codigo = Label(janela, text="Código",font=lb_style)
+        lb_codigo.grid(column=0,row=0, sticky="N")
+
+        entry_codigo = Entry(janela)
+        entry_codigo.grid(column=0,row=1)
+
 
     def altera_cadastro(self):
         print("Tela ainda não cadastrada")
@@ -40,32 +59,19 @@ class Aplicacao(Funcs):
 
         janela.mainloop()
 
-    def configurar_janela_auxiliar(self,janela):
-        janela.update_idletasks()
-
-        screen_width = janela.winfo_screenwidth()
-        screen_height = janela.winfo_screenheight()
-
-        x = int((screen_width / 2) - (964 / 2) - 50)
-        y = int((screen_height / 2) - (580 / 2) - 50)
-
-        janela.geometry("+%d+%d" % (x, y))
-
-        janela.geometry("1024x624")
-
-    def barra_alteracoes(self,janela):
+    def barra_alteracoes(self,janela, funcoes):
         barra_alteracoes = ttk.Separator(janela, orient="horizontal")
         barra_alteracoes.pack(fill="x")
 
-        novo = Button(barra_alteracoes, text="Novo", font=("monospace", 10), command=self.novo_cadastro, padx=5,
+        novo = Button(barra_alteracoes, text="Novo", font=("monospace", 10), command=funcoes[0], padx=5,
                       pady=10)
         novo.pack(side=LEFT)
 
-        alterar = Button(barra_alteracoes, text="Alterar", font=("monospace", 10), command=self.sem_comando, padx=5,
+        alterar = Button(barra_alteracoes, text="Alterar", font=("monospace", 10), command=funcoes[1], padx=5,
                          pady=10)
         alterar.pack(side=LEFT)
 
-        excluir = Button(barra_alteracoes, text="Excluir", font=("monospace", 10), command=self.sem_comando, padx=5,
+        excluir = Button(barra_alteracoes, text="Excluir", font=("monospace", 10), command=funcoes[2], padx=5,
                          pady=10)
         excluir.pack(side=LEFT)
 
@@ -180,8 +186,9 @@ class Aplicacao(Funcs):
         janela_pessoas = Toplevel()
 
         self.configurar_janela_auxiliar(janela_pessoas)
+        funcoes = [self.novo_cadastro,self.altera_cadastro, self.exclui_cadastro]
 
-        barra_alteracoes = self.barra_alteracoes(janela_pessoas)
+        barra_alteracoes = self.barra_alteracoes(janela_pessoas, funcoes)
 
         barra_filtros = ttk.Separator(janela_pessoas, orient="horizontal")
         barra_filtros.pack(fill="x")
