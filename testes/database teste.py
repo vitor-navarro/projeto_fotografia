@@ -1,7 +1,7 @@
 import sqlite3
 
 
-banco = sqlite3.connect("database.db")
+banco = sqlite3.connect("../modulos/database.db")
 
 cursor = banco.cursor()
 '''
@@ -80,4 +80,8 @@ cursor.execute("SELECT * FROM sessoes")
 print(cursor.fetchall())
 '''
 
+cursor.execute("SELECT * FROM pessoas")
+print(cursor.fetchall())
 banco.commit()
+
+banco.close()
