@@ -16,6 +16,8 @@ class Funcs():
         janela.geometry("+%d+%d" % (x, y))
 
         janela.geometry("1024x624")
+        janela.resizable(False,False)
+
     def novo_cadastro(self):
         janela = Toplevel()
         lb_style = ("monospace",12)

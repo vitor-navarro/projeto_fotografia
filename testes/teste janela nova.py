@@ -13,7 +13,7 @@ def configurar_janela_auxiliar(janela):
     janela.geometry("+%d+%d" % (x, y))
 
     janela.geometry("1024x624")
-
+    janela.resizable(False,False)
 #substituir por tk
 janela = Tk()
 
