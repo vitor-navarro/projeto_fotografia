@@ -19,8 +19,6 @@ janela = Tk()
 
 configurar_janela_auxiliar(janela)
 
-
-
 lb_style = ("monospace", 12)
 entry_style = ("monospace", 14)
 paddingx = 10
@@ -121,13 +119,14 @@ entry_bairro.grid(column=1, row=3, padx=paddingx)
 
 separador6 = ttk.Separator(janela, orient="horizontal")
 separador6.pack(fill="x", padx=paddingx, pady=paddingy)
-
+'''
 lb_cidade = Label(separador6, text="Cidade", font=lb_style, state=DISABLED)
 lb_cidade.grid(column=0, row=4, sticky="W", padx=paddingx)
 entry_cidade = Entry(separador6, font=entry_style,width=5)
 entry_cidade.grid(column=0, row=5, padx=paddingx)
+'''
 
-lb_nome_cidade = Label(separador6, text="Nome da cidade", font=lb_style)
+lb_nome_cidade = Label(separador6, text="Cidade", font=lb_style)
 lb_nome_cidade.grid(column=1, row=4, sticky="W", padx=paddingx)
 entry_nome_cidade = Entry(separador6, font=entry_style, width=40)
 entry_nome_cidade.grid(column=1, row=5, padx=paddingx)
