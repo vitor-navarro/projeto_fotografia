@@ -1,6 +1,12 @@
 from tkinter import *
 from tkinter import ttk
+from datetime import date
 class Funcs():
+    def __init__(self):
+        self.lb_style = ("monospace", 12)
+        self.paddingx = 10
+        self.paddingy = 7
+        self.entry_style = ("monospace", 14)
     def sem_comando(self):
         print("Tela ainda não cadastrada")
 
@@ -18,7 +24,182 @@ class Funcs():
         janela.geometry("1024x624")
         janela.resizable(False,False)
 
-    def novo_cadastro(self):
+    def novo_cadastro_pessoa(self):
+        janela = Toplevel()
+
+        janela.title("Cadastro")
+
+        self.configurar_janela_auxiliar(janela)
+
+        separador1 = ttk.Separator(janela, orient="horizontal")
+        separador1.pack(fill="x", padx=self.paddingx, pady=self.paddingy)
+
+        lb_codigo = Label(separador1, text="Código", font=self.lb_style)
+        lb_codigo.grid(column=0, row=0, sticky="NW", padx=self.paddingx)
+        entry_codigo = Entry(separador1, font=self.entry_style, width=8, state=DISABLED)
+        entry_codigo.grid(column=0, row=1, padx=self.paddingx, sticky="NW")
+
+        lb_cadastro = Label(separador1, text="Cadastro", font=self.lb_style)
+        lb_cadastro.grid(column=1, row=0, sticky="W", padx=self.paddingx)
+        entry_cadastro = Entry(separador1, font=self.entry_style, width=10)
+        entry_cadastro.grid(column=1, row=1, padx=self.paddingx)
+
+        status_possiveis = ["Ativo", "Inativo"]
+        tipos_possiveis_pessoas = ["Física", "Jurídica"]
+
+        # mudar para opções
+        lb_status = Label(separador1, text="Status", font=self.lb_style)
+        lb_status.grid(column=2, row=0, sticky="W", padx=self.paddingx)
+        cb_status = ttk.Combobox(separador1, font=self.entry_style, width=15, values=status_possiveis)
+        cb_status.set("Ativo")
+        cb_status.grid(column=2, row=1, padx=self.paddingx)
+
+        # mudar para opções
+        lb_tipo = Label(separador1, text="Tipo", font=self.lb_style)
+        lb_tipo.grid(column=3, row=0, sticky="W", padx=self.paddingx)
+        cb_tipo = ttk.Combobox(separador1, font=self.entry_style, width=15, values=tipos_possiveis_pessoas)
+        cb_tipo.set("Física")
+        cb_tipo.grid(column=3, row=1, padx=self.paddingx)
+
+        separador2 = ttk.Separator(janela, orient="horizontal")
+        separador2.pack(fill="x", padx=self.paddingx, pady=self.paddingy)
+
+        # condicao para mudar quando for tipo juridica
+        lb_cpf_cnpj = Label(separador2, text="CPF", font=self.lb_style)
+        lb_cpf_cnpj.grid(column=0, row=0, sticky="W", padx=self.paddingx)
+        entry_cpf_cnpj = Entry(separador2, font=self.entry_style, width=20)
+        entry_cpf_cnpj.grid(column=0, row=1, padx=self.paddingx)
+
+        # condicao para mudar quando for tipo juridica
+        lb_rg_inscricao = Label(separador2, text="RG", font=self.lb_style)
+        lb_rg_inscricao.grid(column=1, row=0, sticky="W", padx=self.paddingx)
+        entry_rg_inscricao = Entry(separador2, font=self.entry_style, width=20)
+        entry_rg_inscricao.grid(column=1, row=1, padx=self.paddingx)
+
+        lb_nascimento = Label(separador2, text="Nascimento", font=self.lb_style)
+        lb_nascimento.grid(column=2, row=0, sticky="W", padx=self.paddingx)
+        entry_nascimento = Entry(separador2, font=self.entry_style, width=10)
+        entry_nascimento.grid(column=2, row=1, padx=self.paddingx)
+
+        separador3 = ttk.Separator(janela, orient="horizontal")
+        separador3.pack(fill="x", padx=self.paddingx, pady=self.paddingy)
+
+        lb_nome = Label(separador3, text="Nome*", font=self.lb_style)
+        lb_nome.grid(column=0, row=0, sticky="W", padx=self.paddingx)
+        entry_nome = Entry(separador3, font=self.entry_style, width=89)
+        entry_nome.grid(column=0, row=1, padx=self.paddingx)
+
+        lb_apelido = Label(separador3, text="Apelido", font=self.lb_style)
+        lb_apelido.grid(column=0, row=2, sticky="W", padx=self.paddingx)
+        entry_apelido = Entry(separador3, font=self.entry_style, width=89)
+        entry_apelido.grid(column=0, row=3, padx=self.paddingx)
+
+        separador4 = ttk.Separator(janela, orient="horizontal")
+        separador4.pack(fill="x", padx=self.paddingx, pady=self.paddingy)
+
+        lb_endereco = Label(separador4, text="Endereço", font=self.lb_style)
+        lb_endereco.grid(column=0, row=0, sticky="W", padx=self.paddingx)
+        entry_endereco = Entry(separador4, font=self.entry_style, width=82)
+        entry_endereco.grid(column=0, row=1, padx=self.paddingx)
+
+        lb_numero = Label(separador4, text="Numero", font=self.lb_style)
+        lb_numero.grid(column=1, row=0, sticky="W", padx=self.paddingx)
+        entry_numero = Entry(separador4, font=self.entry_style, width=5)
+        entry_numero.grid(column=1, row=1, padx=self.paddingx)
+
+        separador5 = ttk.Separator(janela, orient="horizontal")
+        separador5.pack(fill="x", padx=self.paddingx, pady=self.paddingy)
+
+        lb_complemento = Label(separador5, text="Complemento", font=self.lb_style)
+        lb_complemento.grid(column=0, row=2, sticky="W", padx=self.paddingx)
+        entry_complemento = Entry(separador5, font=self.entry_style, width=44)
+        entry_complemento.grid(column=0, row=3, padx=self.paddingx)
+
+        lb_bairro = Label(separador5, text="Bairro", font=self.lb_style)
+        lb_bairro.grid(column=1, row=2, sticky="W", padx=self.paddingx)
+        entry_bairro = Entry(separador5, font=self.entry_style, width=43)
+        entry_bairro.grid(column=1, row=3, padx=self.paddingx)
+
+        separador6 = ttk.Separator(janela, orient="horizontal")
+        separador6.pack(fill="x", padx=self.paddingx, pady=self.paddingy)
+        '''
+        lb_cidade = Label(separador6, text="Cidade", font=self.lb_style, state=DISABLED)
+        lb_cidade.grid(column=0, row=4, sticky="W", padx=self.paddingx)
+        entry_cidade = Entry(separador6, font=self.entry_style,width=5)
+        entry_cidade.grid(column=0, row=5, padx=self.paddingx)
+        '''
+
+        lb_nome_cidade = Label(separador6, text="Cidade", font=self.lb_style)
+        lb_nome_cidade.grid(column=1, row=4, sticky="W", padx=self.paddingx)
+        entry_nome_cidade = Entry(separador6, font=self.entry_style, width=40)
+        entry_nome_cidade.grid(column=1, row=5, padx=self.paddingx)
+
+        lb_uf = Label(separador6, text="UF", font=self.lb_style)
+        lb_uf.grid(column=2, row=4, sticky="W", padx=self.paddingx)
+        entry_uf = Entry(separador6, font=self.entry_style, width=3)
+        entry_uf.grid(column=2, row=5, padx=self.paddingx)
+
+        lb_cep = Label(separador6, text="CEP", font=self.lb_style)
+        lb_cep.grid(column=3, row=4, sticky="W", padx=self.paddingx)
+        entry_cep = Entry(separador6, font=self.entry_style, width=10)
+        entry_cep.grid(column=3, row=5, padx=self.paddingx)
+
+        separador7 = ttk.Separator(janela, orient="horizontal")
+        separador7.pack(fill="x", padx=self.paddingx, pady=self.paddingy)
+
+        width_fone = 17
+        width_operadora = 8
+        lb_fone1 = Label(separador7, text="Fone 1", font=self.lb_style)
+        lb_fone1.grid(column=0, row=0, sticky="W", padx=self.paddingx)
+        entry_fone1 = Entry(separador7, font=self.entry_style, width=width_fone)
+        entry_fone1.grid(column=0, row=1, padx=self.paddingx)
+
+        lb_operadora1 = Label(separador7, text="Operadora", font=self.lb_style)
+        lb_operadora1.grid(column=1, row=0, sticky="W", padx=self.paddingx)
+        entry_operadora1 = Entry(separador7, font=self.entry_style, width=width_operadora)
+        entry_operadora1.grid(column=1, row=1, padx=self.paddingx)
+
+        lb_fone2 = Label(separador7, text="Fone 2", font=self.lb_style)
+        lb_fone2.grid(column=2, row=0, sticky="W", padx=self.paddingx)
+        entry_fone2 = Entry(separador7, font=self.entry_style, width=width_fone)
+        entry_fone2.grid(column=2, row=1, padx=self.paddingx)
+
+        lb_operadora2 = Label(separador7, text="Operadora", font=self.lb_style)
+        lb_operadora2.grid(column=3, row=0, sticky="W", padx=self.paddingx)
+        entry_operadora1 = Entry(separador7, font=self.entry_style, width=width_operadora)
+        entry_operadora1.grid(column=3, row=1, padx=self.paddingx)
+
+        lb_fone3 = Label(separador7, text="Fone 3", font=self.lb_style)
+        lb_fone3.grid(column=4, row=0, sticky="W", padx=self.paddingx)
+        entry_fone3 = Entry(separador7, font=self.entry_style, width=width_fone)
+        entry_fone3.grid(column=4, row=1, padx=self.paddingx)
+
+        lb_operadora3 = Label(separador7, text="Operadora", font=self.lb_style)
+        lb_operadora3.grid(column=5, row=0, sticky="W", padx=self.paddingx)
+        entry_operadora3 = Entry(separador7, font=self.entry_style, width=width_operadora)
+        entry_operadora3.grid(column=5, row=1, padx=self.paddingx)
+
+        separador8 = ttk.Separator(janela, orient="horizontal")
+        separador8.pack(fill="x", padx=self.paddingx, pady=self.paddingy)
+
+        lb_email = Label(separador8, text="Email", font=self.lb_style)
+        lb_email.grid(column=0, row=0, sticky="W", padx=self.paddingx)
+        entry_email = Entry(separador8, font=self.entry_style, width=89)
+        entry_email.grid(column=0, row=1, padx=self.paddingx)
+
+        lb_campos_obrigatorios = Label(janela, text="(*) Campos Obrigatórios")
+        lb_campos_obrigatorios.pack(fill="x", side=RIGHT, anchor=NW)
+
+        separador9 = ttk.Separator(janela, orient="horizontal")
+        separador9.pack(fill="x", pady=10, padx=10)
+
+        grava = Button(separador9, text="GRAVA", font=self.lb_style)
+        grava.grid(column=0, row=0, sticky="WS")
+
+        cancela = Button(separador9, text="CANCELA", font=self.lb_style)
+        cancela.grid(column=1, row=0, sticky="WS")
+
+    def novo_cadastro_tabalho(self):
         janela = Toplevel()
 
         janela.title("Cadastro")
@@ -198,17 +379,29 @@ class Funcs():
         cancela = Button(separador9, text="CANCELA", font=lb_style)
         cancela.grid(column=1, row=0, sticky="WS")
 
-
-    def altera_cadastro(self):
+    def altera_cadastro_pessoa(self):
+        print("Tela ainda não cadastrada")
+        pass
+    def altera_cadastro_trabalho(self):
+        print("Tela ainda não cadastrada")
+        pass
+    def exclui_cadastro_pessoa(self):
         print("Tela ainda não cadastrada")
         pass
 
-    def exclui_cadastro(self):
+    def exclui_cadastro_trabalho(self):
         print("Tela ainda não cadastrada")
         pass
 
 class Aplicacao(Funcs):
     def __init__(self):
+
+        super().__init__()
+        self.lb_style = ("monospace", 12)
+        self.paddingx = 10
+        self.paddingy = 7
+        self.entry_style = ("monospace", 14)
+
         janela = Tk()
         # pre config
 
@@ -247,7 +440,7 @@ class Aplicacao(Funcs):
                          pady=10)
         excluir.pack(side=LEFT)
 
-    def barra_filtros_opcoes(self,barra_filtros):
+    def barra_filtros_opcoes_pessoas(self,barra_filtros):
         # opções 1
         barra_filtro_opcoes = ttk.Separator(barra_filtros, orient="vertical")
         barra_filtro_opcoes.grid(column=0, row=0, sticky="W")
@@ -284,7 +477,44 @@ class Aplicacao(Funcs):
 
         rb_nome_fantasia.select()
 
-    def barra_filtros_status(self, barra_filtros):
+    def barra_filtros_opcoes_trabalho(self,barra_filtros):
+        # opções 1
+        barra_filtro_opcoes = ttk.Separator(barra_filtros, orient="vertical")
+        barra_filtro_opcoes.grid(column=0, row=0, sticky="W")
+
+        varaivel_opcoes = StringVar(barra_filtro_opcoes)
+
+        label_opcoes = Label(barra_filtro_opcoes, text="Filtros")
+        label_opcoes.grid(column=0, row=0, columnspan=2, sticky="W")
+
+        rb_codigo = Radiobutton(barra_filtro_opcoes, text="Código", value="codigo", variable=varaivel_opcoes)
+        rb_codigo.grid(column=0, row=1, sticky="W")
+
+        rb_nome_pessoa_extra = Radiobutton(barra_filtro_opcoes, text="Nome/Pessoa extra", value="nome_pessoa_extra",
+                                       variable=varaivel_opcoes)
+        rb_nome_pessoa_extra.grid(column=0, row=2, sticky="W")
+
+        rb_nome = Radiobutton(barra_filtro_opcoes, text="Nome", value="nome", variable=varaivel_opcoes)
+        rb_nome.grid(column=0, row=3, sticky="W")
+
+        rb_pessoa_extra = Radiobutton(barra_filtro_opcoes, text="Pessoa extra", value="pessoa_extra", variable=varaivel_opcoes)
+        rb_pessoa_extra.grid(column=0, row=4, sticky="W")
+
+        rb_cidade = Radiobutton(barra_filtro_opcoes, text="cidade", value="cidade", variable=varaivel_opcoes)
+        rb_cidade.grid(column=1, row=1, sticky="W")
+
+        rb_endereco = Radiobutton(barra_filtro_opcoes, text="endereco", value="endereco", variable=varaivel_opcoes)
+        rb_endereco.grid(column=1, row=2, sticky="W")
+
+        rb_cpf_cnpj = Radiobutton(barra_filtro_opcoes, text="cpf/cnpj", value="cpf_cnpj", variable=varaivel_opcoes)
+        rb_cpf_cnpj.grid(column=1, row=3, sticky="W")
+
+        rb_lote = Radiobutton(barra_filtro_opcoes, text="Lote", value="lote", variable=varaivel_opcoes)
+        rb_lote.grid(column=1, row=4, sticky="W")
+
+        rb_nome_pessoa_extra.select()
+
+    def barra_filtros_status_pessoas(self, barra_filtros):
         barra_filtro_opcoes2 = ttk.Separator(barra_filtros, orient="vertical")
         barra_filtro_opcoes2.grid(column=1, row=0, sticky="W")
 
@@ -308,6 +538,29 @@ class Aplicacao(Funcs):
 
         rb_ativo.select()
 
+    def barra_filtros_status_trabalho(self, barra_filtros):
+        barra_filtro_opcoes2 = ttk.Separator(barra_filtros, orient="vertical")
+        barra_filtro_opcoes2.grid(column=1, row=0, sticky="W")
+
+        varaivel_opcoes2 = StringVar(barra_filtro_opcoes2, value="nome_fantasia")
+
+        label_opcoes2 = Label(barra_filtro_opcoes2, text="Status")
+        label_opcoes2.grid(column=0, row=0, columnspan=2, sticky="W")
+
+        rb_ativo = Radiobutton(barra_filtro_opcoes2, text="ativos", value="ativo", variable=varaivel_opcoes2)
+        rb_ativo.grid(column=0, row=1, sticky="W")
+
+        rb_terminado = Radiobutton(barra_filtro_opcoes2, text="Terminados", value="terminado",
+                                   variable=varaivel_opcoes2)
+        rb_terminado.grid(column=0, row=2, sticky="W")
+
+        rb_todos = Radiobutton(barra_filtro_opcoes2, text="Todos", value="todos", variable=varaivel_opcoes2)
+        rb_todos.grid(column=0, row=3, sticky="W")
+
+        label_vazio = Label(barra_filtro_opcoes2, text="")
+        label_vazio.grid(column=0, row=4, sticky="W")
+
+        rb_ativo.select()
 
     def barra_filtros_pesquisa(self, barra_filtros):
         barra_filtro_opcoes3 = ttk.Separator(barra_filtros, orient="horizontal")
@@ -353,12 +606,42 @@ class Aplicacao(Funcs):
         barra_rolagem = Scrollbar(janela, orient="vertical")
         lista_pessoas.configure(yscrollcommand=barra_rolagem)
         barra_rolagem.grid(column=1, row=0, sticky="WSNE")
+    def lista_de_trabalho(self,janela):
+        trabalho = [1, "vitor", "091.861.449-01", "são jorge do ivai"]
+
+        lista_pessoas = ttk.Treeview(janela, columns=("col1", "col2", "col3"))
+        lista_pessoas.heading("#0", text="Cod")
+        lista_pessoas.heading("#1", text="Nome")
+        lista_pessoas.heading("#2", text="Pessoa_extra")
+        lista_pessoas.heading("#3", text="Lote")
+
+        lista_pessoas.column("#0", width=50)
+        lista_pessoas.column("#1", width=450)
+        lista_pessoas.column("#2", width=204)
+        lista_pessoas.column("#3", width=300)
+
+        lista_pessoas.grid(column=0, row=0, sticky="WSNE")
+
+        barra_rolagem = Scrollbar(janela, orient="vertical")
+        lista_pessoas.configure(yscrollcommand=barra_rolagem)
+        barra_rolagem.grid(column=1, row=0, sticky="WSNE")
+
+    def informacoes_adicionais_pessoas(self,janela):
+        separador1 = ttk.Separator(janela, orient="horizontal")
+        separador1.pack()
+
+        lb_nome_razao = Label(separador1, text="Código", font=self.lb_style)
+        lb_nome_razao.grid(column=0, row=0, sticky="NW", padx=self.paddingx)
+        entry_nome_razao = Entry(separador1, font=self.entry_style, width=8, state=DISABLED)
+        entry_nome_razao.grid(column=0, row=1, padx=self.paddingx, sticky="NW")
+    def informacoes_adicionais_trabalho(self,janela):
+        pass
 
     def janela_pessoas(self):
         janela_pessoas = Toplevel()
 
         self.configurar_janela_auxiliar(janela_pessoas)
-        funcoes = [self.novo_cadastro,self.altera_cadastro, self.exclui_cadastro]
+        funcoes = [self.novo_cadastro_pessoa,self.altera_cadastro_pessoa, self.exclui_cadastro_pessoa]
 
         barra_alteracoes = self.barra_alteracoes(janela_pessoas, funcoes)
 
@@ -368,17 +651,37 @@ class Aplicacao(Funcs):
         listagem_pessoas = ttk.Separator(janela_pessoas, orient="horizontal")
         listagem_pessoas.pack(fill="x")
 
-        self.barra_filtros_opcoes(barra_filtros)
-        self.barra_filtros_status(barra_filtros)
+        self.barra_filtros_opcoes_pessoas(barra_filtros)
+        self.barra_filtros_status_pessoas(barra_filtros)
         self.barra_filtros_pesquisa(barra_filtros)
         self.lista_de_pessoas(listagem_pessoas)
+        self.informacoes_adicionais_pessoas(janela_pessoas)
 
         janela_pessoas.title("Pesquisa de Pessoas")
-
 
     def janela_trabalhos(self):
         janela_trabalhos = Toplevel()
         self.configurar_janela_auxiliar(janela_trabalhos)
+
+        data_hoje = date.today().strftime("%d/%m/%Y")
+
+        funcoes = [self.novo_cadastro_tabalho,self.altera_cadastro_trabalho, self.exclui_cadastro_trabalho]
+
+        self.barra_alteracoes(janela_trabalhos,funcoes)
+
+        barra_filtros = ttk.Separator(janela_trabalhos, orient="horizontal")
+        barra_filtros.pack(fill="x")
+
+        listagem_trabalhos = ttk.Separator(janela_trabalhos, orient="horizontal")
+        listagem_trabalhos.pack(fill="x")
+
+        self.barra_filtros_opcoes_trabalho(barra_filtros)
+        self.barra_filtros_status_trabalho(barra_filtros)
+        self.barra_filtros_pesquisa(barra_filtros)
+        self.lista_de_trabalho(listagem_trabalhos)
+
+
+
         janela_trabalhos.title("Pesquisa de Trabalhos")
 
     def janela_financeiro(self):

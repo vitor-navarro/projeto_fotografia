@@ -4,7 +4,7 @@ import sqlite3
 banco = sqlite3.connect("../modulos/database.db")
 
 cursor = banco.cursor()
-'''
+
 #tabela pessoas
 cursor.execute("CREATE TABLE pessoas (id_pessoa INTEGER PRIMARY KEY,"
                "nome_razao_social text,"
@@ -47,8 +47,8 @@ cursor.execute("CREATE TABLE planos (id_plano INTEGER PRIMARY KEY,"
 
 cursor.execute("INSERT INTO planos (nome_plano, quantidade_fotos,valor,valor_foto_extra,descricao) VAlUES ('plano B',20,299.99,20.00,'plano Intemediario')")
 cursor.execute("SELECT * FROM planos")
-print(cursor.fetchall())'''
-'''
+print(cursor.fetchall())
+
 #tabela pagamentos
 cursor.execute("CREATE TABLE pagamentos (id_sessao INTEGER PRIMARY KEY,"
                "pessoa INTEGER,"
@@ -61,12 +61,13 @@ cursor.execute("CREATE TABLE pagamentos (id_sessao INTEGER PRIMARY KEY,"
 cursor.execute("INSERT INTO pagamentos (pessoa,valor_pago,tipo_pagamento,descricao_extra,data_pagamento) VAlUES (1,199.00,'cartao','teste','27/10/2022')")
 cursor.execute("SELECT * FROM pagamentos")
 print(cursor.fetchall())
-'''
-'''
+
 #tabela sessoes
 cursor.execute("CREATE TABLE sessoes (id_sessao INTEGER PRIMARY KEY,"
                "pessoa_sessao INTEGER,"
+               "pessoa_extra text,"
                "plano_contratado INTEGER,"
+               "lote text,"
                "produto_extra text,"
                "pagamento text,"
                "condicao_pagamento text,"
@@ -75,10 +76,10 @@ cursor.execute("CREATE TABLE sessoes (id_sessao INTEGER PRIMARY KEY,"
 #OBS pagamentos vai ter que mudar o jeito que está sendo construido, tem de ser uma lista de referencias a pagamentos, o sqlite não suporta isso
 
 
-cursor.execute("INSERT INTO sessoes (pessoa_sessao,plano_contratado,produto_extra,pagamento,condicao_pagamento) VAlUES (1,1,'batatas','1/2','3 vezes')")
+cursor.execute("INSERT INTO sessoes (pessoa_sessao,plano_contratado,lote,produto_extra,pagamento,condicao_pagamento) VAlUES (1,1,001,'batatas','1/2','3 vezes')")
 cursor.execute("SELECT * FROM sessoes")
 print(cursor.fetchall())
-'''
+
 
 cursor.execute("SELECT * FROM pessoas")
 print(cursor.fetchall())
