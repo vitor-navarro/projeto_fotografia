@@ -74,7 +74,7 @@ cursor.execute("CREATE TABLE sessoes (id_sessao INTEGER PRIMARY KEY,"
                "FOREIGN KEY (pessoa_sessao) REFERENCES pessoas(id_pessoa),"
                "FOREIGN KEY (plano_contratado) REFERENCES planos(id_plano))")
 #OBS pagamentos vai ter que mudar o jeito que está sendo construido, tem de ser uma lista de referencias a pagamentos, o sqlite não suporta isso
-
+#OBS2 Quando for aparecera a condicao de parcelamento vai aparecer como a vista dinheiro,a vista debito, 12x credito, a vista credito
 
 cursor.execute("INSERT INTO sessoes (pessoa_sessao,plano_contratado,lote,produto_extra,pagamento,condicao_pagamento) VAlUES (1,1,001,'batatas','1/2','3 vezes')")
 cursor.execute("SELECT * FROM sessoes")
