@@ -687,16 +687,22 @@ class Aplicacao(Funcs):
     def lista_de_trabalho(self,janela):
         trabalho = [1, "vitor", "091.861.449-01", "são jorge do ivai"]
 
-        lista_pessoas = ttk.Treeview(janela, columns=("col1", "col2", "col3"))
+        lista_pessoas = ttk.Treeview(janela, columns=("col1", "col2", "col3","col4","col5","col6"))
         lista_pessoas.heading("#0", text="Cod")
-        lista_pessoas.heading("#1", text="Nome")
-        lista_pessoas.heading("#2", text="Pessoa_extra")
-        lista_pessoas.heading("#3", text="Lote")
+        lista_pessoas.heading("#1", text="Data")
+        lista_pessoas.heading("#2", text="hora")
+        lista_pessoas.heading("#3", text="Nome")
+        lista_pessoas.heading("#4", text="Criança")
+        lista_pessoas.heading("#5", text="Tipo sessão")
+        lista_pessoas.heading("#6", text="Etapa")
 
         lista_pessoas.column("#0", width=50)
-        lista_pessoas.column("#1", width=450)
-        lista_pessoas.column("#2", width=204)
+        lista_pessoas.column("#1", width=100)
+        lista_pessoas.column("#2", width=100)
         lista_pessoas.column("#3", width=300)
+        lista_pessoas.column("#4", width=200)
+        lista_pessoas.column("#5", width=127)
+        lista_pessoas.column("#6", width=128)
 
         lista_pessoas.grid(column=0, row=0, sticky="WSNE")
 
