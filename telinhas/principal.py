@@ -500,6 +500,12 @@ class Aplicacao(Funcs):
                             pady=30)
         financeiro.pack(side=LEFT)
 
+        separador_corpo = ttk.Separator(janela, orient="horizontal")
+        separador_corpo.pack(fill="x")
+
+        barra_proximos_trabalhos = Label(separador_corpo, text="Próximos Trabalhos",font=self.lb_style, pady=self.paddingy,padx=self.paddingx)
+        barra_proximos_trabalhos.pack(side=LEFT)
+
         janela.mainloop()
 
     def barra_alteracoes(self,janela, funcoes):
@@ -692,7 +698,7 @@ class Aplicacao(Funcs):
         lista_pessoas.heading("#1", text="Data")
         lista_pessoas.heading("#2", text="hora")
         lista_pessoas.heading("#3", text="Nome")
-        lista_pessoas.heading("#4", text="Criança")
+        lista_pessoas.heading("#4", text="Pessoas")
         lista_pessoas.heading("#5", text="Tipo sessão")
         lista_pessoas.heading("#6", text="Etapa")
 
@@ -733,7 +739,6 @@ class Aplicacao(Funcs):
         barra_rolagem = Scrollbar(janela, orient="vertical")
         lista_pessoas.configure(yscrollcommand=barra_rolagem)
         barra_rolagem.grid(column=1, row=0, sticky="WSNE")
-
 
     def informacoes_adicionais_pessoas(self,janela):
         separador1 = ttk.Separator(janela, orient="horizontal")
@@ -786,50 +791,35 @@ class Aplicacao(Funcs):
     #modificar assim que tiver as informações do que colocar
     def informacoes_adicionais_trabalho(self,janela):
         separador1 = ttk.Separator(janela, orient="horizontal")
-        separador1.pack(fill="x", side=BOTTOM, padx=self.paddingx, pady=self.paddingy + 10)
+        separador1.pack(fill="x", side=BOTTOM, padx=self.paddingx, pady=self.paddingy+10)
 
-        lb_nome_razao = Label(separador1, text="Nome/Razão Social", font=self.lb_style)
-        lb_nome_razao.grid(column=0, row=0, sticky="NW", padx=self.paddingx)
-        entry_nome_razao = Entry(separador1, font=self.entry_style, width=50, state=DISABLED)
-        entry_nome_razao.grid(column=1, row=0, padx=self.paddingx)
+        separador2 = ttk.Separator(separador1, orient="horizontal")
+        separador2.grid(column=0,row=0,rowspan=3)
 
-        lb_pessoa_extra = Label(separador1, text="Pessoa Extra", font=self.lb_style)
-        lb_pessoa_extra.grid(column=0, row=1, sticky="NW", padx=self.paddingx)
-        entry_pessoa_extra = Entry(separador1, font=self.entry_style, width=50, state=DISABLED)
-        entry_pessoa_extra.grid(column=1, row=1, padx=self.paddingx)
+        lb_observacoes = Label(separador2, text="Observações", font=self.lb_style)
+        lb_observacoes.grid(column=0, row=0, sticky="NW", padx=self.paddingx, rowspan=3)
+        entry_observacoes = Text(separador2, font=self.entry_style, width=78,height=3, state=DISABLED)
+        entry_observacoes.grid(column=1, row=0, padx=self.paddingx,sticky="NW")
 
-        lb_lote = Label(separador1, text="Lote", font=self.lb_style)
-        lb_lote.grid(column=2, row=0, sticky="NW", padx=self.paddingx)
-        entry_lote = Entry(separador1, font=self.entry_style, width=20, state=DISABLED)
-        entry_lote.grid(column=3, row=0, padx=self.paddingx)
+        separador3 = ttk.Separator(separador2, orient="horizontal")
+        separador3.grid(column=1, row = 0,rowspan=3,sticky="E")
 
-        lb_fone2 = Label(separador1, text="Fone 1", font=self.lb_style)
-        lb_fone2.grid(column=2, row=1, sticky="NW", padx=self.paddingx)
-        entry_fone2 = Entry(separador1, font=self.entry_style, width=20, state=DISABLED)
-        entry_fone2.grid(column=3, row=1, padx=self.paddingx)
+        lb_valor = Label(separador3, text="Valor", font=self.lb_style)
+        lb_valor.grid(column=0, row=0, sticky="NW", padx=self.paddingx)
+        entry_valor = Entry(separador3, font=self.entry_style, width=20, state=DISABLED)
+        entry_valor.grid(column=1, row=0, padx=self.paddingx)
 
-        lb_fone3 = Label(separador1, text="Fone 2", font=self.lb_style)
-        lb_fone3.grid(column=2, row=2, sticky="NW", padx=self.paddingx)
-        entry_fone3 = Entry(separador1, font=self.entry_style, width=20, state=DISABLED)
-        entry_fone3.grid(column=3, row=2, padx=self.paddingx)
+        lb_pago = Label(separador3, text="Pago", font=self.lb_style)
+        lb_pago.grid(column=0, row=1, sticky="NW", padx=self.paddingx)
+        entry_pago = Entry(separador3, font=self.entry_style, width=20, state=DISABLED)
+        entry_pago.grid(column=1, row=1, padx=self.paddingx)
 
-        separador_endereco = ttk.Separator(separador1, orient="horizontal")
-        separador_endereco.grid(column=0, row=2, padx=self.paddingx, sticky="ew", columnspan=2)
+        lb_devendo = Label(separador3, text="Devendo", font=self.lb_style)
+        lb_devendo.grid(column=0, row=2, sticky="NW", padx=self.paddingx)
+        entry_devendo = Entry(separador3, font=self.entry_style, width=20, state=DISABLED)
+        entry_devendo.grid(column=1, row=2, padx=self.paddingx)
 
-        lb_endereco = Label(separador_endereco, text="Endereço", font=self.lb_style)
-        lb_endereco.pack(side=LEFT)
-        # lb_endereco.grid(column=0, row=0, sticky="NW", padx=self.paddingx)
-        entry_endereco = Entry(separador_endereco, font=self.entry_style, width=41, state=DISABLED)
 
-        # entry_endereco.grid(column=1, row=0, padx=self.paddingx, sticky="ew")
-
-        lb_numero = Label(separador_endereco, text="N.", font=self.lb_style)
-        # lb_numero.grid(column=2, row=0, sticky="EW", padx=self.paddingx)
-
-        entry_numero = Entry(separador_endereco, font=self.entry_style, width=6, state=DISABLED)
-        entry_numero.pack(side=RIGHT, padx=1)
-        lb_numero.pack(side=RIGHT, padx=3)
-        entry_endereco.pack(side=RIGHT)
         # entry_numero.grid(column=3, row=0, padx=self.paddingx, sticky="ew")
 
     def janela_pessoas(self):
