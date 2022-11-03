@@ -37,7 +37,7 @@ def grava_db_pessoa(entry_codigo_valor,entry_cadastro_valor,cb_status_valor,cb_t
 
     banco,cursor = conecta_db()
 
-    cursor.execute(f"INSERT INTO pessoas (data_cadastro,nome_razao_social,status,tipo,cpf_cnpj,apelido_fantasia,rg_inscricao_estadual,data_nascimento,endereco,numero_casa,complemento,bairro,cidade,cep,uf,fone1,operador1,fone2,operador2,fone3,operador3,email,anotacoes,familia_pai,familia_mae,familia_conjuge,emprego) VALUES ({cadastro_valor},{nome_valor},{status_valor},{tipo_valor},{cpf_cnpj_valor},{apelido_valor},{rg_inscricao_valor},{nascimento_valor},{endereco_valor},{numero_casa_valor},{complemento_valor},{bairro_valor},{nome_cidade_valor},{cep_valor},{uf_valor},{fone1_valor},{operadora1_valor},{fone2_valor},{operadora2_valor},{fone3_valor},{operadora3_valor},{email_valor})")
+    cursor.execute(f"INSERT INTO pessoas (data_cadastro, nome_razao_social, status, tipo,cpf_cnpj, apelido_fantasia,rg_inscricao_estadual, data_nascimento, endereco, numero_casa, complemento,bairro, cidade, cep, uf,fone1, operador1, fone2, operador2, fone3, operador3, email) VALUES ({cadastro_valor},{nome_valor},{status_valor},{tipo_valor},{cpf_cnpj_valor},{apelido_valor},{rg_inscricao_valor},{nascimento_valor},{endereco_valor},{numero_casa_valor},{complemento_valor},{bairro_valor},{nome_cidade_valor},{cep_valor},{uf_valor},{fone1_valor},{operadora1_valor},{fone2_valor},{operadora2_valor},{fone3_valor},{operadora3_valor},{email_valor})")
 
     banco.commit()
 
