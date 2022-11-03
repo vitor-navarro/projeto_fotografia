@@ -1,11 +1,10 @@
 import sys
 
-sys.path.insert(0, "..\\modulos\\database")
 
 from tkinter import *
 from tkinter import ttk
 from datetime import date
-#from database import grava_db_pessoa
+from modulos.database import grava_db_pessoa
 from functools import partial
 class Funcs():
     def __init__(self):
@@ -215,30 +214,11 @@ class Funcs():
         separador9 = ttk.Separator(janela, orient="horizontal")
         separador9.pack(fill="x", pady=10, padx=10)
 
-        entry_codigo_valor = entry_codigo.get()
-        entry_cadastro_valor = entry_cadastro.get()
-        cb_status_valor = cb_status.get()
-        cb_tipo_valor = cb_tipo.get()
-        entry_cpf_cnpj_valor = entry_cpf_cnpj.get()
-        entry_rg_inscricao_valor = entry_rg_inscricao.get()
-        ventry_nascimento_valor = entry_nascimento.get()
-        entry_nome_valor = entry_nome.get()
-        entry_apelido_valor = entry_apelido.get()
-        entry_endereco_valor = entry_endereco.get()
-        entry_complemento_valor = entry_complemento.get()
-        entry_bairro_valor = entry_bairro.get()
-        entry_nome_cidade_valor = entry_nome_cidade.get()
-        entry_uf_valor = entry_uf.get()
-        entry_cep_valor = entry_cep.get()
-        entry_fone1_valor = entry_fone1.get()
-        entry_fone2_valor = entry_fone2.get()
-        entry_fone3_valor = entry_fone3.get()
-        entry_operadora1_valor = entry_operadora1.get()
-        entry_operadora2_valor = entry_operadora2.get()
-        entry_operadora3_valor = entry_operadora3.get()
-        entry_email_valor = entry_email.get()
 
-        grava_db_pessoa_args = partial(grava_db_pessoa_args)
+        grava_db_pessoa_args = partial(grava_db_pessoa,entry_codigo.get,entry_cadastro.get,cb_status.get,cb_tipo.get,entry_cpf_cnpj.get,entry_rg_inscricao.get,entry_nascimento.get,
+                                       entry_nome.get,entry_apelido.get,entry_endereco.get,entry_complemento.get,entry_bairro.get,entry_nome_cidade.get,entry_uf.get,
+                                       entry_cep.get,entry_fone1.get,entry_fone2.get,entry_fone3.get,entry_operadora1.get,entry_operadora2.get,
+                                       entry_operadora3.get,entry_email.get,entry_numero.get)
         grava = Button(separador9, text="GRAVA", font=self.lb_style, command=grava_db_pessoa_args)
         grava.grid(column=0, row=0, sticky="WS")
 

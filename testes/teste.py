@@ -1,13 +1,15 @@
-from tkinter import *
-from functools import partial
-
-janela = Tk()
-
-label = Label(janela, text="Filtros")
-label.grid(column=0, row=0)
-
-botao = Button(janela, text="Clique em min")
-botao.grid(column=3, row=0)
+import sqlite3
 
 
-janela.mainloop()
+banco = sqlite3.connect("../modulos/database.db")
+
+cursor = banco.cursor()
+
+variavel = "123"
+cursor.execute(f"INSERT INTO pessoas (nome_razao_social,endereco,numero_casa,cpf_cnpj) VALUES ({variavel},'rua osvaldo marcondes barbosa','869','09186144901')")
+cursor.execute("SELECT * FROM pessoas")
+print(cursor.fetchall())
+
+banco.commit()
+
+banco.close()
