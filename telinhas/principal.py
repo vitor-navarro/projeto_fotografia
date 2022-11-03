@@ -1,12 +1,19 @@
+import sys
+
+sys.path.insert(0, "..\\modulos\\database")
+
 from tkinter import *
 from tkinter import ttk
 from datetime import date
+#from database import grava_db_pessoa
+from functools import partial
 class Funcs():
     def __init__(self):
         self.lb_style = ("monospace", 12)
         self.paddingx = 10
         self.paddingy = 7
         self.entry_style = ("monospace", 14)
+        self.data_sistema = date.today().strftime('%d/%m/%Y')
     def sem_comando(self):
         print("Tela ainda não cadastrada")
 
@@ -56,6 +63,7 @@ class Funcs():
         lb_cadastro = Label(separador1, text="Cadastro", font=self.lb_style)
         lb_cadastro.grid(column=1, row=0, sticky="W", padx=self.paddingx)
         entry_cadastro = Entry(separador1, font=self.entry_style, width=10)
+        entry_cadastro.insert(END, self.data_sistema)
         entry_cadastro.grid(column=1, row=1, padx=self.paddingx)
 
         status_possiveis = ["Ativo", "Inativo"]
@@ -180,8 +188,8 @@ class Funcs():
 
         lb_operadora2 = Label(separador7, text="Operadora", font=self.lb_style)
         lb_operadora2.grid(column=3, row=0, sticky="W", padx=self.paddingx)
-        entry_operadora1 = Entry(separador7, font=self.entry_style, width=width_operadora)
-        entry_operadora1.grid(column=3, row=1, padx=self.paddingx)
+        entry_operadora2 = Entry(separador7, font=self.entry_style, width=width_operadora)
+        entry_operadora2.grid(column=3, row=1, padx=self.paddingx)
 
         lb_fone3 = Label(separador7, text="Fone 3", font=self.lb_style)
         lb_fone3.grid(column=4, row=0, sticky="W", padx=self.paddingx)
@@ -207,13 +215,39 @@ class Funcs():
         separador9 = ttk.Separator(janela, orient="horizontal")
         separador9.pack(fill="x", pady=10, padx=10)
 
-        grava = Button(separador9, text="GRAVA", font=self.lb_style)
+        entry_codigo_valor = entry_codigo.get()
+        entry_cadastro_valor = entry_cadastro.get()
+        cb_status_valor = cb_status.get()
+        cb_tipo_valor = cb_tipo.get()
+        entry_cpf_cnpj_valor = entry_cpf_cnpj.get()
+        entry_rg_inscricao_valor = entry_rg_inscricao.get()
+        ventry_nascimento_valor = entry_nascimento.get()
+        entry_nome_valor = entry_nome.get()
+        entry_apelido_valor = entry_apelido.get()
+        entry_endereco_valor = entry_endereco.get()
+        entry_complemento_valor = entry_complemento.get()
+        entry_bairro_valor = entry_bairro.get()
+        entry_nome_cidade_valor = entry_nome_cidade.get()
+        entry_uf_valor = entry_uf.get()
+        entry_cep_valor = entry_cep.get()
+        entry_fone1_valor = entry_fone1.get()
+        entry_fone2_valor = entry_fone2.get()
+        entry_fone3_valor = entry_fone3.get()
+        entry_operadora1_valor = entry_operadora1.get()
+        entry_operadora2_valor = entry_operadora2.get()
+        entry_operadora3_valor = entry_operadora3.get()
+        entry_email_valor = entry_email.get()
+
+        grava_db_pessoa_args = partial(grava_db_pessoa_args)
+        grava = Button(separador9, text="GRAVA", font=self.lb_style, command=grava_db_pessoa_args)
         grava.grid(column=0, row=0, sticky="WS")
 
         cancela = Button(separador9, text="CANCELA", font=self.lb_style)
         cancela.grid(column=1, row=0, sticky="WS")
 
-    def novo_cadastro_tabalho(self):
+
+
+    def novo_cadastro_trabalho(self):
         janela = Toplevel()
 
         janela.title("Cadastro Trabalho")
@@ -231,6 +265,7 @@ class Funcs():
         lb_cadastro = Label(separador1, text="Cadastro", font=self.lb_style)
         lb_cadastro.grid(column=1, row=0, sticky="W", padx=self.paddingx)
         entry_cadastro = Entry(separador1, font=self.entry_style, width=10)
+        entry_cadastro.insert(END,self.data_sistema)
         entry_cadastro.grid(column=1, row=1, padx=self.paddingx)
 
         lb_data_sessao = Label(separador1, text="Data da Sessão", font=self.lb_style)
@@ -276,23 +311,45 @@ class Funcs():
         separador4 = ttk.Separator(janela, orient="horizontal")
         separador4.pack(fill="x", padx=self.paddingx, pady=self.paddingy)
 
+        opcoes_pagamento = ['DINHEIRO','PIX', 'CARTÃO DÉBITO', 'CARTÃO CRÉDITO', 'OUTRO']
+
         lb_condicao_pagamento1 = Label(separador4, text="Condicao Pagamento", font=self.lb_style)
-        lb_condicao_pagamento1.grid(column=0, row=0, sticky="W", padx=self.paddingx, columnspan=4)
+        lb_condicao_pagamento1.grid(column=0, row=0, sticky="W", padx=self.paddingx, columnspan=2)
+
+        lb_valor = Label(separador4, text="Valor", font=self.lb_style)
+        lb_valor.grid(column=3, row=0, sticky="W", padx=self.paddingx, columnspan=2)
+
+        lb_total = Label(separador4, text="Total", font=self.lb_style)
+        lb_total.grid(column=5, row=0, sticky="W", padx=self.paddingx)
 
         lb_condicao_pagamento_numero1 = Label(separador4, text="1º", font=self.lb_style)
         lb_condicao_pagamento_numero1.grid(column=0, row=1, padx=self.paddingx,pady=self.paddingy)
-        entry_condicao_pagamento1 = Entry(separador4, font=self.entry_style, width=30)
-        entry_condicao_pagamento1.grid(column=1, row=1, padx=self.paddingx,pady=self.paddingy)
+        cb_condicao_pagamento1 = ttk.Combobox(separador4, font=self.entry_style, width=10, values=opcoes_pagamento, state="readonly")
+        cb_condicao_pagamento1.set("DINHEIRO")
+        cb_condicao_pagamento1.grid(column=1, row=1, padx=self.paddingx,pady=self.paddingy)
+        entry_valor1 = Entry(separador4, font=self.entry_style, width=10)
+        entry_valor1.grid(column=3, row=1, padx=self.paddingx,pady=self.paddingy)
+
 
         lb_condicao_pagamento_numero2 = Label(separador4, text="2º", font=self.lb_style)
         lb_condicao_pagamento_numero2.grid(column=0, row=2, padx=self.paddingx,pady=self.paddingy)
-        entry_condicao_pagamento2 = Entry(separador4, font=self.entry_style, width=30)
-        entry_condicao_pagamento2.grid(column=1, row=2, padx=self.paddingx,pady=self.paddingy)
+        cb_condicao_pagamento2 = ttk.Combobox(separador4, font=self.entry_style, width=10, values=opcoes_pagamento, state="readonly")
+        cb_condicao_pagamento2.set("DINHEIRO")
+        cb_condicao_pagamento2.grid(column=1, row=2, padx=self.paddingx,pady=self.paddingy)
+        entry_valor2 = Entry(separador4, font=self.entry_style, width=10)
+        entry_valor2.grid(column=3, row=2, padx=self.paddingx,pady=self.paddingy)
+
 
         lb_condicao_pagamento_numero3 = Label(separador4, text="3º", font=self.lb_style)
         lb_condicao_pagamento_numero3.grid(column=0, row=3, padx=self.paddingx,pady=self.paddingy)
-        entry_condicao_pagamento3 = Entry(separador4, font=self.entry_style, width=30)
-        entry_condicao_pagamento3.grid(column=1, row=3, padx=self.paddingx,pady= self.paddingy)
+        cb_condicao_pagamento3 = ttk.Combobox(separador4, font=self.entry_style, width=10, values=opcoes_pagamento, state="readonly")
+        cb_condicao_pagamento3.set("DINHEIRO")
+        cb_condicao_pagamento3.grid(column=1, row=3, padx=self.paddingx,pady= self.paddingy)
+        entry_valor3 = Entry(separador4, font=self.entry_style, width=10)
+        entry_valor3.grid(column=3, row=3, padx=self.paddingx,pady=self.paddingy)
+
+        entry_total = Entry(separador4, font=self.entry_style, width=10, state=DISABLED)
+        entry_total.grid(column=5, row=3, padx=self.paddingx,pady=self.paddingy)
 
         separador5 = ttk.Separator(janela, orient="horizontal")
         separador5.pack(fill="x", padx=self.paddingx, pady=self.paddingy)
@@ -397,6 +454,7 @@ class Aplicacao(Funcs):
         self.paddingx = 10
         self.paddingy = 7
         self.entry_style = ("monospace", 14)
+        self.data = date.today().strftime('%d/%m/%Y')
 
         janela = Tk()
         # pre config
@@ -768,7 +826,7 @@ class Aplicacao(Funcs):
 
         data_hoje = date.today().strftime("%d/%m/%Y")
 
-        funcoes = [self.novo_cadastro_tabalho,self.altera_cadastro_trabalho, self.exclui_cadastro_trabalho]
+        funcoes = [self.novo_cadastro_trabalho, self.altera_cadastro_trabalho, self.exclui_cadastro_trabalho]
 
         self.barra_alteracoes(janela_trabalhos,funcoes)
 
@@ -801,6 +859,9 @@ class Aplicacao(Funcs):
 
         janela_financeiro.title("Controle Financeiro")
 
+        def __str__():
+            print("batata")
+
 
 
 '''def barra_menu(janela):
@@ -817,3 +878,5 @@ class Aplicacao(Funcs):
 if __name__ == '__main__':
 
     Aplicacao()
+
+

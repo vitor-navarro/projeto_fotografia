@@ -7,6 +7,8 @@ def conecta_db():
 
     return banco, cursor
 
+def grava_db_pessoa():
+    pass
 def desconecta_db(banco):
     banco.close()
 
