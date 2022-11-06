@@ -4,7 +4,7 @@ import sys
 from tkinter import *
 from tkinter import ttk
 from datetime import date
-from modulos.database import grava_db_pessoa
+from modulos.database import grava_db_pessoa, grava_db_trabalhos
 from functools import partial
 class Funcs():
     def __init__(self):
@@ -226,7 +226,6 @@ class Funcs():
         cancela.grid(column=1, row=0, sticky="WS")
 
 
-
     def novo_cadastro_trabalho(self):
         janela = Toplevel()
 
@@ -302,6 +301,8 @@ class Funcs():
         lb_total = Label(separador4, text="Total", font=self.lb_style)
         lb_total.grid(column=5, row=0, sticky="W", padx=self.paddingx)
 
+        entry_total = Entry(separador4, font=self.entry_style, width=10,state=DISABLED)
+
         lb_condicao_pagamento_numero1 = Label(separador4, text="1º", font=self.lb_style)
         lb_condicao_pagamento_numero1.grid(column=0, row=1, padx=self.paddingx,pady=self.paddingy)
         cb_condicao_pagamento1 = ttk.Combobox(separador4, font=self.entry_style, width=10, values=opcoes_pagamento, state="readonly")
@@ -309,7 +310,6 @@ class Funcs():
         cb_condicao_pagamento1.grid(column=1, row=1, padx=self.paddingx,pady=self.paddingy)
         entry_valor1 = Entry(separador4, font=self.entry_style, width=10)
         entry_valor1.grid(column=3, row=1, padx=self.paddingx,pady=self.paddingy)
-
 
         lb_condicao_pagamento_numero2 = Label(separador4, text="2º", font=self.lb_style)
         lb_condicao_pagamento_numero2.grid(column=0, row=2, padx=self.paddingx,pady=self.paddingy)
@@ -328,7 +328,44 @@ class Funcs():
         entry_valor3 = Entry(separador4, font=self.entry_style, width=10)
         entry_valor3.grid(column=3, row=3, padx=self.paddingx,pady=self.paddingy)
 
-        entry_total = Entry(separador4, font=self.entry_style, width=10, state=DISABLED)
+        def soma_condicao_pagamento(event):
+            valor1 = entry_valor1.get()
+            valor2 = entry_valor2.get()
+            valor3 = entry_valor3.get()
+
+            print(valor1,valor2,valor3)
+            if valor1 == '':
+                valor1 = "0"
+                valor1=float(valor1)
+            else:
+                valor1=float(valor1)
+
+            if valor2 == '':
+                valor2 = "0"
+                valor2=float(valor2)
+            else:
+                valor2=float(valor2)
+
+            if valor3 == '':
+                valor3 = "0"
+                valor3=float(valor3)
+            else:
+                valor3=float(valor3)
+
+            total = str(valor1+valor2+valor3)
+
+            entry_total.config(state="normal")
+            entry_total.delete(0, END)
+            entry_total.insert(0, total)
+            entry_total.config(state="disabled")
+
+            return
+
+
+        entry_valor1.bind("<FocusOut>",soma_condicao_pagamento)
+        entry_valor2.bind("<FocusOut>",soma_condicao_pagamento)
+        entry_valor3.bind("<FocusOut>",soma_condicao_pagamento)
+
         entry_total.grid(column=5, row=3, padx=self.paddingx,pady=self.paddingy)
 
         separador5 = ttk.Separator(janela, orient="horizontal")
@@ -342,11 +379,61 @@ class Funcs():
         separador9 = ttk.Separator(janela, orient="horizontal")
         separador9.pack(fill="x", pady=10, padx=10)
 
-        grava = Button(separador9, text="GRAVA", font=self.lb_style)
+        grava_db_trabalho_args = partial(grava_db_trabalhos)
+        grava = Button(separador9, text="GRAVA", font=self.lb_style, command=grava_db_trabalho_args)
         grava.grid(column=0, row=0, sticky="WS")
 
         cancela = Button(separador9, text="CANCELA", font=self.lb_style)
         cancela.grid(column=1, row=0, sticky="WS")
+
+    def novo_plano(self):
+        pass
+
+    def alterar_plano(self):
+        pass
+    def excluir_plano(self):
+        pass
+    def lista_planos(self):
+        janela = Toplevel()
+
+        janela.title("Planos")
+
+        self.configurar_janela_auxiliar2(janela)
+
+        barra_alteracoes = ttk.Separator(janela, orient="horizontal")
+        barra_alteracoes.pack(fill="x")
+
+        novo = Button(barra_alteracoes, text="Novo", font=("monospace", 10), command=self.novo_plano, padx=5,
+                      pady=10)
+        novo.pack(side=LEFT)
+
+        alterar = Button(barra_alteracoes, text="Alterar", font=("monospace", 10), command=self.alterar_plano, padx=5,
+                         pady=10)
+        alterar.pack(side=LEFT)
+
+        excluir = Button(barra_alteracoes, text="Excluir", font=("monospace", 10), command=self.excluir_plano, padx=5,
+                         pady=10)
+        excluir.pack(side=LEFT)
+
+        separador1 = ttk.Separator(janela, orient="horizontal")
+        separador1.pack(fill="x")
+
+        lista_planos = ttk.Treeview(separador1, columns=("col1", "col2", "col3"))
+        lista_planos.heading("#0", text="Cod")
+        lista_planos.heading("#1", text="Tipo")
+        lista_planos.heading("#2", text="Plano")
+        lista_planos.heading("#3", text="Valor")
+
+        lista_planos.column("#0", width=50)
+        lista_planos.column("#1", width=200)
+        lista_planos.column("#2", width=114)
+        lista_planos.column("#3", width=124)
+
+        lista_planos.grid(column=0, row=0, sticky="WSNE")
+
+        barra_rolagem = Scrollbar(separador1, orient="vertical")
+        lista_planos.configure(yscrollcommand=barra_rolagem)
+        barra_rolagem.grid(column=1, row=0, sticky="WSNE")
 
     def novo_financeiro(self):
         janela = Toplevel()
@@ -479,6 +566,8 @@ class Aplicacao(Funcs):
         excluir = Button(barra_alteracoes, text="Excluir", font=("monospace", 10), command=funcoes[2], padx=5,
                          pady=10)
         excluir.pack(side=LEFT)
+
+        return barra_alteracoes
 
     def barra_filtros_opcoes_pessoas(self,barra_filtros):
         # opções 1
@@ -808,7 +897,10 @@ class Aplicacao(Funcs):
 
         funcoes = [self.novo_cadastro_trabalho, self.altera_cadastro_trabalho, self.exclui_cadastro_trabalho]
 
-        self.barra_alteracoes(janela_trabalhos,funcoes)
+        barra_alteracoes = self.barra_alteracoes(janela_trabalhos,funcoes)
+
+        bt_planos = Button(barra_alteracoes, text="Planos",padx=5,pady=10,font=("monospace", 10), command=self.lista_planos)
+        bt_planos.pack(side = LEFT, padx=self.paddingx+20)
 
         barra_filtros = ttk.Separator(janela_trabalhos, orient="horizontal")
         barra_filtros.pack(fill="x")

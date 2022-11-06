@@ -44,6 +44,14 @@ def grava_db_pessoa(entry_codigo_valor,entry_cadastro_valor,cb_status_valor,cb_t
     banco.commit()
 
     desconecta_db(banco)
+def grava_db_trabalhos():
+    cursor.execute(f"INSERT INTO sessoes () VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",())
+    cursor.execute("select * from sessoes")
+    print(cursor.fetchall())
+    banco.commit()
+
+    desconecta_db(banco)
+    pass
 
 def desconecta_db(banco):
     banco.close()
