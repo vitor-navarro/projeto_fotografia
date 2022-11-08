@@ -4,7 +4,8 @@ import sys
 from tkinter import *
 from tkinter import ttk
 from datetime import date
-from modulos.database import grava_db_pessoa, grava_db_trabalhos
+from modulos.database import grava_db_pessoa, grava_db_trabalhos, pega_ultimo_id, pega_todas_pessoas_lista, \
+    pega_um_item_pessoa
 from functools import partial
 class Funcs():
     def __init__(self):
@@ -13,6 +14,7 @@ class Funcs():
         self.paddingy = 7
         self.entry_style = ("monospace", 14)
         self.data_sistema = date.today().strftime('%d/%m/%Y')
+
     def sem_comando(self):
         print("Tela ainda não cadastrada")
 
@@ -44,8 +46,17 @@ class Funcs():
         janela.geometry("512x312")
         janela.resizable(False,False)
 
+    def insert_entry_desabilitado(self, entry, valor,posicao = 0):
+
+        entry.config(state="normal")
+        entry.delete(0, END)
+        entry.insert(posicao, valor)
+        entry.config(state="disabled")
+
     def novo_cadastro_pessoa(self):
         janela = Toplevel()
+
+        variavel_upercase = StringVar()
 
         janela.title("Cadastro Pessoas")
 
@@ -54,10 +65,13 @@ class Funcs():
         separador1 = ttk.Separator(janela, orient="horizontal")
         separador1.pack(fill="x", padx=self.paddingx, pady=self.paddingy)
 
+        codigo = pega_ultimo_id("pessoas")
+
         lb_codigo = Label(separador1, text="Código", font=self.lb_style)
         lb_codigo.grid(column=0, row=0, sticky="NW", padx=self.paddingx)
         entry_codigo = Entry(separador1, font=self.entry_style, width=8, state=DISABLED)
         entry_codigo.grid(column=0, row=1, padx=self.paddingx, sticky="NW")
+        self.insert_entry_desabilitado(entry_codigo, codigo)
 
         lb_cadastro = Label(separador1, text="Cadastro", font=self.lb_style)
         lb_cadastro.grid(column=1, row=0, sticky="W", padx=self.paddingx)
@@ -215,6 +229,7 @@ class Funcs():
         separador9.pack(fill="x", pady=10, padx=10)
 
 
+
         grava_db_pessoa_args = partial(grava_db_pessoa,entry_codigo.get,entry_cadastro.get,cb_status.get,cb_tipo.get,entry_cpf_cnpj.get,entry_rg_inscricao.get,entry_nascimento.get,
                                        entry_nome.get,entry_apelido.get,entry_endereco.get,entry_complemento.get,entry_bairro.get,entry_nome_cidade.get,entry_uf.get,
                                        entry_cep.get,entry_fone1.get,entry_fone2.get,entry_fone3.get,entry_operadora1.get,entry_operadora2.get,
@@ -224,7 +239,13 @@ class Funcs():
 
         cancela = Button(separador9, text="CANCELA", font=self.lb_style)
         cancela.grid(column=1, row=0, sticky="WS")
+    def seleciona_item(self,event, lista_pessoas):
 
+        for selected_item in lista_pessoas.selection():
+            item = lista_pessoas.item(selected_item)
+            record = item['values']
+            pessoa = pega_um_item_pessoa(record[0])
+            return pessoa
 
     def novo_cadastro_trabalho(self):
         janela = Toplevel()
@@ -236,10 +257,14 @@ class Funcs():
         separador1 = ttk.Separator(janela, orient="horizontal")
         separador1.pack(fill="x", padx=self.paddingx, pady=self.paddingy)
 
+        codigo = pega_ultimo_id("sessoes")
+
         lb_codigo = Label(separador1, text="Código", font=self.lb_style)
         lb_codigo.grid(column=0, row=0, sticky="NW", padx=self.paddingx)
         entry_codigo = Entry(separador1, font=self.entry_style, width=8, state=DISABLED)
         entry_codigo.grid(column=0, row=1, padx=self.paddingx, sticky="NW")
+
+        self.insert_entry_desabilitado(entry_codigo,codigo)
 
         lb_cadastro = Label(separador1, text="Cadastro", font=self.lb_style)
         lb_cadastro.grid(column=1, row=0, sticky="W", padx=self.paddingx)
@@ -333,7 +358,6 @@ class Funcs():
             valor2 = entry_valor2.get()
             valor3 = entry_valor3.get()
 
-            print(valor1,valor2,valor3)
             if valor1 == '':
                 valor1 = "0"
                 valor1=float(valor1)
@@ -354,10 +378,7 @@ class Funcs():
 
             total = str(valor1+valor2+valor3)
 
-            entry_total.config(state="normal")
-            entry_total.delete(0, END)
-            entry_total.insert(0, total)
-            entry_total.config(state="disabled")
+            self.insert_entry_desabilitado(entry_total, total, 0)
 
             return
 
@@ -717,24 +738,30 @@ class Aplicacao(Funcs):
         rb_aproximacao.select()
 
     def lista_de_pessoas(self,janela):
-        pessoa = [1, "vitor", "091.861.449-01", "são jorge do ivai"]
+        lista = pega_todas_pessoas_lista()
 
-        lista_pessoas = ttk.Treeview(janela, columns=("col1", "col2", "col3"))
-        lista_pessoas.heading("#0", text="Cod")
-        lista_pessoas.heading("#1", text="Nome")
-        lista_pessoas.heading("#2", text="CPF/CNPJ")
-        lista_pessoas.heading("#3", text="Cidade")
+        lista_pessoas = ttk.Treeview(janela, columns=("col0","col1", "col2", "col3"))
+        lista_pessoas.heading("#0", text="")
+        lista_pessoas.heading("#1", text="Cod")
+        lista_pessoas.heading("#2", text="Nome")
+        lista_pessoas.heading("#3", text="CPF/CNPJ")
+        lista_pessoas.heading("#4", text="Cidade")
 
-        lista_pessoas.column("#0", width=50)
-        lista_pessoas.column("#1", width=450)
-        lista_pessoas.column("#2", width=204)
-        lista_pessoas.column("#3", width=300)
+        lista_pessoas.column("#0", width=0)
+        lista_pessoas.column("#1", width=50)
+        lista_pessoas.column("#2", width=450)
+        lista_pessoas.column("#3", width=204)
+        lista_pessoas.column("#4", width=300)
+
+        for i in lista:
+            lista_pessoas.insert("",END,values=i)
 
         lista_pessoas.grid(column=0, row=0, sticky="WSNE")
 
         barra_rolagem = Scrollbar(janela, orient="vertical")
         lista_pessoas.configure(yscrollcommand=barra_rolagem)
         barra_rolagem.grid(column=1, row=0, sticky="WSNE")
+        lista_pessoas.bind("<Double-1>", lambda event, lista_pessoas = lista_pessoas: self.seleciona_item(event,lista_pessoas=lista_pessoas))
     def lista_de_trabalho(self,janela):
         trabalho = [1, "vitor", "091.861.449-01", "são jorge do ivai"]
 
@@ -785,7 +812,7 @@ class Aplicacao(Funcs):
         lista_pessoas.configure(yscrollcommand=barra_rolagem)
         barra_rolagem.grid(column=1, row=0, sticky="WSNE")
 
-    def informacoes_adicionais_pessoas(self,janela):
+    def informacoes_adicionais_pessoas(self,janela, pessoa = None):
         separador1 = ttk.Separator(janela, orient="horizontal")
         separador1.pack(fill="x", side=BOTTOM, padx=self.paddingx, pady=self.paddingy+10)
 
@@ -834,7 +861,7 @@ class Aplicacao(Funcs):
         #entry_numero.grid(column=3, row=0, padx=self.paddingx, sticky="ew")
 
     #modificar assim que tiver as informações do que colocar
-    def informacoes_adicionais_trabalho(self,janela):
+    def informacoes_adicionais_trabalho(self,janela, trabalho = None):
         separador1 = ttk.Separator(janela, orient="horizontal")
         separador1.pack(fill="x", side=BOTTOM, padx=self.paddingx, pady=self.paddingy+10)
 

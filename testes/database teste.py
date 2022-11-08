@@ -6,7 +6,7 @@ banco = sqlite3.connect("../modulos/database.db")
 cursor = banco.cursor()
 
 #tabela pessoas, tipo será modificado e criado 2 tipos de tabelas diferentes uma para pessoa fisica e outra juridica
-cursor.execute("CREATE TABLE pessoas (id_pessoa INTEGER PRIMARY KEY,"
+cursor.execute("CREATE TABLE pessoas (id INTEGER PRIMARY KEY,"
                "data_cadastro text,"
                "nome_razao_social text,"
                "status text,"
@@ -41,7 +41,7 @@ print(cursor.fetchall())
 
 
 #tabela planos
-cursor.execute("CREATE TABLE planos (id_plano INTEGER PRIMARY KEY,"
+cursor.execute("CREATE TABLE planos(id INTEGER PRIMARY KEY,"
                "nome_plano text,"
                "quantidade_fotos int,"
                "valor REAL,"
@@ -56,30 +56,33 @@ cursor.execute("SELECT * FROM planos")
 print(cursor.fetchall())
 
 #tabela pagamentos
-cursor.execute("CREATE TABLE pagamentos (id_sessao INTEGER PRIMARY KEY,"
+cursor.execute("CREATE TABLE pagamentos (id INTEGER PRIMARY KEY,"
                "pessoa INTEGER,"
                "valor_pago REAL,"
                "tipo_pagamento text,"
                "descricao_extra text,"
                "data_pagamento text,"
-               "FOREIGN KEY (pessoa) REFERENCES pessoas(id_pessoa))")
+               "FOREIGN KEY (pessoa) REFERENCES pessoas(id))")
 
 cursor.execute("INSERT INTO pagamentos (pessoa,valor_pago,tipo_pagamento,descricao_extra,data_pagamento) VAlUES (1,199.00,'cartao','teste','27/10/2022')")
 cursor.execute("SELECT * FROM pagamentos")
 print(cursor.fetchall())
 
 #tabela sessoes
-cursor.execute("CREATE TABLE sessoes (id_sessao INTEGER PRIMARY KEY,"
+cursor.execute("CREATE TABLE sessoes (id INTEGER PRIMARY KEY,"
                "pessoa_sessao INTEGER,"
                "pessoa_extra text,"
+               "tipo text,"
                "plano_contratado INTEGER,"
-               "data_hora text,"
+               "data text,"
+               "hora text,"
                "lote text,"
                "produto_extra text,"
+               "etapa_atual text,"
                "pagamento text,"
                "condicao_pagamento text,"
-               "FOREIGN KEY (pessoa_sessao) REFERENCES pessoas(id_pessoa),"
-               "FOREIGN KEY (plano_contratado) REFERENCES planos(id_plano))")
+               "FOREIGN KEY (pessoa_sessao) REFERENCES pessoas(id),"
+               "FOREIGN KEY (plano_contratado) REFERENCES planos(id))")
 #OBS pagamentos vai ter que mudar o jeito que está sendo construido, tem de ser uma lista de referencias a pagamentos, o sqlite não suporta isso
 #OBS2 Quando for aparecera a condicao de parcelamento vai aparecer como a vista dinheiro,a vista debito, 12x credito, a vista credito
 
