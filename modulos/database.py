@@ -76,7 +76,7 @@ def pega_um_item_pessoa(item):
 
     item = str(item)
     pessoa = cursor.execute('SELECT * FROM pessoas WHERE id = ?', (item))
-
+    pessoa = pessoa.fetchall()
     desconecta_db(banco)
     return pessoa
 def pega_todas_trabalhos_lista():

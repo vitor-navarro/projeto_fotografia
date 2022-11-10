@@ -1,6 +1,5 @@
 import sys
 
-
 from tkinter import *
 from tkinter import ttk
 from datetime import date
@@ -47,7 +46,8 @@ class Funcs():
         janela.resizable(False,False)
 
     def insert_entry_desabilitado(self, entry, valor,posicao = 0):
-
+        if valor == None:
+            valor = ""
         entry.config(state="normal")
         entry.delete(0, END)
         entry.insert(posicao, valor)
@@ -239,7 +239,7 @@ class Funcs():
 
         cancela = Button(separador9, text="CANCELA", font=self.lb_style)
         cancela.grid(column=1, row=0, sticky="WS")
-    def seleciona_item(self,event, lista_pessoas):
+    def seleciona_item(self, lista_pessoas):
 
         for selected_item in lista_pessoas.selection():
             item = lista_pessoas.item(selected_item)
@@ -756,12 +756,14 @@ class Aplicacao(Funcs):
         for i in lista:
             lista_pessoas.insert("",END,values=i)
 
+
         lista_pessoas.grid(column=0, row=0, sticky="WSNE")
 
         barra_rolagem = Scrollbar(janela, orient="vertical")
         lista_pessoas.configure(yscrollcommand=barra_rolagem)
         barra_rolagem.grid(column=1, row=0, sticky="WSNE")
-        lista_pessoas.bind("<Double-1>", lambda event, lista_pessoas = lista_pessoas: self.seleciona_item(event,lista_pessoas=lista_pessoas))
+
+        return lista_pessoas
     def lista_de_trabalho(self,janela):
         trabalho = [1, "vitor", "091.861.449-01", "são jorge do ivai"]
 
@@ -860,6 +862,8 @@ class Aplicacao(Funcs):
         entry_endereco.pack(side=RIGHT)
         #entry_numero.grid(column=3, row=0, padx=self.paddingx, sticky="ew")
 
+        return entry_nome_razao, entry_fantasia_apelido, entry_fone1, entry_fone2, entry_fone3,entry_endereco,entry_numero
+
     #modificar assim que tiver as informações do que colocar
     def informacoes_adicionais_trabalho(self,janela, trabalho = None):
         separador1 = ttk.Separator(janela, orient="horizontal")
@@ -911,8 +915,20 @@ class Aplicacao(Funcs):
         self.barra_filtros_opcoes_pessoas(barra_filtros)
         self.barra_filtros_status_pessoas(barra_filtros)
         self.barra_filtros_pesquisa(barra_filtros)
-        self.lista_de_pessoas(listagem_pessoas)
-        self.informacoes_adicionais_pessoas(janela_pessoas)
+        lista_pessoas = self.lista_de_pessoas(listagem_pessoas)
+        entry_nome_razao, entry_fantasia_apelido, entry_fone1, entry_fone2, entry_fone3,entry_endereco,entry_numero = self.informacoes_adicionais_pessoas(janela_pessoas)
+        def adiciona_informacoes_adicionais(event):
+            pessoa = self.seleciona_item(lista_pessoas)
+            self.insert_entry_desabilitado(entry_nome_razao,pessoa[0][2])
+            self.insert_entry_desabilitado(entry_fantasia_apelido, pessoa[0][6])
+            self.insert_entry_desabilitado(entry_fone1, pessoa[0][16])
+            self.insert_entry_desabilitado(entry_fone2, pessoa[0][18])
+            self.insert_entry_desabilitado(entry_fone3, pessoa[0][20])
+            self.insert_entry_desabilitado(entry_endereco, pessoa[0][9])
+            self.insert_entry_desabilitado(entry_numero, pessoa[0][10])
+
+
+        lista_pessoas.bind("<Button-1>", adiciona_informacoes_adicionais)
 
         janela_pessoas.title("Pesquisa de Pessoas")
 
