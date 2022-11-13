@@ -36,6 +36,7 @@ cursor.execute("CREATE TABLE pessoas (id INTEGER PRIMARY KEY,"
                "emprego text)")
 
 cursor.execute("INSERT INTO pessoas (nome_razao_social,endereco,numero_casa,cpf_cnpj,fone1) VALUES ('vitor','rua osvaldo marcondes barbosa','869','09186144901','(44)988389141')")
+cursor.execute("INSERT INTO pessoas (nome_razao_social,endereco,numero_casa,cpf_cnpj,fone1) VALUES ('TESTE','Testea','869','09186144901','(44)988389141')")
 cursor.execute("SELECT * FROM pessoas")
 print(cursor.fetchall())
 
