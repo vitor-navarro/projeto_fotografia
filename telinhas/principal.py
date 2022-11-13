@@ -4,7 +4,7 @@ from tkinter import *
 from tkinter import ttk
 from datetime import date
 from modulos.database import grava_db_pessoa, grava_db_trabalhos, pega_ultimo_id, pega_todas_pessoas_lista, \
-    pega_um_item_pessoa
+    pega_um_item_pessoa, altera_db_pessoa, deleta_db_pessoa
 from functools import partial
 class Funcs():
     def __init__(self):
@@ -13,6 +13,7 @@ class Funcs():
         self.paddingy = 7
         self.entry_style = ("monospace", 14)
         self.data_sistema = date.today().strftime('%d/%m/%Y')
+        self.lista_de_pessoas = None
 
     def sem_comando(self):
         print("Tela ainda não cadastrada")
@@ -239,10 +240,10 @@ class Funcs():
 
         cancela = Button(separador9, text="CANCELA", font=self.lb_style)
         cancela.grid(column=1, row=0, sticky="WS")
-    def seleciona_item(self, lista_pessoas):
+    def seleciona_item(self):
 
-        for selected_item in lista_pessoas.selection():
-            item = lista_pessoas.item(selected_item)
+        for selected_item in self.lista_de_pessoas.selection():
+            item = self.lista_de_pessoas.item(selected_item)
             record = item['values']
             pessoa = pega_um_item_pessoa(record[0])
             return pessoa
@@ -514,9 +515,220 @@ class Funcs():
 
         cancela = Button(separador4, text="CANCELA", font=self.lb_style)
         cancela.grid(column=1, row=0, sticky="WS")
+
     def altera_cadastro_pessoa(self):
-        print("Tela ainda não cadastrada")
+        pessoa = self.seleciona_item()
+
+        print(pessoa)
+        janela = Toplevel()
+        variavel_upercase = StringVar()
+
+        janela.title("Cadastro Pessoas")
+
+        self.configurar_janela_auxiliar(janela)
+
+        separador1 = ttk.Separator(janela, orient="horizontal")
+        separador1.pack(fill="x", padx=self.paddingx, pady=self.paddingy)
+
+        codigo = pega_ultimo_id("pessoas")
+
+        lb_codigo = Label(separador1, text="Código", font=self.lb_style)
+        lb_codigo.grid(column=0, row=0, sticky="NW", padx=self.paddingx)
+        entry_codigo = Entry(separador1, font=self.entry_style, width=8, state=DISABLED)
+        entry_codigo.grid(column=0, row=1, padx=self.paddingx, sticky="NW")
+        self.insert_entry_desabilitado(entry_codigo, pessoa[0][0])
+
+        lb_cadastro = Label(separador1, text="Cadastro", font=self.lb_style)
+        lb_cadastro.grid(column=1, row=0, sticky="W", padx=self.paddingx)
+        entry_cadastro = Entry(separador1, font=self.entry_style, width=10)
+        entry_cadastro.insert(END, self.data_sistema)
+        entry_cadastro.grid(column=1, row=1, padx=self.paddingx)
+        entry_cadastro.delete(0, END)
+        entry_cadastro.insert(END,pessoa[0][1])
+
+        status_possiveis = ["Ativo", "Inativo"]
+        tipos_possiveis_pessoas = ["Física", "Jurídica"]
+
+        # mudar para opções
+        lb_status = Label(separador1, text="Status", font=self.lb_style)
+        lb_status.grid(column=2, row=0, sticky="W", padx=self.paddingx)
+        cb_status = ttk.Combobox(separador1, font=self.entry_style, width=15, values=status_possiveis, state="readonly")
+        cb_status.set(pessoa[0][3])
+        cb_status.grid(column=2, row=1, padx=self.paddingx)
+
+        # mudar para opções
+        lb_tipo = Label(separador1, text="Tipo", font=self.lb_style)
+        lb_tipo.grid(column=3, row=0, sticky="W", padx=self.paddingx)
+        cb_tipo = ttk.Combobox(separador1, font=self.entry_style, width=15, values=tipos_possiveis_pessoas,
+                               state="readonly")
+        cb_tipo.set(pessoa[0][4])
+        cb_tipo.grid(column=3, row=1, padx=self.paddingx)
+
+        separador2 = ttk.Separator(janela, orient="horizontal")
+        separador2.pack(fill="x", padx=self.paddingx, pady=self.paddingy)
+
+        # condicao para mudar quando for tipo juridica
+        lb_cpf_cnpj = Label(separador2, text="CPF", font=self.lb_style)
+        lb_cpf_cnpj.grid(column=0, row=0, sticky="W", padx=self.paddingx)
+        entry_cpf_cnpj = Entry(separador2, font=self.entry_style, width=20)
+        entry_cpf_cnpj.grid(column=0, row=1, padx=self.paddingx)
+        entry_cpf_cnpj.insert(END,pessoa[0][5])
+
+        # condicao para mudar quando for tipo juridica
+        lb_rg_inscricao = Label(separador2, text="RG", font=self.lb_style)
+        lb_rg_inscricao.grid(column=1, row=0, sticky="W", padx=self.paddingx)
+        entry_rg_inscricao = Entry(separador2, font=self.entry_style, width=20)
+        entry_rg_inscricao.grid(column=1, row=1, padx=self.paddingx)
+        entry_rg_inscricao.insert(END,pessoa[0][7])
+
+        lb_nascimento = Label(separador2, text="Nascimento", font=self.lb_style)
+        lb_nascimento.grid(column=2, row=0, sticky="W", padx=self.paddingx)
+        entry_nascimento = Entry(separador2, font=self.entry_style, width=10)
+        entry_nascimento.grid(column=2, row=1, padx=self.paddingx)
+        entry_nascimento.insert(END,pessoa[0][8])
+
+        separador3 = ttk.Separator(janela, orient="horizontal")
+        separador3.pack(fill="x", padx=self.paddingx, pady=self.paddingy)
+
+        lb_nome = Label(separador3, text="Nome*", font=self.lb_style)
+        lb_nome.grid(column=0, row=0, sticky="W", padx=self.paddingx)
+        entry_nome = Entry(separador3, font=self.entry_style, width=89)
+        entry_nome.grid(column=0, row=1, padx=self.paddingx)
+        entry_nome.insert(END,pessoa[0][2])
+
+        lb_apelido = Label(separador3, text="Apelido", font=self.lb_style)
+        lb_apelido.grid(column=0, row=2, sticky="W", padx=self.paddingx)
+        entry_apelido = Entry(separador3, font=self.entry_style, width=89)
+        entry_apelido.grid(column=0, row=3, padx=self.paddingx)
+        entry_apelido.insert(END,pessoa[0][6])
+
+        separador4 = ttk.Separator(janela, orient="horizontal")
+        separador4.pack(fill="x", padx=self.paddingx, pady=self.paddingy)
+
+        lb_endereco = Label(separador4, text="Endereço", font=self.lb_style)
+        lb_endereco.grid(column=0, row=0, sticky="W", padx=self.paddingx)
+        entry_endereco = Entry(separador4, font=self.entry_style, width=82)
+        entry_endereco.grid(column=0, row=1, padx=self.paddingx)
+        entry_endereco.insert(END,pessoa[0][9])
+
+        lb_numero = Label(separador4, text="Numero", font=self.lb_style)
+        lb_numero.grid(column=1, row=0, sticky="W", padx=self.paddingx)
+        entry_numero = Entry(separador4, font=self.entry_style, width=5)
+        entry_numero.grid(column=1, row=1, padx=self.paddingx)
+        entry_numero.insert(END,pessoa[0][10])
+
+        separador5 = ttk.Separator(janela, orient="horizontal")
+        separador5.pack(fill="x", padx=self.paddingx, pady=self.paddingy)
+
+        lb_complemento = Label(separador5, text="Complemento", font=self.lb_style)
+        lb_complemento.grid(column=0, row=2, sticky="W", padx=self.paddingx)
+        entry_complemento = Entry(separador5, font=self.entry_style, width=44)
+        entry_complemento.grid(column=0, row=3, padx=self.paddingx)
+        entry_complemento.insert(END,pessoa[0][11])
+
+        lb_bairro = Label(separador5, text="Bairro", font=self.lb_style)
+        lb_bairro.grid(column=1, row=2, sticky="W", padx=self.paddingx)
+        entry_bairro = Entry(separador5, font=self.entry_style, width=43)
+        entry_bairro.grid(column=1, row=3, padx=self.paddingx)
+        entry_bairro.insert(END,pessoa[0][12])
+
+        separador6 = ttk.Separator(janela, orient="horizontal")
+        separador6.pack(fill="x", padx=self.paddingx, pady=self.paddingy)
+        '''
+        lb_cidade = Label(separador6, text="Cidade", font=self.lb_style, state=DISABLED)
+        lb_cidade.grid(column=0, row=4, sticky="W", padx=self.paddingx)
+        entry_cidade = Entry(separador6, font=self.entry_style,width=5)
+        entry_cidade.grid(column=0, row=5, padx=self.paddingx)
+        '''
+
+        lb_nome_cidade = Label(separador6, text="Cidade", font=self.lb_style)
+        lb_nome_cidade.grid(column=1, row=4, sticky="W", padx=self.paddingx)
+        entry_nome_cidade = Entry(separador6, font=self.entry_style, width=40)
+        entry_nome_cidade.grid(column=1, row=5, padx=self.paddingx)
+        entry_nome_cidade.insert(END,pessoa[0][13])
+
+        lb_uf = Label(separador6, text="UF", font=self.lb_style)
+        lb_uf.grid(column=2, row=4, sticky="W", padx=self.paddingx)
+        entry_uf = Entry(separador6, font=self.entry_style, width=3)
+        entry_uf.grid(column=2, row=5, padx=self.paddingx)
+        entry_uf.insert(END,pessoa[0][15])
+
+        lb_cep = Label(separador6, text="CEP", font=self.lb_style)
+        lb_cep.grid(column=3, row=4, sticky="W", padx=self.paddingx)
+        entry_cep = Entry(separador6, font=self.entry_style, width=10)
+        entry_cep.grid(column=3, row=5, padx=self.paddingx)
+        entry_cep.insert(END,pessoa[0][14])
+
+        separador7 = ttk.Separator(janela, orient="horizontal")
+        separador7.pack(fill="x", padx=self.paddingx, pady=self.paddingy)
+
+        width_fone = 17
+        width_operadora = 8
+        lb_fone1 = Label(separador7, text="Fone 1", font=self.lb_style)
+        lb_fone1.grid(column=0, row=0, sticky="W", padx=self.paddingx)
+        entry_fone1 = Entry(separador7, font=self.entry_style, width=width_fone)
+        entry_fone1.grid(column=0, row=1, padx=self.paddingx)
+        entry_fone1.insert(END,pessoa[0][16])
+
+        lb_operadora1 = Label(separador7, text="Operadora", font=self.lb_style)
+        lb_operadora1.grid(column=1, row=0, sticky="W", padx=self.paddingx)
+        entry_operadora1 = Entry(separador7, font=self.entry_style, width=width_operadora)
+        entry_operadora1.grid(column=1, row=1, padx=self.paddingx)
+        entry_operadora1.insert(END,pessoa[0][17])
+
+        lb_fone2 = Label(separador7, text="Fone 2", font=self.lb_style)
+        lb_fone2.grid(column=2, row=0, sticky="W", padx=self.paddingx)
+        entry_fone2 = Entry(separador7, font=self.entry_style, width=width_fone)
+        entry_fone2.grid(column=2, row=1, padx=self.paddingx)
+        entry_fone2.insert(END,pessoa[0][18])
+
+        lb_operadora2 = Label(separador7, text="Operadora", font=self.lb_style)
+        lb_operadora2.grid(column=3, row=0, sticky="W", padx=self.paddingx)
+        entry_operadora2 = Entry(separador7, font=self.entry_style, width=width_operadora)
+        entry_operadora2.grid(column=3, row=1, padx=self.paddingx)
+        entry_operadora2.insert(END,pessoa[0][19])
+
+        lb_fone3 = Label(separador7, text="Fone 3", font=self.lb_style)
+        lb_fone3.grid(column=4, row=0, sticky="W", padx=self.paddingx)
+        entry_fone3 = Entry(separador7, font=self.entry_style, width=width_fone)
+        entry_fone3.grid(column=4, row=1, padx=self.paddingx)
+        entry_fone3.insert(END, pessoa[0][20])
+
+        lb_operadora3 = Label(separador7, text="Operadora", font=self.lb_style)
+        lb_operadora3.grid(column=5, row=0, sticky="W", padx=self.paddingx)
+        entry_operadora3 = Entry(separador7, font=self.entry_style, width=width_operadora)
+        entry_operadora3.grid(column=5, row=1, padx=self.paddingx)
+        entry_operadora3.insert(END, pessoa[0][21])
+
+        separador8 = ttk.Separator(janela, orient="horizontal")
+        separador8.pack(fill="x", padx=self.paddingx, pady=self.paddingy)
+
+        lb_email = Label(separador8, text="Email", font=self.lb_style)
+        lb_email.grid(column=0, row=0, sticky="W", padx=self.paddingx)
+        entry_email = Entry(separador8, font=self.entry_style, width=89)
+        entry_email.grid(column=0, row=1, padx=self.paddingx)
+        entry_email.insert(END, pessoa[0][22])
+
+        lb_campos_obrigatorios = Label(janela, text="(*) Campos Obrigatórios")
+        lb_campos_obrigatorios.pack(fill="x", side=RIGHT, anchor=NW)
+
+        separador9 = ttk.Separator(janela, orient="horizontal")
+        separador9.pack(fill="x", pady=10, padx=10)
+
+        altera_db_pessoa_args = partial(altera_db_pessoa, entry_codigo.get, entry_cadastro.get, cb_status.get,
+                                       cb_tipo.get, entry_cpf_cnpj.get, entry_rg_inscricao.get, entry_nascimento.get,
+                                       entry_nome.get, entry_apelido.get, entry_endereco.get, entry_complemento.get,
+                                       entry_bairro.get, entry_nome_cidade.get, entry_uf.get,
+                                       entry_cep.get, entry_fone1.get, entry_fone2.get, entry_fone3.get,
+                                       entry_operadora1.get, entry_operadora2.get,
+                                       entry_operadora3.get, entry_email.get, entry_numero.get)
+        grava = Button(separador9, text="GRAVA", font=self.lb_style, command=altera_db_pessoa_args)
+        grava.grid(column=0, row=0, sticky="WS")
+
+        cancela = Button(separador9, text="CANCELA", font=self.lb_style)
+        cancela.grid(column=1, row=0, sticky="WS")
         pass
+
     def altera_cadastro_trabalho(self):
         print("Tela ainda não cadastrada")
         pass
@@ -524,9 +736,9 @@ class Funcs():
         print("Tela ainda não cadastrada")
         pass
     def exclui_cadastro_pessoa(self):
-        print("Tela ainda não cadastrada")
-        pass
-
+        pessoa = self.seleciona_item()
+        id = pessoa[0][0]
+        deleta_db_pessoa(id)
     def exclui_cadastro_trabalho(self):
         print("Tela ainda não cadastrada")
         pass
@@ -543,6 +755,7 @@ class Aplicacao(Funcs):
         self.paddingy = 7
         self.entry_style = ("monospace", 14)
         self.data = date.today().strftime('%d/%m/%Y')
+        self.lista_de_pessoas = None
 
         janela = Tk()
         # pre config
@@ -737,7 +950,7 @@ class Aplicacao(Funcs):
 
         rb_aproximacao.select()
 
-    def lista_de_pessoas(self,janela):
+    def cria_lista_de_pessoas(self,janela):
         lista = pega_todas_pessoas_lista()
 
         lista_pessoas = ttk.Treeview(janela, columns=("col0","col1", "col2", "col3"))
@@ -763,7 +976,7 @@ class Aplicacao(Funcs):
         lista_pessoas.configure(yscrollcommand=barra_rolagem)
         barra_rolagem.grid(column=1, row=0, sticky="WSNE")
 
-        return lista_pessoas
+        self.lista_de_pessoas = lista_pessoas
     def lista_de_trabalho(self,janela):
         trabalho = [1, "vitor", "091.861.449-01", "são jorge do ivai"]
 
@@ -915,20 +1128,23 @@ class Aplicacao(Funcs):
         self.barra_filtros_opcoes_pessoas(barra_filtros)
         self.barra_filtros_status_pessoas(barra_filtros)
         self.barra_filtros_pesquisa(barra_filtros)
-        lista_pessoas = self.lista_de_pessoas(listagem_pessoas)
+        self.cria_lista_de_pessoas(listagem_pessoas)
         entry_nome_razao, entry_fantasia_apelido, entry_fone1, entry_fone2, entry_fone3,entry_endereco,entry_numero = self.informacoes_adicionais_pessoas(janela_pessoas)
         def adiciona_informacoes_adicionais(event):
-            pessoa = self.seleciona_item(lista_pessoas)
-            self.insert_entry_desabilitado(entry_nome_razao,pessoa[0][2])
-            self.insert_entry_desabilitado(entry_fantasia_apelido, pessoa[0][6])
-            self.insert_entry_desabilitado(entry_fone1, pessoa[0][16])
-            self.insert_entry_desabilitado(entry_fone2, pessoa[0][18])
-            self.insert_entry_desabilitado(entry_fone3, pessoa[0][20])
-            self.insert_entry_desabilitado(entry_endereco, pessoa[0][9])
-            self.insert_entry_desabilitado(entry_numero, pessoa[0][10])
 
+            for selected_item in self.lista_de_pessoas.selection():
+                item = self.lista_de_pessoas.item(selected_item,'values')
+                pessoa = pega_um_item_pessoa(item[0])
 
-        lista_pessoas.bind("<Button-1>", adiciona_informacoes_adicionais)
+                self.insert_entry_desabilitado(entry_nome_razao,pessoa[0][2])
+                self.insert_entry_desabilitado(entry_fantasia_apelido, pessoa[0][6])
+                self.insert_entry_desabilitado(entry_fone1, pessoa[0][16])
+                self.insert_entry_desabilitado(entry_fone2, pessoa[0][18])
+                self.insert_entry_desabilitado(entry_fone3, pessoa[0][20])
+                self.insert_entry_desabilitado(entry_endereco, pessoa[0][9])
+                self.insert_entry_desabilitado(entry_numero, pessoa[0][10])
+
+        self.lista_de_pessoas.bind("<Button-1>", adiciona_informacoes_adicionais)
 
         janela_pessoas.title("Pesquisa de Pessoas")
 
@@ -974,8 +1190,6 @@ class Aplicacao(Funcs):
 
         janela_financeiro.title("Controle Financeiro")
 
-        def __str__():
-            print("batata")
 
 
 
