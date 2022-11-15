@@ -143,14 +143,38 @@ def pega_todas_trabalhos_lista():
 
     return lista
 
-def grava_db_trabalhos():
+def grava_db_trabalhos(entry_codigo,entry_cadastro,entry_data_sessao,entry_horario_sessao,codigo_pessoa_trabalho,entry_nome,cb_tipo_sessao,cb_plano,entry_valor1,entry_valor2,entry_valor3,entry_total,textarea_observacoes):
+    entry_codigo = entry_codigo()
+    entry_cadastro = entry_cadastro()
+    entry_data_sessao = entry_data_sessao()
+    entry_horario_sessao = entry_horario_sessao()
+    codigo_pessoa_trabalho = codigo_pessoa_trabalho
+    entry_nome = entry_nome()
+    cb_tipo_sessao = cb_tipo_sessao()
+    cb_plano = cb_plano()
+    entry_valor1 = entry_valor1()
+    entry_valor2 = entry_valor2()
+    entry_valor3 = entry_valor3()
+    entry_total = entry_total()
+    textarea_observacoes = textarea_observacoes("1.0","end-1c")
+
+    banco, cursor = conecta_db()
+#obs ao dar o return, mandar a informação self.argumentos = None
+    print(entry_codigo,entry_cadastro,entry_data_sessao,entry_horario_sessao,codigo_pessoa_trabalho,entry_nome,cb_tipo_sessao,cb_plano,entry_valor1,entry_valor2,entry_valor3,entry_total,textarea_observacoes)
     cursor.execute(f"INSERT INTO sessoes () VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",())
     cursor.execute("select * from sessoes")
     print(cursor.fetchall())
     banco.commit()
 
     desconecta_db(banco)
-    pass
+def pega_um_item_trabalho(item):
+    banco, cursor = conecta_db()
+
+    item = str(item)
+    trabalho = cursor.execute('SELECT * FROM sessoes WHERE id = ?', (item))
+    trabalho = trabalho.fetchall()
+    desconecta_db(banco)
+    return trabalho
 
 def desconecta_db(banco):
     banco.close()

@@ -1,10 +1,9 @@
-import sys
 
 from tkinter import *
 from tkinter import ttk
 from datetime import date
 from modulos.database import grava_db_pessoa, grava_db_trabalhos, pega_ultimo_id, pega_todas_pessoas_lista, \
-    pega_um_item_pessoa, altera_db_pessoa, deleta_db_pessoa
+    pega_um_item_pessoa, altera_db_pessoa, deleta_db_pessoa, pega_um_item_trabalho
 from functools import partial
 class Funcs():
     def __init__(self):
@@ -14,6 +13,10 @@ class Funcs():
         self.entry_style = ("monospace", 14)
         self.data_sistema = date.today().strftime('%d/%m/%Y')
         self.lista_de_pessoas = None
+        self.lista_de_trabalhos = None
+        self.argumentos = None
+        self.nome_pessoa_trabalho = None
+        self.codigo_pessoa_trabalho = None
 
     def sem_comando(self):
         print("Tela ainda não cadastrada")
@@ -53,6 +56,10 @@ class Funcs():
         entry.delete(0, END)
         entry.insert(posicao, valor)
         entry.config(state="disabled")
+    def buscar_sessao_trabalho(self):
+        print("busca ainda não implementada")
+    def buscar_plano_trabalho(self):
+        print("busca ainda não implementada")
 
     def novo_cadastro_pessoa(self):
         janela = Toplevel()
@@ -240,7 +247,7 @@ class Funcs():
 
         cancela = Button(separador9, text="CANCELA", font=self.lb_style)
         cancela.grid(column=1, row=0, sticky="WS")
-    def seleciona_item(self):
+    def seleciona_item_pessoas(self):
 
         for selected_item in self.lista_de_pessoas.selection():
             item = self.lista_de_pessoas.item(selected_item)
@@ -248,165 +255,13 @@ class Funcs():
             pessoa = pega_um_item_pessoa(record[0])
             return pessoa
 
-    def novo_cadastro_trabalho(self):
-        janela = Toplevel()
+    def seleciona_item_trabalhos(self):
 
-        janela.title("Cadastro Trabalho")
-
-        self.configurar_janela_auxiliar(janela)
-
-        separador1 = ttk.Separator(janela, orient="horizontal")
-        separador1.pack(fill="x", padx=self.paddingx, pady=self.paddingy)
-
-        codigo = pega_ultimo_id("sessoes")
-
-        lb_codigo = Label(separador1, text="Código", font=self.lb_style)
-        lb_codigo.grid(column=0, row=0, sticky="NW", padx=self.paddingx)
-        entry_codigo = Entry(separador1, font=self.entry_style, width=8, state=DISABLED)
-        entry_codigo.grid(column=0, row=1, padx=self.paddingx, sticky="NW")
-
-        self.insert_entry_desabilitado(entry_codigo,codigo)
-
-        lb_cadastro = Label(separador1, text="Cadastro", font=self.lb_style)
-        lb_cadastro.grid(column=1, row=0, sticky="W", padx=self.paddingx)
-        entry_cadastro = Entry(separador1, font=self.entry_style, width=10)
-        entry_cadastro.insert(END,self.data_sistema)
-        entry_cadastro.grid(column=1, row=1, padx=self.paddingx)
-
-        lb_data_sessao = Label(separador1, text="Data da Sessão", font=self.lb_style)
-        lb_data_sessao.grid(column=2, row=0, sticky="W", padx=self.paddingx)
-        entry_data_sessao = Entry(separador1, font=self.entry_style, width=10)
-        entry_data_sessao.grid(column=2, row=1, padx=self.paddingx)
-
-        lb_horario_sessao = Label(separador1, text="Horário da Sessão", font=self.lb_style)
-        lb_horario_sessao.grid(column=3, row=0, sticky="W", padx=self.paddingx)
-        entry_horario_sessao = Entry(separador1, font=self.entry_style, width=10)
-        entry_horario_sessao.grid(column=3, row=1, padx=self.paddingx)
-
-        separador2 = ttk.Separator(janela, orient="horizontal")
-        separador2.pack(fill="x", padx=self.paddingx, pady=self.paddingy)
-
-        lb_nome = Label(separador2, text="Nome", font=self.lb_style)
-        lb_nome.grid(column=0, row=0, sticky="W", padx=self.paddingx)
-        entry_nome = Entry(separador2, font=self.entry_style, width=89)
-        entry_nome.grid(column=0, row=1, padx=self.paddingx)
-
-        separador3 = ttk.Separator(janela, orient="horizontal")
-        separador3.pack(fill="x", padx=self.paddingx, pady=self.paddingy)
-
-        tipos_possiveis = ["Gestante", "Criança"]
-
-        # mudar para opções
-        lb_tipo_sessao = Label(separador3, text="tipo da Sessão", font=self.lb_style)
-        lb_tipo_sessao.grid(column=0, row=0, sticky="W", padx=self.paddingx)
-        cb_tipo_sessao = Entry(separador3, font=self.entry_style, width=20)
-        #cb_tipo_sessao = ttk.Combobox(separador1, font=self.entry_style, width=15, values=tipos_possiveis, state="readonly")
-        #cb_tipo_sessao.set("Ativo")
-        cb_tipo_sessao.grid(column=0, row=1, padx=self.paddingx,sticky="W")
-
-        planos_possiveis = ["Gestante", "Criança"]
-
-        lb_plano = Label(separador3, text="Plano", font=self.lb_style)
-        lb_plano.grid(column=1, row=0, sticky="W", padx=self.paddingx)
-        cb_plano = Entry(separador3, font=self.entry_style, width=20)
-        #cb_plano = ttk.Combobox(separador1, font=self.entry_style, width=15, values=planos_possiveis, state="readonly")
-        #cb_plano.set("Ativo")
-        cb_plano.grid(column=1, row=1, padx=self.paddingx,sticky="W")
-
-        separador4 = ttk.Separator(janela, orient="horizontal")
-        separador4.pack(fill="x", padx=self.paddingx, pady=self.paddingy)
-
-        opcoes_pagamento = ['DINHEIRO','PIX', 'CARTÃO DÉBITO', 'CARTÃO CRÉDITO', 'OUTRO']
-
-        lb_condicao_pagamento1 = Label(separador4, text="Condicao Pagamento", font=self.lb_style)
-        lb_condicao_pagamento1.grid(column=0, row=0, sticky="W", padx=self.paddingx, columnspan=2)
-
-        lb_valor = Label(separador4, text="Valor", font=self.lb_style)
-        lb_valor.grid(column=3, row=0, sticky="W", padx=self.paddingx, columnspan=2)
-
-        lb_total = Label(separador4, text="Total", font=self.lb_style)
-        lb_total.grid(column=5, row=0, sticky="W", padx=self.paddingx)
-
-        entry_total = Entry(separador4, font=self.entry_style, width=10,state=DISABLED)
-
-        lb_condicao_pagamento_numero1 = Label(separador4, text="1º", font=self.lb_style)
-        lb_condicao_pagamento_numero1.grid(column=0, row=1, padx=self.paddingx,pady=self.paddingy)
-        cb_condicao_pagamento1 = ttk.Combobox(separador4, font=self.entry_style, width=10, values=opcoes_pagamento, state="readonly")
-        cb_condicao_pagamento1.set("DINHEIRO")
-        cb_condicao_pagamento1.grid(column=1, row=1, padx=self.paddingx,pady=self.paddingy)
-        entry_valor1 = Entry(separador4, font=self.entry_style, width=10)
-        entry_valor1.grid(column=3, row=1, padx=self.paddingx,pady=self.paddingy)
-
-        lb_condicao_pagamento_numero2 = Label(separador4, text="2º", font=self.lb_style)
-        lb_condicao_pagamento_numero2.grid(column=0, row=2, padx=self.paddingx,pady=self.paddingy)
-        cb_condicao_pagamento2 = ttk.Combobox(separador4, font=self.entry_style, width=10, values=opcoes_pagamento, state="readonly")
-        cb_condicao_pagamento2.set("DINHEIRO")
-        cb_condicao_pagamento2.grid(column=1, row=2, padx=self.paddingx,pady=self.paddingy)
-        entry_valor2 = Entry(separador4, font=self.entry_style, width=10)
-        entry_valor2.grid(column=3, row=2, padx=self.paddingx,pady=self.paddingy)
-
-
-        lb_condicao_pagamento_numero3 = Label(separador4, text="3º", font=self.lb_style)
-        lb_condicao_pagamento_numero3.grid(column=0, row=3, padx=self.paddingx,pady=self.paddingy)
-        cb_condicao_pagamento3 = ttk.Combobox(separador4, font=self.entry_style, width=10, values=opcoes_pagamento, state="readonly")
-        cb_condicao_pagamento3.set("DINHEIRO")
-        cb_condicao_pagamento3.grid(column=1, row=3, padx=self.paddingx,pady= self.paddingy)
-        entry_valor3 = Entry(separador4, font=self.entry_style, width=10)
-        entry_valor3.grid(column=3, row=3, padx=self.paddingx,pady=self.paddingy)
-
-        def soma_condicao_pagamento(event):
-            valor1 = entry_valor1.get()
-            valor2 = entry_valor2.get()
-            valor3 = entry_valor3.get()
-
-            if valor1 == '':
-                valor1 = "0"
-                valor1=float(valor1)
-            else:
-                valor1=float(valor1)
-
-            if valor2 == '':
-                valor2 = "0"
-                valor2=float(valor2)
-            else:
-                valor2=float(valor2)
-
-            if valor3 == '':
-                valor3 = "0"
-                valor3=float(valor3)
-            else:
-                valor3=float(valor3)
-
-            total = str(valor1+valor2+valor3)
-
-            self.insert_entry_desabilitado(entry_total, total, 0)
-
-            return
-
-
-        entry_valor1.bind("<FocusOut>",soma_condicao_pagamento)
-        entry_valor2.bind("<FocusOut>",soma_condicao_pagamento)
-        entry_valor3.bind("<FocusOut>",soma_condicao_pagamento)
-
-        entry_total.grid(column=5, row=3, padx=self.paddingx,pady=self.paddingy)
-
-        separador5 = ttk.Separator(janela, orient="horizontal")
-        separador5.pack(fill="x", padx=self.paddingx, pady=self.paddingy)
-
-        lb_observacoes = Label(separador5, text="Observações", font=self.lb_style)
-        lb_observacoes.grid(column=0, row=0, padx=self.paddingx,pady=self.paddingy,sticky="W")
-        textarea_observacoes = Text(separador5, font=self.entry_style, height=6)
-        textarea_observacoes.grid(column=0, row=1, padx=self.paddingx,pady= self.paddingy,sticky="W")
-
-        separador9 = ttk.Separator(janela, orient="horizontal")
-        separador9.pack(fill="x", pady=10, padx=10)
-
-        grava_db_trabalho_args = partial(grava_db_trabalhos)
-        grava = Button(separador9, text="GRAVA", font=self.lb_style, command=grava_db_trabalho_args)
-        grava.grid(column=0, row=0, sticky="WS")
-
-        cancela = Button(separador9, text="CANCELA", font=self.lb_style)
-        cancela.grid(column=1, row=0, sticky="WS")
+        for selected_item in self.lista_de_trabalhos.selection():
+            item = self.lista_de_trabalhos.item(selected_item)
+            record = item['values']
+            pessoa = pega_um_item_trabalho(record[0])
+            return pessoa
 
     def novo_plano(self):
         pass
@@ -517,7 +372,7 @@ class Funcs():
         cancela.grid(column=1, row=0, sticky="WS")
 
     def altera_cadastro_pessoa(self):
-        pessoa = self.seleciona_item()
+        pessoa = self.seleciona_item_pessoas()
 
         print(pessoa)
         janela = Toplevel()
@@ -736,7 +591,7 @@ class Funcs():
         print("Tela ainda não cadastrada")
         pass
     def exclui_cadastro_pessoa(self):
-        pessoa = self.seleciona_item()
+        pessoa = self.seleciona_item_pessoas()
         id = pessoa[0][0]
         deleta_db_pessoa(id)
     def exclui_cadastro_trabalho(self):
@@ -754,6 +609,7 @@ class Aplicacao(Funcs):
         self.paddingx = 10
         self.paddingy = 7
         self.entry_style = ("monospace", 14)
+        self.btn_style = ("monospace", 12)
         self.data = date.today().strftime('%d/%m/%Y')
         self.lista_de_pessoas = None
 
@@ -949,6 +805,213 @@ class Aplicacao(Funcs):
         rb_exato.grid(column=3, row=1, sticky="E")
 
         rb_aproximacao.select()
+    def buscar_pessoa_trabalho(self,janela_trabalhos):
+        self.janela_pessoas(btn_grava_escolhe = "escolhe",janela_trabalhos = janela_trabalhos)
+
+    def set_codigo_nome_trabalho(self,codigo,nome,janela_trabalhos):
+        janela_trabalhos.destroy()
+        self.codigo_pessoa_trabalho = codigo
+        self.nome_pessoa_trabalho = nome
+        self.novo_cadastro_trabalho()
+
+    def novo_cadastro_trabalho(self,argumentos = None):
+        janela = Toplevel()
+        janela.focus_force()
+
+        janela.title("Cadastro Trabalho")
+
+        self.configurar_janela_auxiliar(janela)
+
+        separador1 = ttk.Separator(janela, orient="horizontal")
+        separador1.pack(fill="x", padx=self.paddingx, pady=self.paddingy)
+
+        codigo = pega_ultimo_id("sessoes")
+
+        lb_codigo = Label(separador1, text="Código", font=self.lb_style)
+        lb_codigo.grid(column=0, row=0, sticky="NW", padx=self.paddingx)
+        entry_codigo = Entry(separador1, font=self.entry_style, width=8, state=DISABLED)
+        entry_codigo.grid(column=0, row=1, padx=self.paddingx, sticky="NW")
+
+        self.insert_entry_desabilitado(entry_codigo,codigo)
+
+        lb_cadastro = Label(separador1, text="Cadastro", font=self.lb_style)
+        lb_cadastro.grid(column=1, row=0, sticky="W", padx=self.paddingx)
+        entry_cadastro = Entry(separador1, font=self.entry_style, width=10)
+        entry_cadastro.insert(END,self.data_sistema)
+        entry_cadastro.grid(column=1, row=1, padx=self.paddingx)
+
+        lb_data_sessao = Label(separador1, text="Data da Sessão", font=self.lb_style)
+        lb_data_sessao.grid(column=2, row=0, sticky="W", padx=self.paddingx)
+        entry_data_sessao = Entry(separador1, font=self.entry_style, width=10)
+        entry_data_sessao.grid(column=2, row=1, padx=self.paddingx)
+
+        lb_horario_sessao = Label(separador1, text="Horário da Sessão", font=self.lb_style)
+        lb_horario_sessao.grid(column=3, row=0, sticky="W", padx=self.paddingx)
+        entry_horario_sessao = Entry(separador1, font=self.entry_style, width=10)
+        entry_horario_sessao.grid(column=3, row=1, padx=self.paddingx)
+
+        separador2 = ttk.Separator(janela, orient="horizontal")
+        separador2.pack(fill="x", padx=self.paddingx, pady=self.paddingy)
+
+        lb_nome = Label(separador2, text="Nome", font=self.lb_style)
+        lb_nome.grid(column=1, row=0, sticky="W", padx=self.paddingx)
+        entry_nome = Entry(separador2, font=self.entry_style, width=89)
+        entry_nome.grid(column=1, row=1, padx=self.paddingx)
+
+        separador3 = ttk.Separator(janela, orient="horizontal")
+        separador3.pack(fill="x", padx=self.paddingx, pady=self.paddingy)
+
+        # mudar para opções
+        lb_tipo_sessao = Label(separador3, text="tipo da Sessão", font=self.lb_style)
+        lb_tipo_sessao.grid(column=1, row=0, sticky="W", padx=self.paddingx)
+        cb_tipo_sessao = Entry(separador3, font=self.entry_style, width=20, state=DISABLED)
+        #cb_tipo_sessao = ttk.Combobox(separador1, font=self.entry_style, width=15, values=tipos_possiveis, state="readonly")
+        #cb_tipo_sessao.set("Ativo")
+        cb_tipo_sessao.grid(column=1, row=1, padx=self.paddingx,sticky="W")
+
+        lb_plano = Label(separador3, text="Plano", font=self.lb_style)
+        lb_plano.grid(column=3, row=0, sticky="W", padx=self.paddingx)
+        cb_plano = Entry(separador3, font=self.entry_style, width=20, state=DISABLED)
+        #cb_plano = ttk.Combobox(separador1, font=self.entry_style, width=15, values=planos_possiveis, state="readonly")
+        #cb_plano.set("Ativo")
+        cb_plano.grid(column=3, row=1, padx=self.paddingx,sticky="W")
+
+        separador4 = ttk.Separator(janela, orient="horizontal")
+        separador4.pack(fill="x", padx=self.paddingx, pady=self.paddingy)
+
+        opcoes_pagamento = ['DINHEIRO','PIX', 'CARTÃO DÉBITO', 'CARTÃO CRÉDITO', 'OUTRO']
+
+        lb_condicao_pagamento1 = Label(separador4, text="Condicao Pagamento", font=self.lb_style)
+        lb_condicao_pagamento1.grid(column=0, row=0, sticky="W", padx=self.paddingx, columnspan=2)
+
+        lb_valor = Label(separador4, text="Valor", font=self.lb_style)
+        lb_valor.grid(column=3, row=0, sticky="W", padx=self.paddingx, columnspan=2)
+
+        lb_total = Label(separador4, text="Total", font=self.lb_style)
+        lb_total.grid(column=5, row=0, sticky="W", padx=self.paddingx)
+
+        entry_total = Entry(separador4, font=self.entry_style, width=10,state=DISABLED)
+
+        lb_condicao_pagamento_numero1 = Label(separador4, text="1º", font=self.lb_style)
+        lb_condicao_pagamento_numero1.grid(column=0, row=1, padx=self.paddingx,pady=self.paddingy)
+        cb_condicao_pagamento1 = ttk.Combobox(separador4, font=self.entry_style, width=10, values=opcoes_pagamento, state="readonly")
+        cb_condicao_pagamento1.set("DINHEIRO")
+        cb_condicao_pagamento1.grid(column=1, row=1, padx=self.paddingx,pady=self.paddingy)
+        entry_valor1 = Entry(separador4, font=self.entry_style, width=10)
+        entry_valor1.grid(column=3, row=1, padx=self.paddingx,pady=self.paddingy)
+
+        lb_condicao_pagamento_numero2 = Label(separador4, text="2º", font=self.lb_style)
+        lb_condicao_pagamento_numero2.grid(column=0, row=2, padx=self.paddingx,pady=self.paddingy)
+        cb_condicao_pagamento2 = ttk.Combobox(separador4, font=self.entry_style, width=10, values=opcoes_pagamento, state="readonly")
+        cb_condicao_pagamento2.set("DINHEIRO")
+        cb_condicao_pagamento2.grid(column=1, row=2, padx=self.paddingx,pady=self.paddingy)
+        entry_valor2 = Entry(separador4, font=self.entry_style, width=10)
+        entry_valor2.grid(column=3, row=2, padx=self.paddingx,pady=self.paddingy)
+
+
+        lb_condicao_pagamento_numero3 = Label(separador4, text="3º", font=self.lb_style)
+        lb_condicao_pagamento_numero3.grid(column=0, row=3, padx=self.paddingx,pady=self.paddingy)
+        cb_condicao_pagamento3 = ttk.Combobox(separador4, font=self.entry_style, width=10, values=opcoes_pagamento, state="readonly")
+        cb_condicao_pagamento3.set("DINHEIRO")
+        cb_condicao_pagamento3.grid(column=1, row=3, padx=self.paddingx,pady= self.paddingy)
+        entry_valor3 = Entry(separador4, font=self.entry_style, width=10)
+        entry_valor3.grid(column=3, row=3, padx=self.paddingx,pady=self.paddingy)
+
+        def soma_condicao_pagamento(event):
+            valor1 = entry_valor1.get()
+            valor2 = entry_valor2.get()
+            valor3 = entry_valor3.get()
+
+            if valor1 == '':
+                valor1 = "0"
+                valor1=float(valor1)
+            else:
+                valor1=float(valor1)
+
+            if valor2 == '':
+                valor2 = "0"
+                valor2=float(valor2)
+            else:
+                valor2=float(valor2)
+
+            if valor3 == '':
+                valor3 = "0"
+                valor3=float(valor3)
+            else:
+                valor3=float(valor3)
+
+            total = str(valor1+valor2+valor3)
+
+            self.insert_entry_desabilitado(entry_total, total, 0)
+
+            return
+
+
+        entry_valor1.bind("<FocusOut>",soma_condicao_pagamento)
+        entry_valor2.bind("<FocusOut>",soma_condicao_pagamento)
+        entry_valor3.bind("<FocusOut>",soma_condicao_pagamento)
+
+        entry_total.grid(column=5, row=3, padx=self.paddingx,pady=self.paddingy)
+
+        separador5 = ttk.Separator(janela, orient="horizontal")
+        separador5.pack(fill="x", padx=self.paddingx, pady=self.paddingy)
+
+        lb_observacoes = Label(separador5, text="Observações", font=self.lb_style)
+        lb_observacoes.grid(column=0, row=0, padx=self.paddingx,pady=self.paddingy,sticky="W")
+        textarea_observacoes = Text(separador5, font=self.entry_style, height=6)
+        textarea_observacoes.grid(column=0, row=1, padx=self.paddingx,pady= self.paddingy,sticky="W")
+        def buscar_pessoa_trabalho_args():
+            argumentos = []
+            argumentos.append(entry_codigo.get())
+            argumentos.append(entry_cadastro.get())
+            argumentos.append(entry_data_sessao.get())
+            argumentos.append(entry_horario_sessao.get())
+            argumentos.append(entry_nome.get())
+            argumentos.append(self.codigo_pessoa_trabalho)
+            argumentos.append(cb_tipo_sessao.get())
+            argumentos.append(cb_plano.get())
+            argumentos.append(entry_valor1.get())
+            argumentos.append(entry_valor2.get())
+            argumentos.append(entry_valor3.get())
+            argumentos.append(entry_total.get())
+            argumentos.append(textarea_observacoes.get("1.0","end-1c"))
+            self.argumentos = argumentos
+
+            self.buscar_pessoa_trabalho(janela)
+        bt_busca_pessoa = Button(separador2, text="busca", font=self.btn_style, command=buscar_pessoa_trabalho_args)
+        bt_busca_pessoa.grid(column=0, row=1)
+
+        bt_busca_sessao = Button(separador3, text="busca", font=self.btn_style, command=self.buscar_sessao_trabalho)
+        bt_busca_sessao.grid(column=0, row=1)
+
+        bt_busca_plano = Button(separador3, text="busca", font=self.btn_style, command=self.buscar_plano_trabalho)
+        bt_busca_plano.grid(column=2, row=1)
+
+        separador9 = ttk.Separator(janela, orient="horizontal")
+        separador9.pack(fill="x", pady=10, padx=10)
+
+        if self.argumentos is not None:
+            self.insert_entry_desabilitado(entry_codigo,self.argumentos[0])
+            self.set_text_entry(entry_cadastro,self.argumentos[1])
+            self.set_text_entry(entry_data_sessao,self.argumentos[2])
+            self.set_text_entry(entry_horario_sessao,self.argumentos[3])
+            self.set_text_entry(entry_nome,self.nome_pessoa_trabalho)
+            self.set_text_entry(cb_tipo_sessao,self.argumentos[6])
+            self.set_text_entry(cb_plano,self.argumentos[7])
+            self.set_text_entry(entry_valor1,self.argumentos[8])
+            self.set_text_entry(entry_valor2,self.argumentos[9])
+            self.set_text_entry(entry_valor3,self.argumentos[10])
+            self.insert_entry_desabilitado(entry_total,self.argumentos[11])
+            self.set_textarea(textarea_observacoes,self.argumentos[12])
+
+
+        grava_db_trabalho_args = partial(grava_db_trabalhos,entry_codigo.get,entry_cadastro.get,entry_data_sessao.get,entry_horario_sessao.get,self.codigo_pessoa_trabalho,entry_nome.get,cb_tipo_sessao.get,cb_plano.get,entry_valor1.get,entry_valor2.get,entry_valor3.get,entry_total.get,textarea_observacoes.get)
+
+        grava = Button(separador9, text="GRAVA", font=self.lb_style, command=grava_db_trabalho_args)
+        grava.grid(column=0, row=0, sticky="WS")
+
+        cancela = Button(separador9, text="CANCELA", font=self.lb_style)
+        cancela.grid(column=1, row=0, sticky="WS")
 
     def cria_lista_de_pessoas(self,janela):
         lista = pega_todas_pessoas_lista()
@@ -1111,7 +1174,7 @@ class Aplicacao(Funcs):
 
         # entry_numero.grid(column=3, row=0, padx=self.paddingx, sticky="ew")
 
-    def janela_pessoas(self):
+    def janela_pessoas(self,btn_grava_escolhe = None, janela_trabalhos = None):
         janela_pessoas = Toplevel()
 
         self.configurar_janela_auxiliar(janela_pessoas)
@@ -1143,6 +1206,20 @@ class Aplicacao(Funcs):
                 self.insert_entry_desabilitado(entry_fone3, pessoa[0][20])
                 self.insert_entry_desabilitado(entry_endereco, pessoa[0][9])
                 self.insert_entry_desabilitado(entry_numero, pessoa[0][10])
+
+        if btn_grava_escolhe == "escolhe":
+            print("definido botão escolhe")
+            def funcao(event):
+                pessoa = None
+                for selected_item in self.lista_de_pessoas.selection():
+                    item = self.lista_de_pessoas.item(selected_item, 'values')
+                    pessoa = pega_um_item_pessoa(item[0])
+                    self.codigo_pessoa_trabalho = pessoa[0][0]
+                    self.set_codigo_nome_trabalho(pessoa[0][0],pessoa[0][2],janela_trabalhos)
+                    janela_pessoas.destroy()
+                    return False
+
+            self.lista_de_pessoas.bind("<Double-1>", funcao)
 
         self.lista_de_pessoas.bind("<Button-1>", adiciona_informacoes_adicionais)
 
@@ -1190,8 +1267,14 @@ class Aplicacao(Funcs):
 
         janela_financeiro.title("Controle Financeiro")
 
-
-
+    def set_text_entry(self, entry, texto):
+        entry.delete(0, END)
+        entry.insert(0, texto)
+        return
+    def set_textarea(self, entry, texto):
+        entry.delete(1.0, "end-1c")
+        entry.insert("end-1c", texto)
+        return
 
 '''def barra_menu(janela):
     menus = Menu(janela)
