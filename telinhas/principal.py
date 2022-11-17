@@ -1067,7 +1067,10 @@ class Aplicacao(Funcs):
         bt_busca_pessoa = Button(separador2, text="busca", font=self.btn_style, command=buscar_pessoa_trabalho_args)
         bt_busca_pessoa.grid(column=0, row=1)
 
-        buscar_tipos_sessao_trabalho_args = partial(self.buscar_tipos_sessao_trabalho, "escolha")
+        def buscar_tipos_sessao_trabalho_args():
+
+          self.buscar_tipos_sessao_trabalho(tipo = "escolha")
+
         bt_busca_sessao = Button(separador3, text="busca", font=self.btn_style, command=buscar_tipos_sessao_trabalho_args)
         bt_busca_sessao.grid(column=0, row=1)
 
@@ -1261,6 +1264,7 @@ class Aplicacao(Funcs):
         # entry_numero.grid(column=3, row=0, padx=self.paddingx, sticky="ew")
 
     def buscar_tipos_sessao_trabalho(self, tipo = None):
+
         janela = Toplevel()
         self.configurar_janela_auxiliar2(janela)
         janela.title("Planos")
@@ -1274,7 +1278,6 @@ class Aplicacao(Funcs):
 
         separador2 = ttk.Separator(janela, orient="horizontal")
         separador2.pack(fill="x")
-
 
         lista_planos = ttk.Treeview(separador2, columns=("col1", "col2"), padding=(0,0,0,25))
         lista_planos.heading("#0", text="")
@@ -1305,7 +1308,7 @@ class Aplicacao(Funcs):
                     item = self.lista_planos.item(selected_item, 'values')
                     plano = pega_um_item_plano(item[0])
                     self.codigo_pessoa_trabalho = plano[0][0]
-                    self.nome_plano_trabalho(plano[0][0], plano[0][1])
+                    self.nome_plano_trabalho = plano[0][1]
                     janela.destroy()
                     return False
 
