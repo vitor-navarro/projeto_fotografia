@@ -142,6 +142,17 @@ def pega_todas_trabalhos_lista():
     desconecta_db(banco)
 
     return lista
+def pega_todos_tipos_sessoes_lista():
+    banco, cursor = conecta_db()
+    #retorna em ordem alfabética, modificar isso com as filtragens
+    lista_db = cursor.execute("SELECT id, nome_plano FROM planos ORDER BY id")
+    lista = []
+    for i in lista_db:
+        lista.append(i)
+
+    desconecta_db(banco)
+
+    return lista
 
 def grava_db_trabalhos(entry_codigo,entry_cadastro,entry_data_sessao,entry_horario_sessao,codigo_pessoa_trabalho,entry_nome,cb_tipo_sessao,cb_plano,entry_valor1,entry_valor2,entry_valor3,entry_total,textarea_observacoes):
     entry_codigo = entry_codigo()
@@ -176,6 +187,23 @@ def pega_um_item_trabalho(item):
     desconecta_db(banco)
     return trabalho
 
+def grava_db_planos(entry_codigo,entry_cadastro,entry_nome,entry_descricao,entry_valor_base,entry_quantidade_fotos,entry_valor_foto_extra):
+    entry_codigo= entry_codigo()
+    entry_cadastro= entry_cadastro()
+    entry_nome= entry_nome()
+    entry_descricao= entry_descricao()
+    entry_valor_base= float(entry_valor_base())
+    entry_quantidade_fotos= int(entry_quantidade_fotos())
+    entry_valor_foto_extra= float(entry_valor_foto_extra())
+
+    banco, cursor = conecta_db()
+
+    cursor.execute(f"INSERT INTO planos (nome_plano, quantidade_fotos, valor, valor_foto_extra,descricao, data_criacao) VALUES (?,?,?,?,?,?)",(entry_nome,entry_quantidade_fotos,entry_valor_base,entry_valor_foto_extra,entry_descricao,entry_cadastro))
+    cursor.execute("select * from planos")
+    print(cursor.fetchall())
+    banco.commit()
+
+    desconecta_db(banco)
 def desconecta_db(banco):
     banco.close()
 

@@ -3,7 +3,7 @@ from tkinter import *
 from tkinter import ttk
 from datetime import date
 from modulos.database import grava_db_pessoa, grava_db_trabalhos, pega_ultimo_id, pega_todas_pessoas_lista, \
-    pega_um_item_pessoa, altera_db_pessoa, deleta_db_pessoa, pega_um_item_trabalho
+    pega_um_item_pessoa, altera_db_pessoa, deleta_db_pessoa, pega_um_item_trabalho, pega_todos_tipos_sessoes_lista,grava_db_planos
 from functools import partial
 class Funcs():
     def __init__(self):
@@ -14,6 +14,7 @@ class Funcs():
         self.data_sistema = date.today().strftime('%d/%m/%Y')
         self.lista_de_pessoas = None
         self.lista_de_trabalhos = None
+        self.lista_planos = None
         self.argumentos = None
         self.nome_pessoa_trabalho = None
         self.codigo_pessoa_trabalho = None
@@ -40,13 +41,29 @@ class Funcs():
 
         screen_width = janela.winfo_screenwidth()
         screen_height = janela.winfo_screenheight()
-#modificar para ficar no meio da tela
-        x = int((screen_width / 2) - (964 / 2) - 50)
-        y = int((screen_height / 2) - (580 / 2) - 50)
+        #modificar para ficar no meio da tela.
+
+        x = int(screen_width/4)
+        y = int(screen_height/4)
 
         janela.geometry("+%d+%d" % (x, y))
 
         janela.geometry("512x312")
+        janela.resizable(False,False)
+
+    def configurar_janela_auxiliar3(self,janela):
+        janela.update_idletasks()
+
+        screen_width = janela.winfo_screenwidth()
+        screen_height = janela.winfo_screenheight()
+        #modificar para ficar no meio da tela.
+
+        x = int(screen_width/6)
+        y = int(screen_height/6)
+
+        janela.geometry("+%d+%d" % (x, y))
+
+        janela.geometry("768x468")
         janela.resizable(False,False)
 
     def insert_entry_desabilitado(self, entry, valor,posicao = 0):
@@ -56,8 +73,80 @@ class Funcs():
         entry.delete(0, END)
         entry.insert(posicao, valor)
         entry.config(state="disabled")
-    def buscar_sessao_trabalho(self):
-        print("busca ainda não implementada")
+
+    def novo_cadastro_plano(self):
+        janela = Toplevel()
+        self.configurar_janela_auxiliar3(janela)
+        janela.title("Cadastro Planos")
+
+        codigo = pega_ultimo_id("planos")
+
+        separador1 = ttk.Separator(janela, orient="horizontal")
+        separador1.pack(fill="x", padx=self.paddingx, pady=self.paddingy)
+
+        lb_codigo = Label(separador1, text="Código", font=self.lb_style)
+        lb_codigo.grid(column=0, row=0, sticky="NW", padx=self.paddingx)
+        entry_codigo = Entry(separador1, font=self.entry_style, width=8, state=DISABLED)
+        entry_codigo.grid(column=0, row=1, padx=self.paddingx, sticky="NW")
+        self.insert_entry_desabilitado(entry_codigo, codigo)
+
+        lb_cadastro = Label(separador1, text="Cadastro", font=self.lb_style)
+        lb_cadastro.grid(column=1, row=0, sticky="W", padx=self.paddingx)
+        entry_cadastro = Entry(separador1, font=self.entry_style, width=10)
+        entry_cadastro.insert(END, self.data_sistema)
+        entry_cadastro.grid(column=1, row=1, padx=self.paddingx)
+
+        separador2 = ttk.Separator(janela, orient="horizontal")
+        separador2.pack(fill="x", padx=self.paddingx, pady=self.paddingy)
+
+        lb_nome = Label(separador2, text="Nome*", font=self.lb_style)
+        lb_nome.grid(column=0, row=0, sticky="W", padx=self.paddingx)
+        entry_nome = Entry(separador2, font=self.entry_style,width=89)
+        entry_nome.grid(column=0, row=1, padx=self.paddingx)
+
+        separador3 = ttk.Separator(janela, orient="horizontal")
+        separador3.pack(fill="x", padx=self.paddingx, pady=self.paddingy)
+
+        lb_descricao = Label(separador3, text="Descrição", font=self.lb_style)
+        lb_descricao.grid(column=0, row=0, sticky="W", padx=self.paddingx)
+        entry_descricao = Entry(separador3, font=self.entry_style,width=89)
+        entry_descricao.grid(column=0, row=1, padx=self.paddingx)
+
+        separador4 = ttk.Separator(janela, orient="horizontal")
+        separador4.pack(fill="x", padx=self.paddingx, pady=self.paddingy)
+
+        lb_valor_base = Label(separador4, text="Valor do Plano", font=self.lb_style)
+        lb_valor_base.grid(column=0, row=0, sticky="W", padx=self.paddingx)
+        entry_valor_base = Entry(separador4, font=self.entry_style)
+        entry_valor_base.grid(column=0, row=1, padx=self.paddingx)
+
+        separador5 = ttk.Separator(janela, orient="horizontal")
+        separador5.pack(fill="x", padx=self.paddingx, pady=self.paddingy)
+
+        lb_quantidade_fotos = Label(separador5, text="Quantidade de fotos", font=self.lb_style)
+        lb_quantidade_fotos.grid(column=1, row=0, sticky="W", padx=self.paddingx)
+        entry_quantidade_fotos = Entry(separador5, font=self.entry_style)
+        entry_quantidade_fotos.grid(column=1, row=1, padx=self.paddingx)
+
+        lb_valor_foto_extra = Label(separador5, text="Valor Fotos extra", font=self.lb_style)
+        lb_valor_foto_extra.grid(column=2, row=0, sticky="W", padx=self.paddingx)
+        entry_valor_foto_extra = Entry(separador5, font=self.entry_style)
+        entry_valor_foto_extra.grid(column=2, row=1, padx=self.paddingx)
+
+        separador5 = ttk.Separator(janela, orient="horizontal")
+        separador5.pack(fill="x", padx=self.paddingx, pady=self.paddingy,side=BOTTOM)
+
+        grava_db_pessoa_args = partial(grava_db_planos,entry_codigo.get,entry_cadastro.get,entry_nome.get,entry_descricao.get,entry_valor_base.get,entry_quantidade_fotos.get,entry_valor_foto_extra.get)
+        grava = Button(separador5, text="GRAVA", font=self.lb_style, command=grava_db_pessoa_args)
+        grava.grid(column=0, row=0, sticky="WS")
+
+        cancela = Button(separador5, text="CANCELA", font=self.lb_style)
+        cancela.grid(column=1, row=0, sticky="WS")
+    def altera_cadastro_plano(self):
+        pass
+    def exclui_cadastro_plano(self):
+        pass
+
     def buscar_plano_trabalho(self):
         print("busca ainda não implementada")
 
@@ -263,13 +352,7 @@ class Funcs():
             pessoa = pega_um_item_trabalho(record[0])
             return pessoa
 
-    def novo_plano(self):
-        pass
 
-    def alterar_plano(self):
-        pass
-    def excluir_plano(self):
-        pass
     def lista_planos(self):
         janela = Toplevel()
 
@@ -981,7 +1064,7 @@ class Aplicacao(Funcs):
         bt_busca_pessoa = Button(separador2, text="busca", font=self.btn_style, command=buscar_pessoa_trabalho_args)
         bt_busca_pessoa.grid(column=0, row=1)
 
-        bt_busca_sessao = Button(separador3, text="busca", font=self.btn_style, command=self.buscar_sessao_trabalho)
+        bt_busca_sessao = Button(separador3, text="busca", font=self.btn_style, command=self.buscar_tipos_sessao_trabalho)
         bt_busca_sessao.grid(column=0, row=1)
 
         bt_busca_plano = Button(separador3, text="busca", font=self.btn_style, command=self.buscar_plano_trabalho)
@@ -1041,7 +1124,6 @@ class Aplicacao(Funcs):
 
         self.lista_de_pessoas = lista_pessoas
     def lista_de_trabalho(self,janela):
-        trabalho = [1, "vitor", "091.861.449-01", "são jorge do ivai"]
 
         lista_pessoas = ttk.Treeview(janela, columns=("col1", "col2", "col3","col4","col5","col6"))
         lista_pessoas.heading("#0", text="Cod")
@@ -1174,6 +1256,44 @@ class Aplicacao(Funcs):
 
         # entry_numero.grid(column=3, row=0, padx=self.paddingx, sticky="ew")
 
+    def buscar_tipos_sessao_trabalho(self):
+        janela = Toplevel()
+        self.configurar_janela_auxiliar2(janela)
+        janela.title("Planos")
+
+        separador1 = ttk.Separator(janela, orient="horizontal")
+        separador1.pack(fill="x", pady=self.paddingy)
+
+        funcoes = [self.novo_cadastro_plano, self.altera_cadastro_plano, self.exclui_cadastro_plano]
+
+        barra_alteracoes = self.barra_alteracoes(separador1, funcoes)
+
+        separador2 = ttk.Separator(janela, orient="horizontal")
+        separador2.pack(fill="x")
+
+
+        lista_planos = ttk.Treeview(separador2, columns=("col1", "col2"), padding=(0,0,0,25))
+        lista_planos.heading("#0", text="")
+        lista_planos.heading("#1", text="Cod")
+        lista_planos.heading("#2", text="Nome")
+
+        lista_planos.column("#0", width=0)
+        lista_planos.column("#1", width=50)
+        lista_planos.column("#2", width=442)
+
+        lista = pega_todos_tipos_sessoes_lista()
+
+        for i in lista:
+         lista_planos.insert("",END,values=i)
+
+        lista_planos.grid(column=0, row=0, sticky="WSNE")
+
+        barra_rolagem = Scrollbar(separador2, orient="vertical")
+        lista_planos.configure(yscrollcommand=barra_rolagem)
+        barra_rolagem.grid(column=1, row=0, sticky="WSNE")
+
+        self.lista_planos = lista_planos
+
     def janela_pessoas(self,btn_grava_escolhe = None, janela_trabalhos = None):
         janela_pessoas = Toplevel()
 
@@ -1208,7 +1328,6 @@ class Aplicacao(Funcs):
                 self.insert_entry_desabilitado(entry_numero, pessoa[0][10])
 
         if btn_grava_escolhe == "escolhe":
-            print("definido botão escolhe")
             def funcao(event):
                 pessoa = None
                 for selected_item in self.lista_de_pessoas.selection():
@@ -1235,7 +1354,7 @@ class Aplicacao(Funcs):
 
         barra_alteracoes = self.barra_alteracoes(janela_trabalhos,funcoes)
 
-        bt_planos = Button(barra_alteracoes, text="Planos",padx=5,pady=10,font=("monospace", 10), command=self.lista_planos)
+        bt_planos = Button(barra_alteracoes, text="Planos",padx=5,pady=10,font=("monospace", 10), command=self.buscar_tipos_sessao_trabalho)
         bt_planos.pack(side = LEFT, padx=self.paddingx+20)
 
         barra_filtros = ttk.Separator(janela_trabalhos, orient="horizontal")
