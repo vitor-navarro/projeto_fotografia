@@ -3,7 +3,8 @@ from tkinter import *
 from tkinter import ttk
 from datetime import date
 from modulos.database import grava_db_pessoa, grava_db_trabalhos, pega_ultimo_id, pega_todas_pessoas_lista, \
-    pega_um_item_pessoa, altera_db_pessoa, deleta_db_pessoa, pega_um_item_trabalho, pega_todos_tipos_sessoes_lista,grava_db_planos
+    pega_um_item_pessoa, altera_db_pessoa, deleta_db_pessoa, pega_um_item_trabalho, pega_todos_tipos_sessoes_lista, \
+    grava_db_planos, pega_um_item_plano
 from functools import partial
 class Funcs():
     def __init__(self):
@@ -18,6 +19,8 @@ class Funcs():
         self.argumentos = None
         self.nome_pessoa_trabalho = None
         self.codigo_pessoa_trabalho = None
+        self.codigo_plano_trabalho = None
+        self.nome_plano_trabalho = None
 
     def sem_comando(self):
         print("Tela ainda não cadastrada")
@@ -1064,7 +1067,8 @@ class Aplicacao(Funcs):
         bt_busca_pessoa = Button(separador2, text="busca", font=self.btn_style, command=buscar_pessoa_trabalho_args)
         bt_busca_pessoa.grid(column=0, row=1)
 
-        bt_busca_sessao = Button(separador3, text="busca", font=self.btn_style, command=self.buscar_tipos_sessao_trabalho)
+        buscar_tipos_sessao_trabalho_args = partial(self.buscar_tipos_sessao_trabalho, "escolha")
+        bt_busca_sessao = Button(separador3, text="busca", font=self.btn_style, command=buscar_tipos_sessao_trabalho_args)
         bt_busca_sessao.grid(column=0, row=1)
 
         bt_busca_plano = Button(separador3, text="busca", font=self.btn_style, command=self.buscar_plano_trabalho)
@@ -1256,7 +1260,7 @@ class Aplicacao(Funcs):
 
         # entry_numero.grid(column=3, row=0, padx=self.paddingx, sticky="ew")
 
-    def buscar_tipos_sessao_trabalho(self):
+    def buscar_tipos_sessao_trabalho(self, tipo = None):
         janela = Toplevel()
         self.configurar_janela_auxiliar2(janela)
         janela.title("Planos")
@@ -1293,6 +1297,21 @@ class Aplicacao(Funcs):
         barra_rolagem.grid(column=1, row=0, sticky="WSNE")
 
         self.lista_planos = lista_planos
+
+        if tipo == "escolha":
+            def funcao(event):
+                pessoa = None
+                for selected_item in self.lista_planos.selection():
+                    item = self.lista_planos.item(selected_item, 'values')
+                    plano = pega_um_item_plano(item[0])
+                    self.codigo_pessoa_trabalho = plano[0][0]
+                    self.nome_plano_trabalho(plano[0][0], plano[0][1])
+                    janela.destroy()
+                    return False
+
+            self.lista_planos.bind("<Double-1>", funcao)
+
+
 
     def janela_pessoas(self,btn_grava_escolhe = None, janela_trabalhos = None):
         janela_pessoas = Toplevel()

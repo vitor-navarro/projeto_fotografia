@@ -186,6 +186,14 @@ def pega_um_item_trabalho(item):
     trabalho = trabalho.fetchall()
     desconecta_db(banco)
     return trabalho
+def pega_um_item_plano(item):
+    banco, cursor = conecta_db()
+
+    item = str(item)
+    pessoa = cursor.execute('SELECT * FROM planos WHERE id = ?', (item))
+    pessoa = pessoa.fetchall()
+    desconecta_db(banco)
+    return pessoa
 
 def grava_db_planos(entry_codigo,entry_cadastro,entry_nome,entry_descricao,entry_valor_base,entry_quantidade_fotos,entry_valor_foto_extra):
     entry_codigo= entry_codigo()
