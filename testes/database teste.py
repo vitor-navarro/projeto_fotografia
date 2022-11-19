@@ -56,6 +56,14 @@ cursor.execute("INSERT INTO planos (nome_plano, quantidade_fotos,valor,valor_fot
 cursor.execute("SELECT * FROM planos")
 print(cursor.fetchall())
 
+cursor.execute("CREATE TABLE tipos(id INTEGER PRIMARY KEY,"
+               "nome_tipo text,"
+               "descricao text,"
+               "data_criacao text)")
+
+cursor.execute("INSERT INTO tipos (nome_tipo, descricao) VAlUES ('Gestante','plano para gestantes')")
+cursor.execute("SELECT * FROM tipos")
+print(cursor.fetchall())
 #tabela pagamentos
 cursor.execute("CREATE TABLE pagamentos (id INTEGER PRIMARY KEY,"
                "pessoa INTEGER,"
@@ -72,24 +80,29 @@ print(cursor.fetchall())
 #tabela sessoes
 cursor.execute("CREATE TABLE sessoes (id INTEGER PRIMARY KEY,"
                "pessoa_sessao INTEGER,"
-               "pessoa_extra text,"
+               "nome_pessoa text,"
+               "id_tipo INTEGER,"
                "tipo text,"
                "plano_contratado INTEGER,"
+               "plano_nome text,"
                "data text,"
                "hora text,"
-               "lote text,"
                "produto_extra text,"
                "etapa_atual text,"
-               "pagamento text,"
-               "condicao_pagamento text,"
+               "pagamento1 text,"
+               "valor_pagamento1 float,"
+               "pagamento2 text,"
+               "valor_pagamento2 float,"
+               "pagamento3 text,"
+               "valor_pagamento3 float,"
+               "total_pagamentos text,"
+               "observasoes text,"
+               "data_cadastro text,"
                "FOREIGN KEY (pessoa_sessao) REFERENCES pessoas(id),"
+               "FOREIGN KEY (id_tipo) REFERENCES tipos(id),"
                "FOREIGN KEY (plano_contratado) REFERENCES planos(id))")
 #OBS pagamentos vai ter que mudar o jeito que está sendo construido, tem de ser uma lista de referencias a pagamentos, o sqlite não suporta isso
 #OBS2 Quando for aparecera a condicao de parcelamento vai aparecer como a vista dinheiro,a vista debito, 12x credito, a vista credito
-
-cursor.execute("INSERT INTO sessoes (pessoa_sessao,plano_contratado,lote,produto_extra,pagamento,condicao_pagamento) VAlUES (1,1,001,'batatas','1/2','3 vezes')")
-cursor.execute("SELECT * FROM sessoes")
-print(cursor.fetchall())
 
 
 cursor.execute("SELECT * FROM pessoas")

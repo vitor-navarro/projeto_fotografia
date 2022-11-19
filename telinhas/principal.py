@@ -4,7 +4,7 @@ from tkinter import ttk
 from datetime import date
 from modulos.database import grava_db_pessoa, grava_db_trabalhos, pega_ultimo_id, pega_todas_pessoas_lista, \
     pega_um_item_pessoa, altera_db_pessoa, deleta_db_pessoa, pega_um_item_trabalho, pega_todos_tipos_sessoes_lista, \
-    grava_db_planos, pega_um_item_plano
+    grava_db_planos, pega_um_item_plano, pega_um_item_tipo, pega_todos_planos_sessoes_lista, grava_db_tipos
 from functools import partial
 class Funcs():
     def __init__(self):
@@ -19,8 +19,11 @@ class Funcs():
         self.argumentos = None
         self.nome_pessoa_trabalho = None
         self.codigo_pessoa_trabalho = None
+        self.codigo_tipo_trabalho = None
+        self.nome_tipo_trabalho = None
         self.codigo_plano_trabalho = None
         self.nome_plano_trabalho = None
+        self.valores_pagamento = []
 
     def sem_comando(self):
         print("Tela ainda não cadastrada")
@@ -76,7 +79,57 @@ class Funcs():
         entry.delete(0, END)
         entry.insert(posicao, valor)
         entry.config(state="disabled")
+    def novo_cadastro_tipo(self):
+        janela = Toplevel()
+        self.configurar_janela_auxiliar3(janela)
+        janela.title("Cadastro Tipos")
 
+        codigo = pega_ultimo_id("tipos")
+
+        separador1 = ttk.Separator(janela, orient="horizontal")
+        separador1.pack(fill="x", padx=self.paddingx, pady=self.paddingy)
+
+        lb_codigo = Label(separador1, text="Código", font=self.lb_style)
+        lb_codigo.grid(column=0, row=0, sticky="NW", padx=self.paddingx)
+        entry_codigo = Entry(separador1, font=self.entry_style, width=8, state=DISABLED)
+        entry_codigo.grid(column=0, row=1, padx=self.paddingx, sticky="NW")
+        self.insert_entry_desabilitado(entry_codigo, codigo)
+
+        lb_cadastro = Label(separador1, text="Cadastro", font=self.lb_style)
+        lb_cadastro.grid(column=1, row=0, sticky="W", padx=self.paddingx)
+        entry_cadastro = Entry(separador1, font=self.entry_style, width=10)
+        entry_cadastro.insert(END, self.data_sistema)
+        entry_cadastro.grid(column=1, row=1, padx=self.paddingx)
+
+        separador2 = ttk.Separator(janela, orient="horizontal")
+        separador2.pack(fill="x", padx=self.paddingx, pady=self.paddingy)
+
+        lb_nome = Label(separador2, text="Nome*", font=self.lb_style)
+        lb_nome.grid(column=0, row=0, sticky="W", padx=self.paddingx)
+        entry_nome = Entry(separador2, font=self.entry_style,width=89)
+        entry_nome.grid(column=0, row=1, padx=self.paddingx)
+
+        separador3 = ttk.Separator(janela, orient="horizontal")
+        separador3.pack(fill="x", padx=self.paddingx, pady=self.paddingy)
+
+        lb_descricao = Label(separador3, text="Descrição", font=self.lb_style)
+        lb_descricao.grid(column=0, row=0, sticky="W", padx=self.paddingx)
+        entry_descricao = Entry(separador3, font=self.entry_style,width=89)
+        entry_descricao.grid(column=0, row=1, padx=self.paddingx)
+
+        separador5 = ttk.Separator(janela, orient="horizontal")
+        separador5.pack(fill="x", padx=self.paddingx, pady=self.paddingy,side=BOTTOM)
+
+        grava_db_pessoa_args = partial(grava_db_tipos,entry_codigo.get,entry_cadastro.get,entry_nome.get,entry_descricao.get)
+        grava = Button(separador5, text="GRAVA", font=self.lb_style, command=grava_db_pessoa_args)
+        grava.grid(column=0, row=0, sticky="WS")
+
+        cancela = Button(separador5, text="CANCELA", font=self.lb_style)
+        cancela.grid(column=1, row=0, sticky="WS")
+    def altera_cadastro_tipo(self):
+        pass
+    def exclui_cadastro_tipo(self):
+        pass
     def novo_cadastro_plano(self):
         janela = Toplevel()
         self.configurar_janela_auxiliar3(janela)
@@ -150,8 +203,6 @@ class Funcs():
     def exclui_cadastro_plano(self):
         pass
 
-    def buscar_plano_trabalho(self):
-        print("busca ainda não implementada")
 
     def novo_cadastro_pessoa(self):
         janela = Toplevel()
@@ -354,49 +405,6 @@ class Funcs():
             record = item['values']
             pessoa = pega_um_item_trabalho(record[0])
             return pessoa
-
-
-    def lista_planos(self):
-        janela = Toplevel()
-
-        janela.title("Planos")
-
-        self.configurar_janela_auxiliar2(janela)
-
-        barra_alteracoes = ttk.Separator(janela, orient="horizontal")
-        barra_alteracoes.pack(fill="x")
-
-        novo = Button(barra_alteracoes, text="Novo", font=("monospace", 10), command=self.novo_plano, padx=5,
-                      pady=10)
-        novo.pack(side=LEFT)
-
-        alterar = Button(barra_alteracoes, text="Alterar", font=("monospace", 10), command=self.alterar_plano, padx=5,
-                         pady=10)
-        alterar.pack(side=LEFT)
-
-        excluir = Button(barra_alteracoes, text="Excluir", font=("monospace", 10), command=self.excluir_plano, padx=5,
-                         pady=10)
-        excluir.pack(side=LEFT)
-
-        separador1 = ttk.Separator(janela, orient="horizontal")
-        separador1.pack(fill="x")
-
-        lista_planos = ttk.Treeview(separador1, columns=("col1", "col2", "col3"))
-        lista_planos.heading("#0", text="Cod")
-        lista_planos.heading("#1", text="Tipo")
-        lista_planos.heading("#2", text="Plano")
-        lista_planos.heading("#3", text="Valor")
-
-        lista_planos.column("#0", width=50)
-        lista_planos.column("#1", width=200)
-        lista_planos.column("#2", width=114)
-        lista_planos.column("#3", width=124)
-
-        lista_planos.grid(column=0, row=0, sticky="WSNE")
-
-        barra_rolagem = Scrollbar(separador1, orient="vertical")
-        lista_planos.configure(yscrollcommand=barra_rolagem)
-        barra_rolagem.grid(column=1, row=0, sticky="WSNE")
 
     def novo_financeiro(self):
         janela = Toplevel()
@@ -900,7 +908,7 @@ class Aplicacao(Funcs):
         self.nome_pessoa_trabalho = nome
         self.novo_cadastro_trabalho()
 
-    def novo_cadastro_trabalho(self,argumentos = None):
+    def novo_cadastro_trabalho(self):
         janela = Toplevel()
         janela.focus_force()
 
@@ -929,6 +937,7 @@ class Aplicacao(Funcs):
         lb_data_sessao = Label(separador1, text="Data da Sessão", font=self.lb_style)
         lb_data_sessao.grid(column=2, row=0, sticky="W", padx=self.paddingx)
         entry_data_sessao = Entry(separador1, font=self.entry_style, width=10)
+        entry_data_sessao.insert(END,self.data_sistema)
         entry_data_sessao.grid(column=2, row=1, padx=self.paddingx)
 
         lb_horario_sessao = Label(separador1, text="Horário da Sessão", font=self.lb_style)
@@ -977,6 +986,8 @@ class Aplicacao(Funcs):
         lb_total.grid(column=5, row=0, sticky="W", padx=self.paddingx)
 
         entry_total = Entry(separador4, font=self.entry_style, width=10,state=DISABLED)
+        lb_aviso_valores = Label(separador4, text="", font=self.lb_style)
+        lb_aviso_valores.grid(column=6, row=0, sticky="W", padx=self.paddingx)
 
         lb_condicao_pagamento_numero1 = Label(separador4, text="1º", font=self.lb_style)
         lb_condicao_pagamento_numero1.grid(column=0, row=1, padx=self.paddingx,pady=self.paddingy)
@@ -1004,34 +1015,38 @@ class Aplicacao(Funcs):
         entry_valor3.grid(column=3, row=3, padx=self.paddingx,pady=self.paddingy)
 
         def soma_condicao_pagamento(event):
-            valor1 = entry_valor1.get()
-            valor2 = entry_valor2.get()
-            valor3 = entry_valor3.get()
+            try:
+                valor1 = entry_valor1.get().replace(",",".")
+                valor2 = entry_valor2.get().replace(",",".")
+                valor3 = entry_valor3.get().replace(",",".")
+                lb_aviso_valores['text'] = "."
+                self.valores_pagamento = []
+                if valor1 == '':
+                    valor1 = "0"
+                    valor1=float(valor1)
+                else:
+                    valor1=float(valor1)
 
-            if valor1 == '':
-                valor1 = "0"
-                valor1=float(valor1)
-            else:
-                valor1=float(valor1)
+                if valor2 == '':
+                    valor2 = "0"
+                    valor2=float(valor2)
+                else:
+                    valor2=float(valor2)
 
-            if valor2 == '':
-                valor2 = "0"
-                valor2=float(valor2)
-            else:
-                valor2=float(valor2)
+                if valor3 == '':
+                    valor3 = "0"
+                    valor3=float(valor3)
+                else:
+                    valor3=float(valor3)
 
-            if valor3 == '':
-                valor3 = "0"
-                valor3=float(valor3)
-            else:
-                valor3=float(valor3)
-
-            total = str(valor1+valor2+valor3)
-
-            self.insert_entry_desabilitado(entry_total, total, 0)
-
-            return
-
+                total = str(valor1+valor2+valor3)
+                self.valores_pagamento.append(valor1)
+                self.valores_pagamento.append(valor2)
+                self.valores_pagamento.append(valor3)
+                self.insert_entry_desabilitado(entry_total, total, 0)
+                return
+            except ValueError:
+                lb_aviso_valores['text'] = "VERIFIQUE OS VALORES DO PAGAMENTO"
 
         entry_valor1.bind("<FocusOut>",soma_condicao_pagamento)
         entry_valor2.bind("<FocusOut>",soma_condicao_pagamento)
@@ -1046,7 +1061,8 @@ class Aplicacao(Funcs):
         lb_observacoes.grid(column=0, row=0, padx=self.paddingx,pady=self.paddingy,sticky="W")
         textarea_observacoes = Text(separador5, font=self.entry_style, height=6)
         textarea_observacoes.grid(column=0, row=1, padx=self.paddingx,pady= self.paddingy,sticky="W")
-        def buscar_pessoa_trabalho_args():
+
+        def coleta_argumentos():
             argumentos = []
             argumentos.append(entry_codigo.get())
             argumentos.append(entry_cadastro.get())
@@ -1062,45 +1078,56 @@ class Aplicacao(Funcs):
             argumentos.append(entry_total.get())
             argumentos.append(textarea_observacoes.get("1.0","end-1c"))
             self.argumentos = argumentos
-
+        def buscar_pessoa_trabalho_args():
+            coleta_argumentos()
             self.buscar_pessoa_trabalho(janela)
+
         bt_busca_pessoa = Button(separador2, text="busca", font=self.btn_style, command=buscar_pessoa_trabalho_args)
         bt_busca_pessoa.grid(column=0, row=1)
 
         def buscar_tipos_sessao_trabalho_args():
+            coleta_argumentos()
+            self.buscar_tipos_sessao_trabalho(tipo = "escolha",janela_trabalhos=janela)
 
-          self.buscar_tipos_sessao_trabalho(tipo = "escolha")
 
         bt_busca_sessao = Button(separador3, text="busca", font=self.btn_style, command=buscar_tipos_sessao_trabalho_args)
         bt_busca_sessao.grid(column=0, row=1)
+        def buscar_plano_sessao_trabalho_args():
+            coleta_argumentos()
+            self.buscar_plano_trabalho(tipo = "escolha",janela_trabalhos=janela)
 
-        bt_busca_plano = Button(separador3, text="busca", font=self.btn_style, command=self.buscar_plano_trabalho)
+        bt_busca_plano = Button(separador3, text="busca", font=self.btn_style, command=buscar_plano_sessao_trabalho_args)
         bt_busca_plano.grid(column=2, row=1)
 
         separador9 = ttk.Separator(janela, orient="horizontal")
         separador9.pack(fill="x", pady=10, padx=10)
-
         if self.argumentos is not None:
             self.insert_entry_desabilitado(entry_codigo,self.argumentos[0])
             self.set_text_entry(entry_cadastro,self.argumentos[1])
             self.set_text_entry(entry_data_sessao,self.argumentos[2])
             self.set_text_entry(entry_horario_sessao,self.argumentos[3])
             self.set_text_entry(entry_nome,self.nome_pessoa_trabalho)
-            self.set_text_entry(cb_tipo_sessao,self.argumentos[6])
-            self.set_text_entry(cb_plano,self.argumentos[7])
+            self.insert_entry_desabilitado(cb_tipo_sessao,self.nome_tipo_trabalho)
+            self.insert_entry_desabilitado(cb_plano,self.nome_plano_trabalho)
             self.set_text_entry(entry_valor1,self.argumentos[8])
             self.set_text_entry(entry_valor2,self.argumentos[9])
             self.set_text_entry(entry_valor3,self.argumentos[10])
             self.insert_entry_desabilitado(entry_total,self.argumentos[11])
             self.set_textarea(textarea_observacoes,self.argumentos[12])
-
-
-        grava_db_trabalho_args = partial(grava_db_trabalhos,entry_codigo.get,entry_cadastro.get,entry_data_sessao.get,entry_horario_sessao.get,self.codigo_pessoa_trabalho,entry_nome.get,cb_tipo_sessao.get,cb_plano.get,entry_valor1.get,entry_valor2.get,entry_valor3.get,entry_total.get,textarea_observacoes.get)
+        def grava_db_trabalho_args():
+            self.argumentos = None
+            grava_db_trabalhos(entry_codigo.get,entry_cadastro.get,entry_data_sessao.get,entry_horario_sessao.get,self.codigo_pessoa_trabalho,entry_nome.get,cb_tipo_sessao.get,self.codigo_tipo_trabalho,cb_plano.get,self.codigo_plano_trabalho,cb_condicao_pagamento1.get,self.valores_pagamento[0],cb_condicao_pagamento2.get,self.valores_pagamento[1],cb_condicao_pagamento3.get,self.valores_pagamento[2],entry_total.get,textarea_observacoes.get)
+            janela.destroy()
 
         grava = Button(separador9, text="GRAVA", font=self.lb_style, command=grava_db_trabalho_args)
         grava.grid(column=0, row=0, sticky="WS")
 
-        cancela = Button(separador9, text="CANCELA", font=self.lb_style)
+        def cancelar():
+            self.argumentos = None
+            janela.destroy()
+
+
+        cancela = Button(separador9, text="CANCELA", font=self.lb_style, command=cancelar)
         cancela.grid(column=1, row=0, sticky="WS")
 
     def cria_lista_de_pessoas(self,janela):
@@ -1262,8 +1289,7 @@ class Aplicacao(Funcs):
 
 
         # entry_numero.grid(column=3, row=0, padx=self.paddingx, sticky="ew")
-
-    def buscar_tipos_sessao_trabalho(self, tipo = None):
+    def buscar_plano_trabalho(self,tipo = "escolha",janela_trabalhos=None):
 
         janela = Toplevel()
         self.configurar_janela_auxiliar2(janela)
@@ -1288,10 +1314,10 @@ class Aplicacao(Funcs):
         lista_planos.column("#1", width=50)
         lista_planos.column("#2", width=442)
 
-        lista = pega_todos_tipos_sessoes_lista()
+        lista = pega_todos_planos_sessoes_lista()
 
         for i in lista:
-         lista_planos.insert("",END,values=i)
+            lista_planos.insert("",END,values=i)
 
         lista_planos.grid(column=0, row=0, sticky="WSNE")
 
@@ -1303,18 +1329,72 @@ class Aplicacao(Funcs):
 
         if tipo == "escolha":
             def funcao(event):
-                pessoa = None
+                plano = None
                 for selected_item in self.lista_planos.selection():
                     item = self.lista_planos.item(selected_item, 'values')
                     plano = pega_um_item_plano(item[0])
-                    self.codigo_pessoa_trabalho = plano[0][0]
+                    self.codigo_plano_trabalho = plano[0][0]
                     self.nome_plano_trabalho = plano[0][1]
                     janela.destroy()
+                    janela_trabalhos.destroy()
+                    self.novo_cadastro_trabalho()
                     return False
 
             self.lista_planos.bind("<Double-1>", funcao)
+    def buscar_tipos_sessao_trabalho(self, tipo = None,janela_trabalhos = None):
 
+        janela = Toplevel()
+        self.configurar_janela_auxiliar2(janela)
+        janela.title("Tipos")
 
+        separador1 = ttk.Separator(janela, orient="horizontal")
+        separador1.pack(fill="x", pady=self.paddingy)
+
+        funcoes = [self.novo_cadastro_tipo, self.altera_cadastro_tipo, self.exclui_cadastro_tipo]
+
+        barra_alteracoes = self.barra_alteracoes(separador1, funcoes)
+
+        separador2 = ttk.Separator(janela, orient="horizontal")
+        separador2.pack(fill="x")
+
+        lista_tipos = ttk.Treeview(separador2, columns=("col1", "col2","col3"), padding=(0,0,0,25))
+        lista_tipos.heading("#0", text="")
+        lista_tipos.heading("#1", text="Cod")
+        lista_tipos.heading("#2", text="Nome")
+        lista_tipos.heading("#3", text="Descrição")
+
+        lista_tipos.column("#0", width=0)
+        lista_tipos.column("#1", width=50)
+        lista_tipos.column("#2", width=100)
+        lista_tipos.column("#3", width=342)
+
+        lista = pega_todos_tipos_sessoes_lista()
+
+        for i in lista:
+            lista_tipos.insert("",END,values=i)
+
+        lista_tipos.grid(column=0, row=0, sticky="WSNE")
+
+        barra_rolagem = Scrollbar(separador2, orient="vertical")
+        lista_tipos.configure(yscrollcommand=barra_rolagem)
+        barra_rolagem.grid(column=1, row=0, sticky="WSNE")
+
+        self.lista_tipos = lista_tipos
+
+        if tipo == "escolha":
+            def funcao(event):
+                tipo = None
+                for selected_item in self.lista_tipos.selection():
+                    item = self.lista_tipos.item(selected_item, 'values')
+                    tipo = pega_um_item_tipo(item[0])
+                    self.codigo_tipo_trabalho = tipo[0][0]
+                    self.nome_tipo_trabalho = tipo[0][1]
+                    janela.destroy()
+                    janela_trabalhos.destroy()
+                    self.novo_cadastro_trabalho()
+                    return False
+
+            self.lista_tipos.bind("<Double-1>", funcao)
 
     def janela_pessoas(self,btn_grava_escolhe = None, janela_trabalhos = None):
         janela_pessoas = Toplevel()
@@ -1409,6 +1489,8 @@ class Aplicacao(Funcs):
         janela_financeiro.title("Controle Financeiro")
 
     def set_text_entry(self, entry, texto):
+        if texto is None:
+            texto = ""
         entry.delete(0, END)
         entry.insert(0, texto)
         return
@@ -1418,7 +1500,7 @@ class Aplicacao(Funcs):
         return
 
 '''def barra_menu(janela):
-    menus = Menu(janela)
+    menus = Menu(janela) 
 
     menuCadastroClientes = Menu(menus)
     menuCadastroClientes.add_command(label="Cadastros",command=sem_comando)
