@@ -1,10 +1,10 @@
-
 from tkinter import *
 from tkinter import ttk
 from datetime import date
 from modulos.database import grava_db_pessoa, grava_db_trabalhos, pega_ultimo_id, pega_todas_pessoas_lista, \
     pega_um_item_pessoa, altera_db_pessoa, deleta_db_pessoa, pega_um_item_trabalho, pega_todos_tipos_sessoes_lista, \
-    grava_db_planos, pega_um_item_plano, pega_um_item_tipo, pega_todos_planos_sessoes_lista, grava_db_tipos
+    grava_db_planos, pega_um_item_plano, pega_um_item_tipo, pega_todos_planos_sessoes_lista, grava_db_tipos, \
+    pega_todas_trabalhos_lista
 from functools import partial
 class Funcs():
     def __init__(self):
@@ -13,6 +13,8 @@ class Funcs():
         self.paddingy = 7
         self.entry_style = ("monospace", 14)
         self.data_sistema = date.today().strftime('%d/%m/%Y')
+        self.janela_pessoas_var = None
+        self.janela_trabalhos_var = None
         self.lista_de_pessoas = None
         self.lista_de_trabalhos = None
         self.lista_planos = None
@@ -202,8 +204,6 @@ class Funcs():
         pass
     def exclui_cadastro_plano(self):
         pass
-
-
     def novo_cadastro_pessoa(self):
         janela = Toplevel()
 
@@ -378,20 +378,19 @@ class Funcs():
 
         separador9 = ttk.Separator(janela, orient="horizontal")
         separador9.pack(fill="x", pady=10, padx=10)
+        def grava_db_pessoa_args():
+            grava_db_pessoa(entry_codigo.get,entry_cadastro.get,cb_status.get,cb_tipo.get,entry_cpf_cnpj.get,entry_rg_inscricao.get,entry_nascimento.get,entry_nome.get,entry_apelido.get,entry_endereco.get,entry_complemento.get,entry_bairro.get,entry_nome_cidade.get,entry_uf.get,entry_cep.get,entry_fone1.get,entry_fone2.get,entry_fone3.get,entry_operadora1.get,entry_operadora2.get,entry_operadora3.get,entry_email.get,entry_numero.get)
 
+            janela.destroy()
+            self.janela_pessoas_var.destroy()
+            self.janela_pessoas()
 
-
-        grava_db_pessoa_args = partial(grava_db_pessoa,entry_codigo.get,entry_cadastro.get,cb_status.get,cb_tipo.get,entry_cpf_cnpj.get,entry_rg_inscricao.get,entry_nascimento.get,
-                                       entry_nome.get,entry_apelido.get,entry_endereco.get,entry_complemento.get,entry_bairro.get,entry_nome_cidade.get,entry_uf.get,
-                                       entry_cep.get,entry_fone1.get,entry_fone2.get,entry_fone3.get,entry_operadora1.get,entry_operadora2.get,
-                                       entry_operadora3.get,entry_email.get,entry_numero.get)
         grava = Button(separador9, text="GRAVA", font=self.lb_style, command=grava_db_pessoa_args)
         grava.grid(column=0, row=0, sticky="WS")
 
         cancela = Button(separador9, text="CANCELA", font=self.lb_style)
         cancela.grid(column=1, row=0, sticky="WS")
     def seleciona_item_pessoas(self):
-
         for selected_item in self.lista_de_pessoas.selection():
             item = self.lista_de_pessoas.item(selected_item)
             record = item['values']
@@ -399,7 +398,6 @@ class Funcs():
             return pessoa
 
     def seleciona_item_trabalhos(self):
-
         for selected_item in self.lista_de_trabalhos.selection():
             item = self.lista_de_trabalhos.item(selected_item)
             record = item['values']
@@ -663,14 +661,14 @@ class Funcs():
 
         separador9 = ttk.Separator(janela, orient="horizontal")
         separador9.pack(fill="x", pady=10, padx=10)
+        def altera_db_pessoa_args():
 
-        altera_db_pessoa_args = partial(altera_db_pessoa, entry_codigo.get, entry_cadastro.get, cb_status.get,
-                                       cb_tipo.get, entry_cpf_cnpj.get, entry_rg_inscricao.get, entry_nascimento.get,
-                                       entry_nome.get, entry_apelido.get, entry_endereco.get, entry_complemento.get,
-                                       entry_bairro.get, entry_nome_cidade.get, entry_uf.get,
-                                       entry_cep.get, entry_fone1.get, entry_fone2.get, entry_fone3.get,
-                                       entry_operadora1.get, entry_operadora2.get,
-                                       entry_operadora3.get, entry_email.get, entry_numero.get)
+            altera_db_pessoa(entry_codigo.get, entry_cadastro.get, cb_status.get,cb_tipo.get, entry_cpf_cnpj.get, entry_rg_inscricao.get, entry_nascimento.get,entry_nome.get, entry_apelido.get, entry_endereco.get, entry_complemento.get,entry_bairro.get, entry_nome_cidade.get, entry_uf.get,entry_cep.get, entry_fone1.get, entry_fone2.get, entry_fone3.get,entry_operadora1.get, entry_operadora2.get,entry_operadora3.get, entry_email.get, entry_numero.get)
+
+            janela.destroy()
+            self.janela_pessoas_var.destroy()
+            self.janela_pessoas()
+
         grava = Button(separador9, text="GRAVA", font=self.lb_style, command=altera_db_pessoa_args)
         grava.grid(column=0, row=0, sticky="WS")
 
@@ -688,16 +686,27 @@ class Funcs():
         pessoa = self.seleciona_item_pessoas()
         id = pessoa[0][0]
         deleta_db_pessoa(id)
+        self.janela_pessoas_var.destroy()
+        self.janela_pessoas()
     def exclui_cadastro_trabalho(self):
         print("Tela ainda não cadastrada")
         pass
     def exclui_financeiro(self):
         print("Tela ainda não cadastrada")
         pass
+    def retorna_variaveis_none_trabalhos(self):
+        self.argumentos = None
+        self.codigo_pessoa_trabalho = None
+        self.nome_pessoa_trabalho = None
+        self.codigo_tipo_trabalho = None
+        self.nome_tipo_trabalho = None
+        self.codigo_plano_trabalho = None
+        self.nome_plano_trabalho = None
+        self.valores_pagamento = []
+
 
 class Aplicacao(Funcs):
     def __init__(self):
-
         super().__init__()
         self.lb_style = ("monospace", 12)
         self.paddingx = 10
@@ -987,7 +996,7 @@ class Aplicacao(Funcs):
 
         entry_total = Entry(separador4, font=self.entry_style, width=10,state=DISABLED)
         lb_aviso_valores = Label(separador4, text="", font=self.lb_style)
-        lb_aviso_valores.grid(column=6, row=0, sticky="W", padx=self.paddingx)
+        lb_aviso_valores.grid(column=6, row=1, sticky="W", padx=self.paddingx)
 
         lb_condicao_pagamento_numero1 = Label(separador4, text="1º", font=self.lb_style)
         lb_condicao_pagamento_numero1.grid(column=0, row=1, padx=self.paddingx,pady=self.paddingy)
@@ -1115,15 +1124,26 @@ class Aplicacao(Funcs):
             self.insert_entry_desabilitado(entry_total,self.argumentos[11])
             self.set_textarea(textarea_observacoes,self.argumentos[12])
         def grava_db_trabalho_args():
-            self.argumentos = None
-            grava_db_trabalhos(entry_codigo.get,entry_cadastro.get,entry_data_sessao.get,entry_horario_sessao.get,self.codigo_pessoa_trabalho,entry_nome.get,cb_tipo_sessao.get,self.codigo_tipo_trabalho,cb_plano.get,self.codigo_plano_trabalho,cb_condicao_pagamento1.get,self.valores_pagamento[0],cb_condicao_pagamento2.get,self.valores_pagamento[1],cb_condicao_pagamento3.get,self.valores_pagamento[2],entry_total.get,textarea_observacoes.get)
-            janela.destroy()
+            if self.nome_pessoa_trabalho is None:
+                lb_aviso_valores['text'] = "Nome é obrigatório"
+            elif self.nome_tipo_trabalho is None:
+                lb_aviso_valores['text'] = "Tipo da Sessão é obrigatório"
+            elif self.nome_plano_trabalho is None:
+                lb_aviso_valores['text'] = "Plano é obrigatório"
+            elif len(self.valores_pagamento) == 0:
+                lb_aviso_valores['text'] = "Insira ao menos uma forma de pagamento"
+            else:
+                grava_db_trabalhos(entry_codigo.get,entry_cadastro.get,entry_data_sessao.get,entry_horario_sessao.get,self.codigo_pessoa_trabalho,entry_nome.get,cb_tipo_sessao.get,self.codigo_tipo_trabalho,cb_plano.get,self.codigo_plano_trabalho,cb_condicao_pagamento1.get,self.valores_pagamento[0],cb_condicao_pagamento2.get,self.valores_pagamento[1],cb_condicao_pagamento3.get,self.valores_pagamento[2],entry_total.get,textarea_observacoes.get)
+                self.retorna_variaveis_none_trabalhos()
+                janela.destroy()
+                self.janela_trabalhos_var.destroy()
+                self.janela_trabalhos()
 
         grava = Button(separador9, text="GRAVA", font=self.lb_style, command=grava_db_trabalho_args)
         grava.grid(column=0, row=0, sticky="WS")
 
         def cancelar():
-            self.argumentos = None
+            self.retorna_variaveis_none_trabalhos()
             janela.destroy()
 
 
@@ -1158,28 +1178,34 @@ class Aplicacao(Funcs):
 
         self.lista_de_pessoas = lista_pessoas
     def lista_de_trabalho(self,janela):
+        lista = pega_todas_trabalhos_lista()
 
-        lista_pessoas = ttk.Treeview(janela, columns=("col1", "col2", "col3","col4","col5","col6"))
-        lista_pessoas.heading("#0", text="Cod")
-        lista_pessoas.heading("#1", text="Data")
-        lista_pessoas.heading("#2", text="hora")
-        lista_pessoas.heading("#3", text="Nome")
-        lista_pessoas.heading("#4", text="Pessoas")
-        lista_pessoas.heading("#5", text="Tipo sessão")
-        lista_pessoas.heading("#6", text="Etapa")
+        lista_trabalho = ttk.Treeview(janela, columns=("col1", "col2", "col3","col4","col5","col6","col7"))
+        lista_trabalho.heading("#0", text="")
+        lista_trabalho.heading("#1", text="Cod")
+        lista_trabalho.heading("#2", text="Data")
+        lista_trabalho.heading("#3", text="hora")
+        lista_trabalho.heading("#4", text="Nome")
+        lista_trabalho.heading("#5", text="Tipo sessão")
+        lista_trabalho.heading("#6", text="Plano")
+        lista_trabalho.heading("#7", text="Etapa")
 
-        lista_pessoas.column("#0", width=50)
-        lista_pessoas.column("#1", width=100)
-        lista_pessoas.column("#2", width=100)
-        lista_pessoas.column("#3", width=300)
-        lista_pessoas.column("#4", width=200)
-        lista_pessoas.column("#5", width=127)
-        lista_pessoas.column("#6", width=128)
+        lista_trabalho.column("#0", width=0)
+        lista_trabalho.column("#1", width=50)
+        lista_trabalho.column("#2", width=100)
+        lista_trabalho.column("#3", width=100)
+        lista_trabalho.column("#4", width=300)
+        lista_trabalho.column("#5", width=200)
+        lista_trabalho.column("#6", width=127)
+        lista_trabalho.column("#7", width=128)
 
-        lista_pessoas.grid(column=0, row=0, sticky="WSNE")
+        lista_trabalho.grid(column=0, row=0, sticky="WSNE")
+
+        for i in lista:
+            lista_trabalho.insert("",END,values=i)
 
         barra_rolagem = Scrollbar(janela, orient="vertical")
-        lista_pessoas.configure(yscrollcommand=barra_rolagem)
+        lista_trabalho.configure(yscrollcommand=barra_rolagem)
         barra_rolagem.grid(column=1, row=0, sticky="WSNE")
     def lista_de_trabalho_financeiro(self,janela):
         trabalho = [1, "vitor", "091.861.449-01", "são jorge do ivai"]
@@ -1399,6 +1425,8 @@ class Aplicacao(Funcs):
     def janela_pessoas(self,btn_grava_escolhe = None, janela_trabalhos = None):
         janela_pessoas = Toplevel()
 
+
+
         self.configurar_janela_auxiliar(janela_pessoas)
         funcoes = [self.novo_cadastro_pessoa,self.altera_cadastro_pessoa, self.exclui_cadastro_pessoa]
 
@@ -1415,6 +1443,8 @@ class Aplicacao(Funcs):
         self.barra_filtros_pesquisa(barra_filtros)
         self.cria_lista_de_pessoas(listagem_pessoas)
         entry_nome_razao, entry_fantasia_apelido, entry_fone1, entry_fone2, entry_fone3,entry_endereco,entry_numero = self.informacoes_adicionais_pessoas(janela_pessoas)
+
+        self.janela_pessoas_var = janela_pessoas
         def adiciona_informacoes_adicionais(event):
 
             for selected_item in self.lista_de_pessoas.selection():
@@ -1450,7 +1480,6 @@ class Aplicacao(Funcs):
         janela_trabalhos = Toplevel()
         self.configurar_janela_auxiliar(janela_trabalhos)
 
-        data_hoje = date.today().strftime("%d/%m/%Y")
 
         funcoes = [self.novo_cadastro_trabalho, self.altera_cadastro_trabalho, self.exclui_cadastro_trabalho]
 
@@ -1471,8 +1500,8 @@ class Aplicacao(Funcs):
         self.lista_de_trabalho(listagem_trabalhos)
         self.informacoes_adicionais_trabalho(janela_trabalhos)
 
-
         janela_trabalhos.title("Pesquisa de Trabalhos")
+        self.janela_trabalhos_var = janela_trabalhos
 
     def janela_financeiro(self):
         janela_financeiro = Toplevel()

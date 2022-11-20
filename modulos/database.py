@@ -12,12 +12,12 @@ def pega_ultimo_id(nome_banco):
 
     cursor.execute(f"SELECT id FROM {nome_banco}")
     lista = cursor.fetchall()
-    print(lista)
     if len(lista) != 0:
         ultimo = str(lista[len(lista)-1])
         ultimo_replace = ultimo.replace("(","")
         ultimo_replace = ultimo_replace.replace(")","")
         ultimo_replace = ultimo_replace.replace(",","")
+        ultimo_replace = str(int(ultimo_replace)+1)
         desconecta_db(banco)
         return ultimo_replace
     else:
@@ -143,7 +143,7 @@ def pega_todas_trabalhos_lista():
 
     banco, cursor = conecta_db()
     #retorna em ordem alfabética, modificar isso com as filtragens
-    lista_db = cursor.execute("SELECT id, data,pessoa_sessao,pessoa_extra,tipo,estapa_atual FROM sessoes ORDER BY nome_razao_social DESC")
+    lista_db = cursor.execute("SELECT id, data,hora,nome_pessoa,tipo,plano_nome,etapa_atual FROM sessoes ORDER BY pessoa_sessao DESC")
     lista = []
     for i in lista_db:
         lista.append(i)
