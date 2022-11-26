@@ -1,0 +1,2 @@
+class Financeiro(Funcs):
+    pass
