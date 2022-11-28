@@ -7,7 +7,6 @@ from tkinter.ttk import Separator, Combobox, Treeview, Scrollbar
 
 
 class Pessoas(Funcs):
-
     def __init__(self):
         super().__init__()
         class_funcs = Funcs()
@@ -610,10 +609,10 @@ class Pessoas(Funcs):
                 for selected_item in self.lista_de_pessoas.selection():
                     item = self.lista_de_pessoas.item(selected_item, 'values')
                     pessoa = pega_um_item_pessoa(item[0])
-                    self.codigo_pessoa_trabalho = pessoa[0][0]
-                    self.set_codigo_nome_trabalho(pessoa[0][0],pessoa[0][2],janela_trabalhos)
+                    codigo  = pessoa[0][0]
+                    nome = pessoa[0][2]
                     janela_pessoas.destroy()
-                    return False
+                    return codigo, nome
 
             self.lista_de_pessoas.bind("<Double-1>", funcao)
 

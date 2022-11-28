@@ -1,15 +1,16 @@
 from modulos.auxiliares import Funcs
-from modulos.database import pega_ultimo_id,grava_db_trabalhos
+from modulos.database import pega_ultimo_id, grava_db_trabalhos, pega_todas_trabalhos_lista
 
-from tkinter import Toplevel, LEFT, Button,Label,Entry,DISABLED,END,Text
-from tkinter.ttk import Separator, Combobox
+from tkinter import Toplevel, LEFT, Button, Label, Entry, DISABLED, END, Text, StringVar, Radiobutton, BOTTOM
+from tkinter.ttk import Separator, Combobox, Treeview, Scrollbar
 
 
 class Trabalhos(Funcs):
 
-    def __init__(self):
+    def __init__(self, janela_pessoas):
         super().__init__()
         class_funcs = Funcs()
+        self.class_pessoas = janela_pessoas
         self.janela_trabalhos_var = None
         self.lista_de_trabalhos = None
         self.nome_pessoa_trabalho = None
@@ -19,9 +20,79 @@ class Trabalhos(Funcs):
         self.codigo_plano_trabalho = None
         self.nome_plano_trabalho = None
         self.valores_pagamento = []
-
+        self.argumentos = None
+    def retorna_variaveis_none_trabalhos(self):
+        self.argumentos = None
+        self.codigo_pessoa_trabalho = None
+        self.nome_pessoa_trabalho = None
+        self.codigo_tipo_trabalho = None
+        self.nome_tipo_trabalho = None
+        self.codigo_plano_trabalho = None
+        self.nome_plano_trabalho = None
+        self.valores_pagamento = []
+    def set_codigo_nome_trabalho(self,codigo,nome):
+        #colocar tudo isso em busca_pessoa_trabalho
+        self.janela_trabalhos_var.destroy()
+        self.codigo_pessoa_trabalho = codigo
+        self.nome_pessoa_trabalho = nome
+        self.novo_cadastro_trabalho()
     def buscar_pessoa_trabalho(self,janela_trabalhos):
-        self.janela_pessoas(btn_grava_escolhe = "escolhe", janela_trabalhos = janela_trabalhos)
+        codigo,nome = self.class_pessoas.janela_pessoas(btn_grava_escolhe = "escolhe", janela_trabalhos = janela_trabalhos)
+        self.set_codigo_nome_trabalho(codigo,nome)
+    def buscar_tipos_sessao_trabalho(self, tipo = None,janela_trabalhos = None):
+
+        janela = Toplevel()
+        self.configurar_janela_auxiliar2(janela)
+        janela.title("Tipos")
+
+        separador1 = Separator(janela, orient="horizontal")
+        separador1.pack(fill="x", pady=self.paddingy)
+
+        funcoes = [self.novo_cadastro_tipo, self.altera_cadastro_tipo, self.exclui_cadastro_tipo]
+
+        barra_alteracoes = self.barra_alteracoes(separador1, funcoes)
+
+        separador2 = Separator(janela, orient="horizontal")
+        separador2.pack(fill="x")
+
+        lista_tipos = Treeview(separador2, columns=("col1", "col2","col3"), padding=(0,0,0,25))
+        lista_tipos.heading("#0", text="")
+        lista_tipos.heading("#1", text="Cod")
+        lista_tipos.heading("#2", text="Nome")
+        lista_tipos.heading("#3", text="Descrição")
+
+        lista_tipos.column("#0", width=0)
+        lista_tipos.column("#1", width=50)
+        lista_tipos.column("#2", width=100)
+        lista_tipos.column("#3", width=342)
+
+        lista = pega_todos_tipos_sessoes_lista()
+
+        for i in lista:
+            lista_tipos.insert("",END,values=i)
+
+        lista_tipos.grid(column=0, row=0, sticky="WSNE")
+
+        barra_rolagem = Scrollbar(separador2, orient="vertical")
+        lista_tipos.configure(yscrollcommand=barra_rolagem)
+        barra_rolagem.grid(column=1, row=0, sticky="WSNE")
+
+        self.lista_tipos = lista_tipos
+
+        if tipo == "escolha":
+            def funcao(event):
+                tipo = None
+                for selected_item in self.lista_tipos.selection():
+                    item = self.lista_tipos.item(selected_item, 'values')
+                    tipo = pega_um_item_tipo(item[0])
+                    self.codigo_tipo_trabalho = tipo[0][0]
+                    self.nome_tipo_trabalho = tipo[0][1]
+                    janela.destroy()
+                    janela_trabalhos.destroy()
+                    self.novo_cadastro_trabalho()
+                    return False
+
+            self.lista_tipos.bind("<Double-1>", funcao)
 
     def novo_cadastro_trabalho(self):
         janela = Toplevel()
@@ -255,6 +326,138 @@ class Trabalhos(Funcs):
 
         cancela = Button(separador9, text="CANCELA", font=self.lb_style, command=cancelar)
         cancela.grid(column=1, row=0, sticky="WS")
+
+    def altera_cadastro_trabalho(self):
+        print("Tela ainda não cadastrada")
+        pass
+
+    def exclui_cadastro_trabalho(self):
+        print("Tela ainda não cadastrada")
+        pass
+    def barra_filtros_opcoes_trabalho(self,barra_filtros):
+        # opções 1
+        barra_filtro_opcoes = Separator(barra_filtros, orient="vertical")
+        barra_filtro_opcoes.grid(column=0, row=0, sticky="W")
+
+        varaivel_opcoes = StringVar(barra_filtro_opcoes)
+
+        label_opcoes = Label(barra_filtro_opcoes, text="Filtros")
+        label_opcoes.grid(column=0, row=0, columnspan=2, sticky="W")
+
+        rb_codigo = Radiobutton(barra_filtro_opcoes, text="Código", value="codigo", variable=varaivel_opcoes)
+        rb_codigo.grid(column=0, row=1, sticky="W")
+
+        rb_nome_pessoa_extra = Radiobutton(barra_filtro_opcoes, text="Nome/Pessoa extra", value="nome_pessoa_extra",
+                                       variable=varaivel_opcoes)
+        rb_nome_pessoa_extra.grid(column=0, row=2, sticky="W")
+
+        rb_nome = Radiobutton(barra_filtro_opcoes, text="Nome", value="nome", variable=varaivel_opcoes)
+        rb_nome.grid(column=0, row=3, sticky="W")
+
+        rb_pessoa_extra = Radiobutton(barra_filtro_opcoes, text="Pessoa extra", value="pessoa_extra", variable=varaivel_opcoes)
+        rb_pessoa_extra.grid(column=0, row=4, sticky="W")
+
+        rb_cidade = Radiobutton(barra_filtro_opcoes, text="cidade", value="cidade", variable=varaivel_opcoes)
+        rb_cidade.grid(column=1, row=1, sticky="W")
+
+        rb_endereco = Radiobutton(barra_filtro_opcoes, text="endereco", value="endereco", variable=varaivel_opcoes)
+        rb_endereco.grid(column=1, row=2, sticky="W")
+
+        rb_cpf_cnpj = Radiobutton(barra_filtro_opcoes, text="cpf/cnpj", value="cpf_cnpj", variable=varaivel_opcoes)
+        rb_cpf_cnpj.grid(column=1, row=3, sticky="W")
+
+        rb_lote = Radiobutton(barra_filtro_opcoes, text="Lote", value="lote", variable=varaivel_opcoes)
+        rb_lote.grid(column=1, row=4, sticky="W")
+
+        rb_nome_pessoa_extra.select()
+
+    def barra_filtros_status_trabalho(self, barra_filtros):
+        barra_filtro_opcoes2 = Separator(barra_filtros, orient="vertical")
+        barra_filtro_opcoes2.grid(column=1, row=0, sticky="W")
+
+        varaivel_opcoes2 = StringVar(barra_filtro_opcoes2, value="nome_fantasia")
+
+        label_opcoes2 = Label(barra_filtro_opcoes2, text="Status")
+        label_opcoes2.grid(column=0, row=0, columnspan=2, sticky="W")
+
+        rb_ativo = Radiobutton(barra_filtro_opcoes2, text="ativos", value="ativo", variable=varaivel_opcoes2)
+        rb_ativo.grid(column=0, row=1, sticky="W")
+
+        rb_terminado = Radiobutton(barra_filtro_opcoes2, text="Terminados", value="terminado",
+                                   variable=varaivel_opcoes2)
+        rb_terminado.grid(column=0, row=2, sticky="W")
+
+        rb_todos = Radiobutton(barra_filtro_opcoes2, text="Todos", value="todos", variable=varaivel_opcoes2)
+        rb_todos.grid(column=0, row=3, sticky="W")
+
+        label_vazio = Label(barra_filtro_opcoes2, text="")
+        label_vazio.grid(column=0, row=4, sticky="W")
+
+        rb_ativo.select()
+
+    def lista_de_trabalho(self,janela):
+        lista = pega_todas_trabalhos_lista()
+
+        lista_trabalho = Treeview(janela, columns=("col1", "col2", "col3","col4","col5","col6","col7"))
+        lista_trabalho.heading("#0", text="")
+        lista_trabalho.heading("#1", text="Cod")
+        lista_trabalho.heading("#2", text="Data")
+        lista_trabalho.heading("#3", text="hora")
+        lista_trabalho.heading("#4", text="Nome")
+        lista_trabalho.heading("#5", text="Tipo sessão")
+        lista_trabalho.heading("#6", text="Plano")
+        lista_trabalho.heading("#7", text="Etapa")
+
+        lista_trabalho.column("#0", width=0)
+        lista_trabalho.column("#1", width=50)
+        lista_trabalho.column("#2", width=100)
+        lista_trabalho.column("#3", width=100)
+        lista_trabalho.column("#4", width=300)
+        lista_trabalho.column("#5", width=200)
+        lista_trabalho.column("#6", width=127)
+        lista_trabalho.column("#7", width=128)
+
+        lista_trabalho.grid(column=0, row=0, sticky="WSNE")
+
+        for i in lista:
+            lista_trabalho.insert("",END,values=i)
+
+        barra_rolagem = Scrollbar(janela, orient="vertical")
+        lista_trabalho.configure(yscrollcommand=barra_rolagem)
+        barra_rolagem.grid(column=1, row=0, sticky="WSNE")
+
+    def informacoes_adicionais_trabalho(self,janela, trabalho = None):
+        separador1 = Separator(janela, orient="horizontal")
+        separador1.pack(fill="x", side=BOTTOM, padx=self.paddingx, pady=self.paddingy+10)
+
+        separador2 = Separator(separador1, orient="horizontal")
+        separador2.grid(column=0,row=0,rowspan=3)
+
+        lb_observacoes = Label(separador2, text="Observações", font=self.lb_style)
+        lb_observacoes.grid(column=0, row=0, sticky="NW", padx=self.paddingx, rowspan=3)
+        entry_observacoes = Text(separador2, font=self.entry_style, width=78,height=3, state=DISABLED,pady=self.paddingy)
+        entry_observacoes.grid(column=1, row=0, padx=self.paddingx,sticky="NW")
+
+        separador3 = Separator(separador2, orient="horizontal")
+        separador3.grid(column=1, row = 0,rowspan=3,sticky="E")
+
+        lb_valor = Label(separador3, text="Valor", font=self.lb_style)
+        lb_valor.grid(column=0, row=0, sticky="NE", padx=self.paddingx)
+        entry_valor = Entry(separador3, font=self.entry_style, width=10, state=DISABLED)
+        entry_valor.grid(column=1, row=0, padx=self.paddingx)
+
+        lb_pago = Label(separador3, text="Pago", font=self.lb_style)
+        lb_pago.grid(column=0, row=1, sticky="NE", padx=self.paddingx)
+        entry_pago = Entry(separador3, font=self.entry_style, width=10, state=DISABLED)
+        entry_pago.grid(column=1, row=1, padx=self.paddingx)
+
+        lb_devendo = Label(separador3, text="Devendo", font=self.lb_style)
+        lb_devendo.grid(column=0, row=2, sticky="NE", padx=self.paddingx)
+        entry_devendo = Entry(separador3, font=self.entry_style, width=10, state=DISABLED)
+        entry_devendo.grid(column=1, row=2, padx=self.paddingx)
+
+
+        # entry_numero.grid(column=3, row=0, padx=self.paddingx, sticky="ew")
 
     def janela_trabalhos(self):
         janela_trabalhos = Toplevel()

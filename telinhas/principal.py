@@ -1,13 +1,13 @@
 from tkinter import *
 from tkinter import ttk
 from datetime import date
-from modulos.database import grava_db_pessoa, grava_db_trabalhos, pega_ultimo_id, pega_todas_pessoas_lista, \
-    pega_um_item_pessoa, altera_db_pessoa, deleta_db_pessoa, pega_um_item_trabalho, pega_todos_tipos_sessoes_lista, \
+from modulos.database import  grava_db_trabalhos, pega_ultimo_id, pega_um_item_trabalho, pega_todos_tipos_sessoes_lista, \
     grava_db_planos, pega_um_item_plano, pega_um_item_tipo, pega_todos_planos_sessoes_lista, grava_db_tipos, \
     pega_todas_trabalhos_lista
 from functools import partial
 
 from telinhas.pessoas import Pessoas
+from telinhas.trabalhos import Trabalhos
 
 
 class Funcs():
@@ -280,33 +280,19 @@ class Funcs():
     def altera_financeiro(self):
         print("Tela ainda não cadastrada")
         pass
-    def exclui_cadastro_pessoa(self):
-        pessoa = self.seleciona_item_pessoas()
-        id = pessoa[0][0]
-        deleta_db_pessoa(id)
-        self.janela_pessoas_var.destroy()
-        self.janela_pessoas()
     def exclui_cadastro_trabalho(self):
         print("Tela ainda não cadastrada")
         pass
     def exclui_financeiro(self):
         print("Tela ainda não cadastrada")
         pass
-    def retorna_variaveis_none_trabalhos(self):
-        self.argumentos = None
-        self.codigo_pessoa_trabalho = None
-        self.nome_pessoa_trabalho = None
-        self.codigo_tipo_trabalho = None
-        self.nome_tipo_trabalho = None
-        self.codigo_plano_trabalho = None
-        self.nome_plano_trabalho = None
-        self.valores_pagamento = []
 
 
 class Aplicacao(Funcs):
     def __init__(self):
         super().__init__()
         self.pessoas = Pessoas()
+        self.trabalhos = Trabalhos(self.pessoas)
         self.lb_style = ("monospace", 12)
         self.paddingx = 10
         self.paddingy = 7
@@ -327,7 +313,7 @@ class Aplicacao(Funcs):
         pessoas = Button(barra_menu, text="PESSOAS", font=("monospace", 12), command=self.pessoas.janela_pessoas, padx=10, pady=30)
         pessoas.pack(side=LEFT)
 
-        trabalhos = Button(barra_menu, text="TRABALHOS", font=("monospace", 12), command=self.janela_trabalhos, padx=10,
+        trabalhos = Button(barra_menu, text="TRABALHOS", font=("monospace", 12), command=self.trabalhos.janela_trabalhos, padx=10,
                            pady=30)
         trabalhos.pack(side=LEFT)
 
