@@ -7,12 +7,13 @@ from tkinter.ttk import Separator, Combobox, Treeview, Scrollbar
 
 
 class Pessoas(Funcs):
-    def __init__(self):
+    def __init__(self, janela_trabalhos = None):
         super().__init__()
         class_funcs = Funcs()
         self.janela_pessoas_var = None
         self.lista_de_pessoas = None
         self.argumentos = None
+        self.janela_trabalhos_var = janela_trabalhos
 
     def novo_cadastro_pessoa(self):
         janela = Toplevel()
@@ -568,7 +569,7 @@ class Pessoas(Funcs):
 
         return entry_nome_razao, entry_fantasia_apelido, entry_fone1, entry_fone2, entry_fone3,entry_endereco,entry_numero
 
-    def janela_pessoas(self,btn_grava_escolhe = None, janela_trabalhos = None):
+    def janela_pessoas(self,btn_grava_escolhe = None):
         janela_pessoas = Toplevel()
 
         self.configurar_janela_auxiliar(janela_pessoas)
@@ -609,10 +610,9 @@ class Pessoas(Funcs):
                 for selected_item in self.lista_de_pessoas.selection():
                     item = self.lista_de_pessoas.item(selected_item, 'values')
                     pessoa = pega_um_item_pessoa(item[0])
-                    codigo  = pessoa[0][0]
-                    nome = pessoa[0][2]
-                    janela_pessoas.destroy()
-                    return codigo, nome
+                    self.janela_trabalhos_var.set_codigo_nome_trabalho(pessoa[0][0],pessoa[0][2])
+                    self.janela_pessoas_var.destroy()
+                    return
 
             self.lista_de_pessoas.bind("<Double-1>", funcao)
 

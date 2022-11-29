@@ -292,7 +292,7 @@ class Aplicacao(Funcs):
     def __init__(self):
         super().__init__()
         self.pessoas = Pessoas()
-        self.trabalhos = Trabalhos(self.pessoas)
+        self.trabalhos = Trabalhos()
         self.lb_style = ("monospace", 12)
         self.paddingx = 10
         self.paddingy = 7

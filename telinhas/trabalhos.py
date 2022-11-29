@@ -1,19 +1,25 @@
+from asyncio import wait
+
 from modulos.auxiliares import Funcs
 from modulos.database import pega_ultimo_id, grava_db_trabalhos, pega_todas_trabalhos_lista
 
 from tkinter import Toplevel, LEFT, Button, Label, Entry, DISABLED, END, Text, StringVar, Radiobutton, BOTTOM
 from tkinter.ttk import Separator, Combobox, Treeview, Scrollbar
 
+from telinhas.pessoas import Pessoas
+
 
 class Trabalhos(Funcs):
 
-    def __init__(self, janela_pessoas):
+    def __init__(self):
         super().__init__()
+
         class_funcs = Funcs()
-        self.class_pessoas = janela_pessoas
+        self.class_pessoas = Pessoas(self)
         self.janela_trabalhos_var = None
         self.lista_de_trabalhos = None
         self.nome_pessoa_trabalho = None
+        self.entry_nome = None
         self.codigo_pessoa_trabalho = None
         self.codigo_tipo_trabalho = None
         self.nome_tipo_trabalho = None
@@ -31,14 +37,13 @@ class Trabalhos(Funcs):
         self.nome_plano_trabalho = None
         self.valores_pagamento = []
     def set_codigo_nome_trabalho(self,codigo,nome):
-        #colocar tudo isso em busca_pessoa_trabalho
-        self.janela_trabalhos_var.destroy()
-        self.codigo_pessoa_trabalho = codigo
+        self.set_text_entry(entry=self.entry_nome, texto=nome)
         self.nome_pessoa_trabalho = nome
-        self.novo_cadastro_trabalho()
+        self.codigo_pessoa_trabalho = codigo
+
     def buscar_pessoa_trabalho(self,janela_trabalhos):
-        codigo,nome = self.class_pessoas.janela_pessoas(btn_grava_escolhe = "escolhe", janela_trabalhos = janela_trabalhos)
-        self.set_codigo_nome_trabalho(codigo,nome)
+        self.class_pessoas.janela_pessoas(btn_grava_escolhe = "escolhe")
+
     def buscar_tipos_sessao_trabalho(self, tipo = None,janela_trabalhos = None):
 
         janela = Toplevel()
@@ -138,6 +143,7 @@ class Trabalhos(Funcs):
         lb_nome.grid(column=1, row=0, sticky="W", padx=self.paddingx)
         entry_nome = Entry(separador2, font=self.entry_style, width=89)
         entry_nome.grid(column=1, row=1, padx=self.paddingx)
+        self.entry_nome = entry_nome
 
         separador3 = Separator(janela, orient="horizontal")
         separador3.pack(fill="x", padx=self.paddingx, pady=self.paddingy)
@@ -190,7 +196,6 @@ class Trabalhos(Funcs):
         cb_condicao_pagamento2.grid(column=1, row=2, padx=self.paddingx,pady=self.paddingy)
         entry_valor2 = Entry(separador4, font=self.entry_style, width=10)
         entry_valor2.grid(column=3, row=2, padx=self.paddingx,pady=self.paddingy)
-
 
         lb_condicao_pagamento_numero3 = Label(separador4, text="3º", font=self.lb_style)
         lb_condicao_pagamento_numero3.grid(column=0, row=3, padx=self.paddingx,pady=self.paddingy)
