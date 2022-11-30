@@ -1,5 +1,3 @@
-from asyncio import wait
-
 from modulos.auxiliares import Funcs
 from modulos.database import pega_ultimo_id, grava_db_trabalhos, pega_todas_trabalhos_lista
 
@@ -7,21 +5,25 @@ from tkinter import Toplevel, LEFT, Button, Label, Entry, DISABLED, END, Text, S
 from tkinter.ttk import Separator, Combobox, Treeview, Scrollbar
 
 from telinhas.pessoas import Pessoas
+from telinhas.tipos import Tipos
+from telinhas.planos import Planos
 
 
 class Trabalhos(Funcs):
 
     def __init__(self):
         super().__init__()
-
         class_funcs = Funcs()
+        self.class_tipos = Tipos(self)
         self.class_pessoas = Pessoas(self)
+        self.class_planos = Planos(self)
         self.janela_trabalhos_var = None
         self.lista_de_trabalhos = None
         self.nome_pessoa_trabalho = None
         self.entry_nome = None
         self.codigo_pessoa_trabalho = None
         self.codigo_tipo_trabalho = None
+        self.entry_tipo = None
         self.nome_tipo_trabalho = None
         self.codigo_plano_trabalho = None
         self.nome_plano_trabalho = None
@@ -37,67 +39,19 @@ class Trabalhos(Funcs):
         self.nome_plano_trabalho = None
         self.valores_pagamento = []
     def set_codigo_nome_trabalho(self,codigo,nome):
-        self.set_text_entry(entry=self.entry_nome, texto=nome)
+        self.insert_entry_desabilitado(entry=self.entry_nome, valor=nome)
         self.nome_pessoa_trabalho = nome
         self.codigo_pessoa_trabalho = codigo
-
+    def set_codigo_tipo_trabalho(self,codigo,tipo):
+        self.insert_entry_desabilitado(entry=self.entry_tipo, valor=tipo)
+        self.codigo_tipo_trabalho = tipo
+        self.nome_tipo_trabalho = codigo
+    def set_codigo_plano_trabalho(self,codigo,plano):
+        self.insert_entry_desabilitado(entry=self.entry_tipo, valor=plano)
+        self.codigo_plano_trabalho = plano
+        self.nome_plano_trabalho_trabalho = codigo
     def buscar_pessoa_trabalho(self,janela_trabalhos):
         self.class_pessoas.janela_pessoas(btn_grava_escolhe = "escolhe")
-
-    def buscar_tipos_sessao_trabalho(self, tipo = None,janela_trabalhos = None):
-
-        janela = Toplevel()
-        self.configurar_janela_auxiliar2(janela)
-        janela.title("Tipos")
-
-        separador1 = Separator(janela, orient="horizontal")
-        separador1.pack(fill="x", pady=self.paddingy)
-
-        funcoes = [self.novo_cadastro_tipo, self.altera_cadastro_tipo, self.exclui_cadastro_tipo]
-
-        barra_alteracoes = self.barra_alteracoes(separador1, funcoes)
-
-        separador2 = Separator(janela, orient="horizontal")
-        separador2.pack(fill="x")
-
-        lista_tipos = Treeview(separador2, columns=("col1", "col2","col3"), padding=(0,0,0,25))
-        lista_tipos.heading("#0", text="")
-        lista_tipos.heading("#1", text="Cod")
-        lista_tipos.heading("#2", text="Nome")
-        lista_tipos.heading("#3", text="Descrição")
-
-        lista_tipos.column("#0", width=0)
-        lista_tipos.column("#1", width=50)
-        lista_tipos.column("#2", width=100)
-        lista_tipos.column("#3", width=342)
-
-        lista = pega_todos_tipos_sessoes_lista()
-
-        for i in lista:
-            lista_tipos.insert("",END,values=i)
-
-        lista_tipos.grid(column=0, row=0, sticky="WSNE")
-
-        barra_rolagem = Scrollbar(separador2, orient="vertical")
-        lista_tipos.configure(yscrollcommand=barra_rolagem)
-        barra_rolagem.grid(column=1, row=0, sticky="WSNE")
-
-        self.lista_tipos = lista_tipos
-
-        if tipo == "escolha":
-            def funcao(event):
-                tipo = None
-                for selected_item in self.lista_tipos.selection():
-                    item = self.lista_tipos.item(selected_item, 'values')
-                    tipo = pega_um_item_tipo(item[0])
-                    self.codigo_tipo_trabalho = tipo[0][0]
-                    self.nome_tipo_trabalho = tipo[0][1]
-                    janela.destroy()
-                    janela_trabalhos.destroy()
-                    self.novo_cadastro_trabalho()
-                    return False
-
-            self.lista_tipos.bind("<Double-1>", funcao)
 
     def novo_cadastro_trabalho(self):
         janela = Toplevel()
@@ -141,7 +95,7 @@ class Trabalhos(Funcs):
 
         lb_nome = Label(separador2, text="Nome", font=self.lb_style)
         lb_nome.grid(column=1, row=0, sticky="W", padx=self.paddingx)
-        entry_nome = Entry(separador2, font=self.entry_style, width=89)
+        entry_nome = Entry(separador2, font=self.entry_style, width=89, state=DISABLED)
         entry_nome.grid(column=1, row=1, padx=self.paddingx)
         self.entry_nome = entry_nome
 
@@ -155,6 +109,7 @@ class Trabalhos(Funcs):
         #cb_tipo_sessao = ttk.Combobox(separador1, font=self.entry_style, width=15, values=tipos_possiveis, state="readonly")
         #cb_tipo_sessao.set("Ativo")
         cb_tipo_sessao.grid(column=1, row=1, padx=self.paddingx,sticky="W")
+        self.entry_tipo = cb_tipo_sessao
 
         lb_plano = Label(separador3, text="Plano", font=self.lb_style)
         lb_plano.grid(column=3, row=0, sticky="W", padx=self.paddingx)
@@ -162,6 +117,7 @@ class Trabalhos(Funcs):
         #cb_plano = ttk.Combobox(separador1, font=self.entry_style, width=15, values=planos_possiveis, state="readonly")
         #cb_plano.set("Ativo")
         cb_plano.grid(column=3, row=1, padx=self.paddingx,sticky="W")
+        self.entry_plano = cb_plano
 
         separador4 = Separator(janela, orient="horizontal")
         separador4.pack(fill="x", padx=self.paddingx, pady=self.paddingy)
@@ -278,14 +234,13 @@ class Trabalhos(Funcs):
 
         def buscar_tipos_sessao_trabalho_args():
             coleta_argumentos()
-            self.buscar_tipos_sessao_trabalho(tipo = "escolha",janela_trabalhos=janela)
-
+            self.class_tipos.janela_tipos(tipo = "escolha")
 
         bt_busca_sessao = Button(separador3, text="busca", font=self.btn_style, command=buscar_tipos_sessao_trabalho_args)
         bt_busca_sessao.grid(column=0, row=1)
         def buscar_plano_sessao_trabalho_args():
             coleta_argumentos()
-            self.buscar_plano_trabalho(tipo = "escolha",janela_trabalhos=janela)
+            self.class_planos.janela_planos(tipo = "escolha")
 
         bt_busca_plano = Button(separador3, text="busca", font=self.btn_style, command=buscar_plano_sessao_trabalho_args)
         bt_busca_plano.grid(column=2, row=1)
@@ -474,7 +429,7 @@ class Trabalhos(Funcs):
 
         barra_alteracoes = self.barra_alteracoes(janela_trabalhos,funcoes)
 
-        bt_planos = Button(barra_alteracoes, text="Planos",padx=5,pady=10,font=("monospace", 10), command=self.buscar_tipos_sessao_trabalho)
+        bt_planos = Button(barra_alteracoes, text="Planos",padx=5,pady=10,font=("monospace", 10), command=self.class_planos.janela_planos)
         bt_planos.pack(side = LEFT, padx=self.paddingx+20)
 
         barra_filtros = Separator(janela_trabalhos, orient="horizontal")
