@@ -293,6 +293,7 @@ class Aplicacao(Funcs):
         super().__init__()
         self.pessoas = Pessoas()
         self.trabalhos = Trabalhos()
+        self.funcs = Funcs()
         self.lb_style = ("monospace", 12)
         self.paddingx = 10
         self.paddingy = 7

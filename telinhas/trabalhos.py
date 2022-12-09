@@ -13,7 +13,6 @@ class Trabalhos(Funcs):
 
     def __init__(self):
         super().__init__()
-        class_funcs = Funcs()
         self.class_tipos = Tipos(self)
         self.class_pessoas = Pessoas(self)
         self.class_planos = Planos(self)
@@ -44,12 +43,12 @@ class Trabalhos(Funcs):
         self.codigo_pessoa_trabalho = codigo
     def set_codigo_tipo_trabalho(self,codigo,tipo):
         self.insert_entry_desabilitado(entry=self.entry_tipo, valor=tipo)
-        self.codigo_tipo_trabalho = tipo
-        self.nome_tipo_trabalho = codigo
+        self.codigo_tipo_trabalho = codigo
+        self.nome_tipo_trabalho = tipo
     def set_codigo_plano_trabalho(self,codigo,plano):
-        self.insert_entry_desabilitado(entry=self.entry_tipo, valor=plano)
-        self.codigo_plano_trabalho = plano
-        self.nome_plano_trabalho_trabalho = codigo
+        self.insert_entry_desabilitado(entry=self.entry_plano, valor=plano)
+        self.codigo_plano_trabalho = codigo
+        self.nome_plano_trabalho = plano
     def buscar_pessoa_trabalho(self,janela_trabalhos):
         self.class_pessoas.janela_pessoas(btn_grava_escolhe = "escolhe")
 

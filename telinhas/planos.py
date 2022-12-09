@@ -12,7 +12,9 @@ class Planos(Funcs):
         class_funcs = Funcs()
         self.janela_planos_var = None
         self.janela_trabalhos_var = janela_trabalhos
-
+        self.nome = None
+        self.entry_codigo = None
+        self.lb_erro = None
     def novo_cadastro_plano(self):
         janela = Toplevel()
         self.configurar_janela_auxiliar3(janela)
@@ -38,10 +40,14 @@ class Planos(Funcs):
         separador2 = Separator(janela, orient="horizontal")
         separador2.pack(fill="x", padx=self.paddingx, pady=self.paddingy)
 
+        def set_sem_texto_lb_erro(event):
+            self.lb_erro["text"] = ""
+
         lb_nome = Label(separador2, text="Nome*", font=self.lb_style)
         lb_nome.grid(column=0, row=0, sticky="W", padx=self.paddingx)
         entry_nome = Entry(separador2, font=self.entry_style,width=89)
         entry_nome.grid(column=0, row=1, padx=self.paddingx)
+        entry_nome.bind("<FocusOut>", set_sem_texto_lb_erro)
 
         separador3 = Separator(janela, orient="horizontal")
         separador3.pack(fill="x", padx=self.paddingx, pady=self.paddingy)
@@ -72,15 +78,32 @@ class Planos(Funcs):
         entry_valor_foto_extra = Entry(separador5, font=self.entry_style)
         entry_valor_foto_extra.grid(column=2, row=1, padx=self.paddingx)
 
+        lb_espaco = Label(separador5, text="", font=self.lb_style)
+        lb_espaco.grid(column=1, row=3, sticky="W", padx=self.paddingx)
+
+        lb_erro = Label(separador5, text="", font=self.lb_style)
+        lb_erro.grid(column=1, row=4,columnspan=2, sticky="W", padx=self.paddingx)
+        self.lb_erro = lb_erro
+
         separador5 = Separator(janela, orient="horizontal")
         separador5.pack(fill="x", padx=self.paddingx, pady=self.paddingy,side=BOTTOM)
+        def grava_db_pessoa_args():
+            valor_entry_nome = entry_nome.get()
 
-        grava_db_pessoa_args = partial(grava_db_planos,entry_codigo.get,entry_cadastro.get,entry_nome.get,entry_descricao.get,entry_valor_base.get,entry_quantidade_fotos.get,entry_valor_foto_extra.get)
+            if len(valor_entry_nome) < 1:
+                self.lb_erro["text"] = "Por favor insira o nome do plano"
+            else:
+                grava_db_planos(entry_codigo.get,entry_cadastro.get,entry_nome.get,entry_descricao.get,entry_valor_base.get,entry_quantidade_fotos.get,entry_valor_foto_extra.get)
+
         grava = Button(separador5, text="GRAVA", font=self.lb_style, command=grava_db_pessoa_args)
         grava.grid(column=0, row=0, sticky="WS")
 
         cancela = Button(separador5, text="CANCELA", font=self.lb_style)
         cancela.grid(column=1, row=0, sticky="WS")
+    def altera_cadastro_plano(self):
+        pass
+    def exclui_cadastro_plano(self):
+        pass
     def janela_planos(self, tipo=None):
 
         janela = Toplevel()

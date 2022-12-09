@@ -125,8 +125,8 @@ def pega_todas_pessoas_lista():
 def pega_um_item_pessoa(item):
     banco, cursor = conecta_db()
 
-    item = str(item)
-    pessoa = cursor.execute('SELECT * FROM pessoas WHERE id = ?', (item))
+    pessoa = cursor.execute('SELECT * FROM pessoas WHERE id = ?', (str(item),))
+
     pessoa = pessoa.fetchall()
     desconecta_db(banco)
     return pessoa
@@ -135,7 +135,7 @@ def pega_um_item_tipo(item):
     banco, cursor = conecta_db()
 
     item = str(item)
-    tipo = cursor.execute('SELECT * FROM tipos WHERE id = ?', (item))
+    tipo = cursor.execute('SELECT * FROM tipos WHERE id = ?', (str(item),))
     tipo = tipo.fetchall()
     desconecta_db(banco)
     return tipo
@@ -206,16 +206,14 @@ def grava_db_trabalhos(entry_codigo,entry_cadastro,entry_data_sessao,entry_horar
 def pega_um_item_trabalho(item):
     banco, cursor = conecta_db()
 
-    item = str(item)
-    trabalho = cursor.execute('SELECT * FROM sessoes WHERE id = ?', (item))
+    trabalho = cursor.execute('SELECT * FROM sessoes WHERE id = ?', (str(item),))
     trabalho = trabalho.fetchall()
     desconecta_db(banco)
     return trabalho
 def pega_um_item_plano(item):
     banco, cursor = conecta_db()
 
-    item = str(item)
-    pessoa = cursor.execute('SELECT * FROM planos WHERE id = ?', (item))
+    pessoa = cursor.execute('SELECT * FROM planos WHERE id = ?', (str(item),))
     pessoa = pessoa.fetchall()
     desconecta_db(banco)
     return pessoa
