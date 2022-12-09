@@ -1,6 +1,6 @@
 import sqlite3
 
-banco = sqlite3.connect("../modulos/database.db")
+'''banco = sqlite3.connect("../modulos/database.db")
 
 cursor = banco.cursor()
 
@@ -13,3 +13,4 @@ print(cursor.fetchall())
 banco.commit()
 
 banco.close()
+'''

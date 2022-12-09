@@ -219,13 +219,15 @@ def pega_um_item_plano(item):
     return pessoa
 
 def grava_db_planos(entry_codigo,entry_cadastro,entry_nome,entry_descricao,entry_valor_base,entry_quantidade_fotos,entry_valor_foto_extra):
-    entry_codigo= entry_codigo()
+    entry_codigo = entry_codigo()
     entry_cadastro= entry_cadastro()
     entry_nome= entry_nome()
     entry_descricao= entry_descricao()
-    entry_valor_base= float(entry_valor_base())
-    entry_quantidade_fotos= int(entry_quantidade_fotos())
-    entry_valor_foto_extra= float(entry_valor_foto_extra())
+    entry_valor_base= float(entry_valor_base)
+    entry_quantidade_fotos= int(entry_quantidade_fotos)
+    entry_valor_foto_extra= float(entry_valor_foto_extra)
+
+    print(entry_codigo,entry_cadastro,entry_nome,entry_descricao,entry_valor_base,entry_quantidade_fotos,entry_valor_foto_extra)
 
     banco, cursor = conecta_db()
 

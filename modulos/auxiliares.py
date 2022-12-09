@@ -120,3 +120,7 @@ class Funcs():
         rb_exato.grid(column=3, row=1, sticky="E")
 
         rb_aproximacao.select()
+
+    def replace_virgula_ponto(self, valor):
+        valor = valor.replace(",", ".")
+        return valor

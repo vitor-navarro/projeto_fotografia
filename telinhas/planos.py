@@ -1,4 +1,3 @@
-from functools import partial
 
 from modulos.auxiliares import Funcs
 
@@ -15,6 +14,16 @@ class Planos(Funcs):
         self.nome = None
         self.entry_codigo = None
         self.lb_erro = None
+        self.entry_quantidade_fotos = None
+
+    def validador_entry_apenas_numeros(self, P):
+        if str.isdigit(P) or P == "":
+            print("verdadeiro")
+            return True
+        else:
+            print("Falso")
+            return False
+
     def novo_cadastro_plano(self):
         janela = Toplevel()
         self.configurar_janela_auxiliar3(janela)
@@ -43,11 +52,11 @@ class Planos(Funcs):
         def set_sem_texto_lb_erro(event):
             self.lb_erro["text"] = ""
 
-        lb_nome = Label(separador2, text="Nome*", font=self.lb_style)
-        lb_nome.grid(column=0, row=0, sticky="W", padx=self.paddingx)
-        entry_nome = Entry(separador2, font=self.entry_style,width=89)
-        entry_nome.grid(column=0, row=1, padx=self.paddingx)
-        entry_nome.bind("<FocusOut>", set_sem_texto_lb_erro)
+        lb_nome_plano = Label(separador2, text="Nome*", font=self.lb_style)
+        lb_nome_plano.grid(column=0, row=0, sticky="W", padx=self.paddingx)
+        entry_nome_plano = Entry(separador2, font=self.entry_style,width=89)
+        entry_nome_plano.grid(column=0, row=1, padx=self.paddingx)
+        entry_nome_plano.bind("<FocusOut>", set_sem_texto_lb_erro)
 
         separador3 = Separator(janela, orient="horizontal")
         separador3.pack(fill="x", padx=self.paddingx, pady=self.paddingy)
@@ -68,10 +77,11 @@ class Planos(Funcs):
         separador5 = Separator(janela, orient="horizontal")
         separador5.pack(fill="x", padx=self.paddingx, pady=self.paddingy)
 
+        vcmd = self.janela_planos_var.register((self.validador_entry_apenas_numeros))
         lb_quantidade_fotos = Label(separador5, text="Quantidade de fotos", font=self.lb_style)
         lb_quantidade_fotos.grid(column=1, row=0, sticky="W", padx=self.paddingx)
-        entry_quantidade_fotos = Entry(separador5, font=self.entry_style)
-        entry_quantidade_fotos.grid(column=1, row=1, padx=self.paddingx)
+        self.entry_quantidade_fotos = Entry(separador5,font=self.entry_style, validate="all", validatecommand=(vcmd, "%P"))
+        self.entry_quantidade_fotos.grid(column=1, row=1, padx=self.paddingx)
 
         lb_valor_foto_extra = Label(separador5, text="Valor Fotos extra", font=self.lb_style)
         lb_valor_foto_extra.grid(column=2, row=0, sticky="W", padx=self.paddingx)
@@ -88,12 +98,29 @@ class Planos(Funcs):
         separador5 = Separator(janela, orient="horizontal")
         separador5.pack(fill="x", padx=self.paddingx, pady=self.paddingy,side=BOTTOM)
         def grava_db_pessoa_args():
-            valor_entry_nome = entry_nome.get()
+            valor_entry_nome = entry_nome_plano.get()
 
             if len(valor_entry_nome) < 1:
                 self.lb_erro["text"] = "Por favor insira o nome do plano"
+            elif entry_valor_base.get() == '':
+                self.lb_erro["text"] = "Por favor insira o valor do plano"
             else:
-                grava_db_planos(entry_codigo.get,entry_cadastro.get,entry_nome.get,entry_descricao.get,entry_valor_base.get,entry_quantidade_fotos.get,entry_valor_foto_extra.get)
+                try:
+                    quantidade_fotos = int(self.entry_quantidade_fotos.get())
+                except ValueError:
+                    quantidade_fotos = '0'
+                try:
+                    valor_fotos_extra = float(self.replace_virgula_ponto(entry_valor_foto_extra.get()))
+                    print(valor_fotos_extra)
+                except ValueError:
+                    valor_fotos_extra = "0.0"
+
+                valor_base = self.replace_virgula_ponto(entry_valor_base.get())
+
+                grava_db_planos(entry_codigo.get,entry_cadastro.get,entry_nome_plano.get,entry_descricao.get,valor_base,quantidade_fotos,valor_fotos_extra)
+                janela.destroy()
+                self.janela_planos_var.destroy()
+                self.janela_planos()
 
         grava = Button(separador5, text="GRAVA", font=self.lb_style, command=grava_db_pessoa_args)
         grava.grid(column=0, row=0, sticky="WS")
