@@ -2,27 +2,21 @@
 from modulos.auxiliares import Funcs
 
 from modulos.database import pega_ultimo_id, grava_db_planos, pega_todos_planos_sessoes_lista, pega_um_item_plano
-from tkinter import Toplevel, DISABLED, Entry, END, Label, Button, BOTTOM
+from tkinter import Toplevel, DISABLED, Entry, END, Label, Button, BOTTOM, StringVar
 from tkinter.ttk import Separator, Scrollbar,Treeview
 
-class Planos(Funcs):
+from modulos.validadores import Validadores
+
+
+class Planos(Funcs,Validadores):
     def __init__(self, janela_trabalhos = None):
         super().__init__()
-        class_funcs = Funcs()
         self.janela_planos_var = None
         self.janela_trabalhos_var = janela_trabalhos
         self.nome = None
         self.entry_codigo = None
         self.lb_erro = None
         self.entry_quantidade_fotos = None
-
-    def validador_entry_apenas_numeros(self, P):
-        if str.isdigit(P) or P == "":
-            print("verdadeiro")
-            return True
-        else:
-            print("Falso")
-            return False
 
     def novo_cadastro_plano(self):
         janela = Toplevel()
@@ -40,11 +34,14 @@ class Planos(Funcs):
         entry_codigo.grid(column=0, row=1, padx=self.paddingx, sticky="NW")
         self.insert_entry_desabilitado(entry_codigo, codigo)
 
+        string_var_entry_cadastro = StringVar()
         lb_cadastro = Label(separador1, text="Cadastro", font=self.lb_style)
         lb_cadastro.grid(column=1, row=0, sticky="W", padx=self.paddingx)
-        entry_cadastro = Entry(separador1, font=self.entry_style, width=10)
-        entry_cadastro.insert(END, self.data_sistema)
+        entry_cadastro = Entry(separador1, font=self.entry_style, width=10, textvariable=string_var_entry_cadastro)
+        entry_cadastro.insert(0, self.data_sistema)
         entry_cadastro.grid(column=1, row=1, padx=self.paddingx)
+
+        entry_cadastro.bind("<KeyRelease>",lambda event, entry = entry_cadastro:self.validador_data(event,entry))
 
         separador2 = Separator(janela, orient="horizontal")
         separador2.pack(fill="x", padx=self.paddingx, pady=self.paddingy)

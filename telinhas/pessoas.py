@@ -9,7 +9,6 @@ from tkinter.ttk import Separator, Combobox, Treeview, Scrollbar
 class Pessoas(Funcs):
     def __init__(self, janela_trabalhos = None):
         super().__init__()
-        class_funcs = Funcs()
         self.janela_pessoas_var = None
         self.lista_de_pessoas = None
         self.argumentos = None
@@ -206,7 +205,6 @@ class Pessoas(Funcs):
     def altera_cadastro_pessoa(self):
         pessoa = self.seleciona_item_pessoas()
 
-        print(pessoa)
         janela = Toplevel()
         variavel_upercase = StringVar()
 

@@ -1,10 +1,12 @@
 from datetime import date
-from tkinter import END, Button, LEFT, StringVar, Label, Radiobutton
+from tkinter import END, Button, LEFT, StringVar, Label, Radiobutton, Entry
 from tkinter.ttk import Separator
 
+from modulos.validadores import Validadores
 class Funcs():
 
     def __init__(self):
+        self.validadores = Validadores()
         self.lb_style = ("monospace", 12)
         self.paddingx = 10
         self.paddingy = 7
@@ -124,3 +126,7 @@ class Funcs():
     def replace_virgula_ponto(self, valor):
         valor = valor.replace(",", ".")
         return valor
+
+    def entry_data(self, janela):
+        entry = Entry(janela)
+        entry.config(validate="key", validatecommand=(entry.register(self.validadores.validador_data), "%P"))

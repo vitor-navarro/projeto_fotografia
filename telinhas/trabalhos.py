@@ -7,12 +7,13 @@ from tkinter.ttk import Separator, Combobox, Treeview, Scrollbar
 from telinhas.pessoas import Pessoas
 from telinhas.tipos import Tipos
 from telinhas.planos import Planos
-
+from modulos.validadores import Validadores
 
 class Trabalhos(Funcs):
 
     def __init__(self):
         super().__init__()
+        self.class_validadores = Validadores()
         self.class_tipos = Tipos(self)
         self.class_pessoas = Pessoas(self)
         self.class_planos = Planos(self)
@@ -27,6 +28,7 @@ class Trabalhos(Funcs):
         self.codigo_plano_trabalho = None
         self.nome_plano_trabalho = None
         self.valores_pagamento = []
+        self.event_ultimo_caractere_digitrado = None
         self.argumentos = None
     def retorna_variaveis_none_trabalhos(self):
         self.argumentos = None
@@ -37,6 +39,10 @@ class Trabalhos(Funcs):
         self.codigo_plano_trabalho = None
         self.nome_plano_trabalho = None
         self.valores_pagamento = []
+
+    def set_ultimo_caractere_digitado(self, event):
+        self.event_ultimo_caractere_digitrado = event
+        print(event)
     def set_codigo_nome_trabalho(self,codigo,nome):
         self.insert_entry_desabilitado(entry=self.entry_nome, valor=nome)
         self.nome_pessoa_trabalho = nome
@@ -84,10 +90,18 @@ class Trabalhos(Funcs):
         entry_data_sessao.insert(END,self.data_sistema)
         entry_data_sessao.grid(column=2, row=1, padx=self.paddingx)
 
+        def validador_horario_args():
+            retorno = self.class_validadores.validador_horario(self.entry_horario_sessao, self.event_ultimo_caractere_digitrado)
+            return retorno
+
         lb_horario_sessao = Label(separador1, text="Horário da Sessão", font=self.lb_style)
         lb_horario_sessao.grid(column=3, row=0, sticky="W", padx=self.paddingx)
-        entry_horario_sessao = Entry(separador1, font=self.entry_style, width=10)
-        entry_horario_sessao.grid(column=3, row=1, padx=self.paddingx)
+        self.entry_horario_sessao = Entry(separador1, font=self.entry_style, width=10)
+        self.entry_horario_sessao.config(validate="key", validatecommand=validador_horario_args)
+        self.entry_horario_sessao.grid(column=3, row=1, padx=self.paddingx)
+        self.entry_horario_sessao.bind("<Any-KeyPress>", self.set_ultimo_caractere_digitado)
+
+        #entry_horario_sessao.bind("<KeyRelease>", lambda event, entry = entry_horario_sessao:self.validadores.validador_horario(event, entry))
 
         separador2 = Separator(janela, orient="horizontal")
         separador2.pack(fill="x", padx=self.paddingx, pady=self.paddingy)
@@ -167,18 +181,17 @@ class Trabalhos(Funcs):
                 valor3 = entry_valor3.get().replace(",",".")
                 lb_aviso_valores['text'] = "."
                 self.valores_pagamento = []
+
                 if valor1 == '':
                     valor1 = "0"
                     valor1=float(valor1)
                 else:
                     valor1=float(valor1)
-
                 if valor2 == '':
                     valor2 = "0"
                     valor2=float(valor2)
                 else:
                     valor2=float(valor2)
-
                 if valor3 == '':
                     valor3 = "0"
                     valor3=float(valor3)
@@ -213,7 +226,7 @@ class Trabalhos(Funcs):
             argumentos.append(entry_codigo.get())
             argumentos.append(entry_cadastro.get())
             argumentos.append(entry_data_sessao.get())
-            argumentos.append(entry_horario_sessao.get())
+            argumentos.append(self.entry_horario_sessao.get())
             argumentos.append(entry_nome.get())
             argumentos.append(self.codigo_pessoa_trabalho)
             argumentos.append(cb_tipo_sessao.get())
@@ -246,11 +259,12 @@ class Trabalhos(Funcs):
 
         separador9 = Separator(janela, orient="horizontal")
         separador9.pack(fill="x", pady=10, padx=10)
+
         if self.argumentos is not None:
             self.insert_entry_desabilitado(entry_codigo,self.argumentos[0])
             self.set_text_entry(entry_cadastro,self.argumentos[1])
             self.set_text_entry(entry_data_sessao,self.argumentos[2])
-            self.set_text_entry(entry_horario_sessao,self.argumentos[3])
+            self.set_text_entry(self.entry_horario_sessao,self.argumentos[3])
             self.set_text_entry(entry_nome,self.nome_pessoa_trabalho)
             self.insert_entry_desabilitado(cb_tipo_sessao,self.nome_tipo_trabalho)
             self.insert_entry_desabilitado(cb_plano,self.nome_plano_trabalho)
@@ -269,7 +283,7 @@ class Trabalhos(Funcs):
             elif len(self.valores_pagamento) == 0:
                 lb_aviso_valores['text'] = "Insira ao menos uma forma de pagamento"
             else:
-                grava_db_trabalhos(entry_codigo.get,entry_cadastro.get,entry_data_sessao.get,entry_horario_sessao.get,self.codigo_pessoa_trabalho,entry_nome.get,cb_tipo_sessao.get,self.codigo_tipo_trabalho,cb_plano.get,self.codigo_plano_trabalho,cb_condicao_pagamento1.get,self.valores_pagamento[0],cb_condicao_pagamento2.get,self.valores_pagamento[1],cb_condicao_pagamento3.get,self.valores_pagamento[2],entry_total.get,textarea_observacoes.get)
+                grava_db_trabalhos(entry_codigo.get,entry_cadastro.get,entry_data_sessao.get,self.entry_horario_sessao.get,self.codigo_pessoa_trabalho,entry_nome.get,cb_tipo_sessao.get,self.codigo_tipo_trabalho,cb_plano.get,self.codigo_plano_trabalho,cb_condicao_pagamento1.get,self.valores_pagamento[0],cb_condicao_pagamento2.get,self.valores_pagamento[1],cb_condicao_pagamento3.get,self.valores_pagamento[2],entry_total.get,textarea_observacoes.get)
                 self.retorna_variaveis_none_trabalhos()
                 janela.destroy()
                 self.janela_trabalhos_var.destroy()
@@ -422,7 +436,6 @@ class Trabalhos(Funcs):
         janela_trabalhos = Toplevel()
 
         self.configurar_janela_auxiliar(janela_trabalhos)
-
 
         funcoes = [self.novo_cadastro_trabalho, self.altera_cadastro_trabalho, self.exclui_cadastro_trabalho]
 
