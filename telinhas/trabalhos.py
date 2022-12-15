@@ -42,11 +42,17 @@ class Trabalhos(Funcs):
 
     def set_ultimo_caractere_digitado(self, event):
         self.event_ultimo_caractere_digitrado = event
-        print(event)
+
+    def set_entry_horario_posicao(self, posicao):
+        self.entry_horario_sessao.icursor(posicao)
+    def set_entry_horario_text(self, texto_entry):
+        self.entry_horario_sessao.delete(0,END)
+        self.entry_horario_sessao.insert(0,texto_entry)
     def set_codigo_nome_trabalho(self,codigo,nome):
         self.insert_entry_desabilitado(entry=self.entry_nome, valor=nome)
         self.nome_pessoa_trabalho = nome
         self.codigo_pessoa_trabalho = codigo
+
     def set_codigo_tipo_trabalho(self,codigo,tipo):
         self.insert_entry_desabilitado(entry=self.entry_tipo, valor=tipo)
         self.codigo_tipo_trabalho = codigo
@@ -68,6 +74,9 @@ class Trabalhos(Funcs):
 
         separador1 = Separator(janela, orient="horizontal")
         separador1.pack(fill="x", padx=self.paddingx, pady=self.paddingy)
+
+        self.lb_aviso_erro = Label(separador1, text="", font=self.lb_style)
+        self.lb_aviso_erro.grid(column=4, row=1, sticky="W", padx=self.paddingx)
 
         codigo = pega_ultimo_id("sessoes")
 
@@ -91,7 +100,7 @@ class Trabalhos(Funcs):
         entry_data_sessao.grid(column=2, row=1, padx=self.paddingx)
 
         def validador_horario_args():
-            retorno = self.class_validadores.validador_horario(self.entry_horario_sessao, self.event_ultimo_caractere_digitrado)
+            retorno = self.class_validadores.validador_horario(self.entry_horario_sessao, self.event_ultimo_caractere_digitrado, self.set_entry_horario_posicao, self.set_entry_horario_text)
             return retorno
 
         lb_horario_sessao = Label(separador1, text="Horário da Sessão", font=self.lb_style)
@@ -100,8 +109,7 @@ class Trabalhos(Funcs):
         self.entry_horario_sessao.config(validate="key", validatecommand=validador_horario_args)
         self.entry_horario_sessao.grid(column=3, row=1, padx=self.paddingx)
         self.entry_horario_sessao.bind("<Any-KeyPress>", self.set_ultimo_caractere_digitado)
-
-        #entry_horario_sessao.bind("<KeyRelease>", lambda event, entry = entry_horario_sessao:self.validadores.validador_horario(event, entry))
+        self.entry_horario_sessao.bind("<FocusOut>", lambda event, parametro = self.entry_horario_sessao.get, lb_erro=self.lb_aviso_erro: self.class_validadores.valida_formato_hora(event, parametro, lb_erro))
 
         separador2 = Separator(janela, orient="horizontal")
         separador2.pack(fill="x", padx=self.paddingx, pady=self.paddingy)
@@ -147,8 +155,6 @@ class Trabalhos(Funcs):
         lb_total.grid(column=5, row=0, sticky="W", padx=self.paddingx)
 
         entry_total = Entry(separador4, font=self.entry_style, width=10,state=DISABLED)
-        lb_aviso_valores = Label(separador4, text="", font=self.lb_style)
-        lb_aviso_valores.grid(column=6, row=1, sticky="W", padx=self.paddingx)
 
         lb_condicao_pagamento_numero1 = Label(separador4, text="1º", font=self.lb_style)
         lb_condicao_pagamento_numero1.grid(column=0, row=1, padx=self.paddingx,pady=self.paddingy)
@@ -179,7 +185,7 @@ class Trabalhos(Funcs):
                 valor1 = entry_valor1.get().replace(",",".")
                 valor2 = entry_valor2.get().replace(",",".")
                 valor3 = entry_valor3.get().replace(",",".")
-                lb_aviso_valores['text'] = "."
+                self.lb_aviso_erro['text'] = "."
                 self.valores_pagamento = []
 
                 if valor1 == '':
@@ -205,7 +211,7 @@ class Trabalhos(Funcs):
                 self.insert_entry_desabilitado(entry_total, total, 0)
                 return
             except ValueError:
-                lb_aviso_valores['text'] = "VERIFIQUE OS VALORES DO PAGAMENTO"
+                self.lb_aviso_erro['text'] = "VERIFIQUE OS VALORES DO PAGAMENTO"
 
         entry_valor1.bind("<FocusOut>",soma_condicao_pagamento)
         entry_valor2.bind("<FocusOut>",soma_condicao_pagamento)
@@ -275,13 +281,13 @@ class Trabalhos(Funcs):
             self.set_textarea(textarea_observacoes,self.argumentos[12])
         def grava_db_trabalho_args():
             if self.nome_pessoa_trabalho is None:
-                lb_aviso_valores['text'] = "Nome é obrigatório"
+                self.lb_aviso_erro['text'] = "Nome é obrigatório"
             elif self.nome_tipo_trabalho is None:
-                lb_aviso_valores['text'] = "Tipo da Sessão é obrigatório"
+                self.lb_aviso_erro['text'] = "Tipo da Sessão é obrigatório"
             elif self.nome_plano_trabalho is None:
-                lb_aviso_valores['text'] = "Plano é obrigatório"
+                self.lb_aviso_erro['text'] = "Plano é obrigatório"
             elif len(self.valores_pagamento) == 0:
-                lb_aviso_valores['text'] = "Insira ao menos uma forma de pagamento"
+                self.lb_aviso_erro['text'] = "Insira ao menos uma forma de pagamento"
             else:
                 grava_db_trabalhos(entry_codigo.get,entry_cadastro.get,entry_data_sessao.get,self.entry_horario_sessao.get,self.codigo_pessoa_trabalho,entry_nome.get,cb_tipo_sessao.get,self.codigo_tipo_trabalho,cb_plano.get,self.codigo_plano_trabalho,cb_condicao_pagamento1.get,self.valores_pagamento[0],cb_condicao_pagamento2.get,self.valores_pagamento[1],cb_condicao_pagamento3.get,self.valores_pagamento[2],entry_total.get,textarea_observacoes.get)
                 self.retorna_variaveis_none_trabalhos()
