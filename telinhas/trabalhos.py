@@ -1,5 +1,5 @@
 from modulos.auxiliares import Funcs
-from modulos.database import pega_ultimo_id, grava_db_trabalhos, pega_todas_trabalhos_lista
+from modulos.database import pega_ultimo_id, grava_db_trabalhos, pega_todas_trabalhos_lista, pega_um_item_trabalho
 
 from tkinter import Toplevel, LEFT, Button, Label, Entry, DISABLED, END, Text, StringVar, Radiobutton, BOTTOM
 from tkinter.ttk import Separator, Combobox, Treeview, Scrollbar
@@ -72,7 +72,7 @@ class Trabalhos(Funcs):
             return pessoa
     def barra_filtros_opcoes_trabalho(self,barra_filtros):
         # opções 1
-        barra_filtro_opcoes = ttk.Separator(barra_filtros, orient="vertical")
+        barra_filtro_opcoes = Separator(barra_filtros, orient="vertical")
         barra_filtro_opcoes.grid(column=0, row=0, sticky="W")
 
         varaivel_opcoes = StringVar(barra_filtro_opcoes)
@@ -108,7 +108,7 @@ class Trabalhos(Funcs):
         rb_nome_pessoa_extra.select()
 
     def barra_filtros_status_trabalho(self, barra_filtros):
-        barra_filtro_opcoes2 = ttk.Separator(barra_filtros, orient="vertical")
+        barra_filtro_opcoes2 = Separator(barra_filtros, orient="vertical")
         barra_filtro_opcoes2.grid(column=1, row=0, sticky="W")
 
         varaivel_opcoes2 = StringVar(barra_filtro_opcoes2, value="nome_fantasia")

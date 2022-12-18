@@ -204,6 +204,8 @@ class Pessoas(Funcs):
 
     def altera_cadastro_pessoa(self):
         pessoa = self.seleciona_item_pessoas()
+        if pessoa is None:
+            return
 
         janela = Toplevel()
         variavel_upercase = StringVar()

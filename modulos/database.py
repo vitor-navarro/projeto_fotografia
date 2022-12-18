@@ -103,8 +103,7 @@ def altera_db_pessoa(entry_codigo_valor,entry_cadastro_valor,cb_status_valor,cb_
 
 def deleta_db_pessoa(id):
     banco, cursor = conecta_db()
-    id = str(id)
-    cursor.execute(f"DELETE FROM pessoas WHERE id = ?", (id))
+    cursor.execute(f"DELETE FROM pessoas WHERE id = ?", (str(id),))
 
     banco.commit()
 
