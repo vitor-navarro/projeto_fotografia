@@ -64,6 +64,72 @@ class Trabalhos(Funcs):
     def buscar_pessoa_trabalho(self,janela_trabalhos):
         self.class_pessoas.janela_pessoas(btn_grava_escolhe = "escolhe")
 
+    def seleciona_item_trabalhos(self):
+        for selected_item in self.lista_de_trabalhos.selection():
+            item = self.lista_de_trabalhos.item(selected_item)
+            record = item['values']
+            pessoa = pega_um_item_trabalho(record[0])
+            return pessoa
+    def barra_filtros_opcoes_trabalho(self,barra_filtros):
+        # opções 1
+        barra_filtro_opcoes = ttk.Separator(barra_filtros, orient="vertical")
+        barra_filtro_opcoes.grid(column=0, row=0, sticky="W")
+
+        varaivel_opcoes = StringVar(barra_filtro_opcoes)
+
+        label_opcoes = Label(barra_filtro_opcoes, text="Filtros")
+        label_opcoes.grid(column=0, row=0, columnspan=2, sticky="W")
+
+        rb_codigo = Radiobutton(barra_filtro_opcoes, text="Código", value="codigo", variable=varaivel_opcoes)
+        rb_codigo.grid(column=0, row=1, sticky="W")
+
+        rb_nome_pessoa_extra = Radiobutton(barra_filtro_opcoes, text="Nome/Pessoa extra", value="nome_pessoa_extra",
+                                       variable=varaivel_opcoes)
+        rb_nome_pessoa_extra.grid(column=0, row=2, sticky="W")
+
+        rb_nome = Radiobutton(barra_filtro_opcoes, text="Nome", value="nome", variable=varaivel_opcoes)
+        rb_nome.grid(column=0, row=3, sticky="W")
+
+        rb_pessoa_extra = Radiobutton(barra_filtro_opcoes, text="Pessoa extra", value="pessoa_extra", variable=varaivel_opcoes)
+        rb_pessoa_extra.grid(column=0, row=4, sticky="W")
+
+        rb_cidade = Radiobutton(barra_filtro_opcoes, text="cidade", value="cidade", variable=varaivel_opcoes)
+        rb_cidade.grid(column=1, row=1, sticky="W")
+
+        rb_endereco = Radiobutton(barra_filtro_opcoes, text="endereco", value="endereco", variable=varaivel_opcoes)
+        rb_endereco.grid(column=1, row=2, sticky="W")
+
+        rb_cpf_cnpj = Radiobutton(barra_filtro_opcoes, text="cpf/cnpj", value="cpf_cnpj", variable=varaivel_opcoes)
+        rb_cpf_cnpj.grid(column=1, row=3, sticky="W")
+
+        rb_lote = Radiobutton(barra_filtro_opcoes, text="Lote", value="lote", variable=varaivel_opcoes)
+        rb_lote.grid(column=1, row=4, sticky="W")
+
+        rb_nome_pessoa_extra.select()
+
+    def barra_filtros_status_trabalho(self, barra_filtros):
+        barra_filtro_opcoes2 = ttk.Separator(barra_filtros, orient="vertical")
+        barra_filtro_opcoes2.grid(column=1, row=0, sticky="W")
+
+        varaivel_opcoes2 = StringVar(barra_filtro_opcoes2, value="nome_fantasia")
+
+        label_opcoes2 = Label(barra_filtro_opcoes2, text="Status")
+        label_opcoes2.grid(column=0, row=0, columnspan=2, sticky="W")
+
+        rb_ativo = Radiobutton(barra_filtro_opcoes2, text="ativos", value="ativo", variable=varaivel_opcoes2)
+        rb_ativo.grid(column=0, row=1, sticky="W")
+
+        rb_terminado = Radiobutton(barra_filtro_opcoes2, text="Terminados", value="terminado",
+                                   variable=varaivel_opcoes2)
+        rb_terminado.grid(column=0, row=2, sticky="W")
+
+        rb_todos = Radiobutton(barra_filtro_opcoes2, text="Todos", value="todos", variable=varaivel_opcoes2)
+        rb_todos.grid(column=0, row=3, sticky="W")
+
+        label_vazio = Label(barra_filtro_opcoes2, text="")
+        label_vazio.grid(column=0, row=4, sticky="W")
+
+        rb_ativo.select()
     def novo_cadastro_trabalho(self):
         janela = Toplevel()
         janela.focus_force()

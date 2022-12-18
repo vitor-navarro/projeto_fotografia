@@ -69,17 +69,6 @@ class Funcs():
         entry.insert(posicao, valor)
         entry.config(state="disabled")
 
-    def set_text_entry(self, entry, texto):
-        if texto is None:
-            texto = ""
-        entry.delete(0, END)
-        entry.insert(0, texto)
-        return
-    def set_textarea(self, entry, texto):
-        entry.delete(1.0, "end-1c")
-        entry.insert("end-1c", texto)
-        return
-
     def barra_alteracoes(self,janela, funcoes):
         barra_alteracoes = Separator(janela, orient="horizontal")
         barra_alteracoes.pack(fill="x")
@@ -130,3 +119,14 @@ class Funcs():
     def entry_data(self, janela):
         entry = Entry(janela)
         entry.config(validate="key", validatecommand=(entry.register(self.validadores.validador_data), "%P"))
+
+    def set_text_entry(self, entry, texto):
+        if texto is None:
+            texto = ""
+        entry.delete(0, END)
+        entry.insert(0, texto)
+        return
+    def set_textarea(self, entry, texto):
+        entry.delete(1.0, "end-1c")
+        entry.insert("end-1c", texto)
+        return
