@@ -1,6 +1,6 @@
 from modulos.auxiliares import Funcs
 
-from tkinter import Toplevel, LEFT, Button, Label, Entry, DISABLED, END, Text, StringVar, Radiobutton, BOTTOM
+from tkinter import Toplevel, LEFT, Button, Label, Entry, DISABLED, END, Text, StringVar, Radiobutton, BOTTOM, Frame, CENTER
 from tkinter.ttk import Separator, Combobox, Treeview, Scrollbar
 
 class Financeiro(Funcs):
@@ -110,9 +110,44 @@ class Financeiro(Funcs):
 
         self.barra_alteracoes(janela_financeiro,funcoes)
 
-        listagem_trabalhos_financeiro = Separator(janela_financeiro, orient="horizontal")
-        listagem_trabalhos_financeiro.pack(fill="x")
+        separador1 = Separator(janela_financeiro, orient="horizontal")
+        separador1.pack(fill="x")
 
-        self.lista_de_trabalho_financeiro(listagem_trabalhos_financeiro)
+        frame_auxiliar = Frame(separador1)
+        frame_auxiliar.pack()
+
+
+        frame1 = Frame(frame_auxiliar, borderwidth=2, relief="groove", padx=50, pady=10)
+        frame2 = Frame(frame_auxiliar, borderwidth=2, relief="groove", padx=50, pady=10)
+        frame3 = Frame(frame_auxiliar, borderwidth=2, relief="groove", padx=50, pady=10)
+        frame4 = Frame(frame_auxiliar, borderwidth=2, relief="groove", padx=50, pady=10)
+
+        saldo_atual =Label(frame1, text="Saldo atual", font=("Helvetica", 16))
+        valor_saldo_atual = Label(frame1, text="0.00", font=("Helvetica", 20))
+        a_pagar =Label(frame2, text="A pagar", font=("Helvetica", 16))
+        valor_a_pagar = Label(frame2, text="0.00", font=("Helvetica", 20))
+        a_receber =Label(frame3, text="A receber", font=("Helvetica", 16))
+        valor_a_receber =Label(frame3, text="0.00", font=("Helvetica", 20))
+        saldo_projetado =Label(frame4, text="Saldo projetado", font=("Helvetica", 16))
+        valor_saldo_projetado =Label(frame4, text="0.00", font=("Helvetica", 20))
+
+        saldo_atual.pack(anchor="nw")
+        valor_saldo_atual.pack()
+        a_pagar.pack()
+        valor_a_pagar.pack()
+        a_receber.pack()
+        valor_a_receber.pack()
+        saldo_projetado.pack()
+        valor_saldo_projetado.pack()
+
+        frame1.grid(row=0,column=0,padx=10, pady=10)
+        frame2.grid(row=0,column=1,padx=10, pady=10)
+        frame3.grid(row=0,column=2,padx=10, pady=10)
+        frame4.grid(row=0,column=3,padx=10, pady=10)
+
+        separador2 = Separator(janela_financeiro, orient="horizontal")
+        separador2.pack(fill="x")
+
+        self.lista_de_trabalho_financeiro(separador2)
 
         janela_financeiro.title("Controle Financeiro")

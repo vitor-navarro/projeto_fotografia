@@ -1,6 +1,5 @@
 import sqlite3
 
-
 def conecta_db():
     banco = sqlite3.connect("../modulos/database.db")
     cursor = banco.cursor()
