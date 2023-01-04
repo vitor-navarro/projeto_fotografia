@@ -204,6 +204,7 @@ class Pessoas(Funcs):
 
     def altera_cadastro_pessoa(self):
         pessoa = self.seleciona_item_pessoas()
+
         if pessoa is None:
             return
 
@@ -216,8 +217,6 @@ class Pessoas(Funcs):
 
         separador1 = Separator(janela, orient="horizontal")
         separador1.pack(fill="x", padx=self.paddingx, pady=self.paddingy)
-
-        codigo = pega_ultimo_id("pessoas")
 
         lb_codigo = Label(separador1, text="Código", font=self.lb_style)
         lb_codigo.grid(column=0, row=0, sticky="NW", padx=self.paddingx)

@@ -206,6 +206,7 @@ def pega_um_item_trabalho(item):
 
     trabalho = cursor.execute('SELECT * FROM sessoes WHERE id = ?', (str(item),))
     trabalho = trabalho.fetchall()
+
     desconecta_db(banco)
     return trabalho
 def pega_um_item_plano(item):
