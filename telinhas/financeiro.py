@@ -106,21 +106,44 @@ class Financeiro(Funcs):
     def janela_financeiro(self):
         janela_financeiro = Toplevel()
         self.configurar_janela_auxiliar(janela_financeiro)
-        funcoes = [self.novo_financeiro,self.altera_financeiro, self.exclui_financeiro]
 
-        self.barra_alteracoes(janela_financeiro,funcoes)
+        separador_titulo = Separator(janela_financeiro)
+        separador_titulo.pack(fill="x", padx=10, pady=10)
 
-        separador1 = Separator(janela_financeiro, orient="horizontal")
+        label_financeiro = Label(separador_titulo, text="FINANCEIRO", font=("Helvetica", 16))
+        label_financeiro.pack(side=LEFT)
+
+        separador1 = Separator(janela_financeiro)
         separador1.pack(fill="x")
 
-        frame_auxiliar = Frame(separador1)
-        frame_auxiliar.pack()
+        frame_data_inicial = Frame(separador1)
 
+        label_data_inicial = Label(frame_data_inicial, text="Data Inicial")
+        entry_data_inicial = Entry(frame_data_inicial)
 
-        frame1 = Frame(frame_auxiliar, borderwidth=2, relief="groove", padx=50, pady=10)
-        frame2 = Frame(frame_auxiliar, borderwidth=2, relief="groove", padx=50, pady=10)
-        frame3 = Frame(frame_auxiliar, borderwidth=2, relief="groove", padx=50, pady=10)
-        frame4 = Frame(frame_auxiliar, borderwidth=2, relief="groove", padx=50, pady=10)
+        frame_data_inicial.grid(column=0, row=0)
+        label_data_inicial.pack(anchor="w")
+        entry_data_inicial.pack()
+
+        frame_data_final = Frame(separador1)
+
+        label_data_final = Label(frame_data_final, text="Data Final")
+        entry_data_final = Entry(frame_data_final)
+
+        frame_data_final.grid(column=1, row=0)
+        label_data_final.pack(anchor="w")
+        entry_data_final.pack()
+
+        separador2 = Separator(janela_financeiro, orient="horizontal")
+        separador2.pack(fill="x")
+
+        frame_auxiliar2 = Frame(separador2)
+        frame_auxiliar2.pack()
+
+        frame1 = Frame(frame_auxiliar2, borderwidth=2, relief="groove", padx=50, pady=10)
+        frame2 = Frame(frame_auxiliar2, borderwidth=2, relief="groove", padx=50, pady=10)
+        frame3 = Frame(frame_auxiliar2, borderwidth=2, relief="groove", padx=50, pady=10)
+        frame4 = Frame(frame_auxiliar2, borderwidth=2, relief="groove", padx=50, pady=10)
 
         saldo_atual =Label(frame1, text="Saldo atual", font=("Helvetica", 16))
         valor_saldo_atual = Label(frame1, text="0.00", font=("Helvetica", 20))
@@ -131,7 +154,7 @@ class Financeiro(Funcs):
         saldo_projetado =Label(frame4, text="Saldo projetado", font=("Helvetica", 16))
         valor_saldo_projetado =Label(frame4, text="0.00", font=("Helvetica", 20))
 
-        saldo_atual.pack(anchor="nw")
+        saldo_atual.pack()
         valor_saldo_atual.pack()
         a_pagar.pack()
         valor_a_pagar.pack()
@@ -145,9 +168,9 @@ class Financeiro(Funcs):
         frame3.grid(row=0,column=2,padx=10, pady=10)
         frame4.grid(row=0,column=3,padx=10, pady=10)
 
-        separador2 = Separator(janela_financeiro, orient="horizontal")
-        separador2.pack(fill="x")
+        separador3 = Separator(janela_financeiro, orient="horizontal")
+        separador3.pack(fill="x")
 
-        self.lista_de_trabalho_financeiro(separador2)
+        self.lista_de_trabalho_financeiro(separador3)
 
         janela_financeiro.title("Controle Financeiro")
