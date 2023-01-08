@@ -199,7 +199,7 @@ class Pessoas(Funcs):
         grava = Button(separador9, text="GRAVA", font=self.lb_style, command=grava_db_pessoa_args)
         grava.grid(column=0, row=0, sticky="WS")
 
-        cancela = Button(separador9, text="CANCELA", font=self.lb_style)
+        cancela = Button(separador9, text="CANCELA", font=self.lb_style, command= janela.destroy)
         cancela.grid(column=1, row=0, sticky="WS")
 
     def altera_cadastro_pessoa(self):
@@ -411,7 +411,7 @@ class Pessoas(Funcs):
         grava = Button(separador9, text="GRAVA", font=self.lb_style, command=altera_db_pessoa_args)
         grava.grid(column=0, row=0, sticky="WS")
 
-        cancela = Button(separador9, text="CANCELA", font=self.lb_style)
+        cancela = Button(separador9, text="CANCELA", font=self.lb_style, command= janela.destroy)
         cancela.grid(column=1, row=0, sticky="WS")
 
     def exclui_cadastro_pessoa(self):

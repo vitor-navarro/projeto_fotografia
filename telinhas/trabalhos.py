@@ -1,6 +1,6 @@
 from modulos.auxiliares import Funcs
 from modulos.database import pega_ultimo_id, grava_db_trabalhos, pega_todas_trabalhos_lista, pega_um_item_trabalho, \
-    altera_db_trabalhos
+    altera_db_trabalhos, deleta_db_trabalho
 
 from tkinter import Toplevel, LEFT, Button, Label, Entry, DISABLED, END, Text, StringVar, Radiobutton, BOTTOM
 from tkinter.ttk import Separator, Combobox, Treeview, Scrollbar
@@ -663,8 +663,11 @@ class Trabalhos(Funcs):
         cancela.grid(column=1, row=0, sticky="WS")
 
     def exclui_cadastro_trabalho(self):
-        print("Tela ainda não cadastrada")
-        pass
+        trabalho = self.seleciona_item_trabalhos()
+        id = trabalho[0][0]
+        deleta_db_trabalho(id)
+        self.janela_trabalhos_var.destroy()
+        self.janela_trabalhos()
     def barra_filtros_opcoes_trabalho(self,barra_filtros):
         # opções 1
         barra_filtro_opcoes = Separator(barra_filtros, orient="vertical")

@@ -229,6 +229,14 @@ def altera_db_trabalhos(entry_codigo,entry_cadastro,entry_data_sessao,entry_hora
     banco.commit()
 
     desconecta_db(banco)
+
+def deleta_db_trabalho(id):
+    banco, cursor = conecta_db()
+    cursor.execute(f"DELETE FROM sessoes WHERE id = ?", (str(id),))
+
+    banco.commit()
+
+    desconecta_db(banco)
 def pega_um_item_trabalho(item):
     banco, cursor = conecta_db()
 
