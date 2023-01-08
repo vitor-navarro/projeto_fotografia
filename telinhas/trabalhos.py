@@ -1,5 +1,6 @@
 from modulos.auxiliares import Funcs
-from modulos.database import pega_ultimo_id, grava_db_trabalhos, pega_todas_trabalhos_lista, pega_um_item_trabalho
+from modulos.database import pega_ultimo_id, grava_db_trabalhos, pega_todas_trabalhos_lista, pega_um_item_trabalho, \
+    altera_db_trabalhos
 
 from tkinter import Toplevel, LEFT, Button, Label, Entry, DISABLED, END, Text, StringVar, Radiobutton, BOTTOM
 from tkinter.ttk import Separator, Combobox, Treeview, Scrollbar
@@ -322,6 +323,7 @@ class Trabalhos(Funcs):
 
         bt_busca_sessao = Button(separador3, text="busca", font=self.btn_style, command=buscar_tipos_sessao_trabalho_args)
         bt_busca_sessao.grid(column=0, row=1)
+
         def buscar_plano_sessao_trabalho_args():
             coleta_argumentos()
             self.class_planos.janela_planos(tipo = "escolha")
@@ -376,6 +378,16 @@ class Trabalhos(Funcs):
 
         trabalho = self.seleciona_item_trabalhos()[0]
 
+        self.codigo_pessoa_trabalho = trabalho[1]
+        self.nome_pessoa_trabalho = trabalho[2]
+        self.codigo_tipo_trabalho = trabalho[3]
+        self.nome_tipo_trabalho = trabalho[4]
+        self.codigo_plano_trabalho = trabalho[5]
+        self.nome_plano_trabalho = trabalho[6]
+        self.valores_pagamento.append(trabalho[12])
+        self.valores_pagamento.append(trabalho[14])
+        self.valores_pagamento.append(trabalho[16])
+
         if trabalho is None:
             return
 
@@ -419,7 +431,7 @@ class Trabalhos(Funcs):
         lb_horario_sessao = Label(separador1, text="Horário da Sessão", font=self.lb_style)
         lb_horario_sessao.grid(column=3, row=0, sticky="W", padx=self.paddingx)
         self.entry_horario_sessao = Entry(separador1, font=self.entry_style, width=10)
-        self.insert_entry_desabilitado(self.entry_horario_sessao,trabalho[8])
+        self.entry_horario_sessao.insert(END,trabalho[8])
         self.entry_horario_sessao.config(validate="key", validatecommand=validador_horario_args)
         self.entry_horario_sessao.grid(column=3, row=1, padx=self.paddingx)
         self.entry_horario_sessao.bind("<Any-KeyPress>", self.set_ultimo_caractere_digitado)
@@ -435,6 +447,7 @@ class Trabalhos(Funcs):
         lb_nome.grid(column=1, row=0, sticky="W", padx=self.paddingx)
         entry_nome = Entry(separador2, font=self.entry_style, width=89, state=DISABLED)
         entry_nome.grid(column=1, row=1, padx=self.paddingx)
+        self.insert_entry_desabilitado(entry_nome, trabalho[2])
         self.entry_nome = entry_nome
 
         separador3 = Separator(janela, orient="horizontal")
@@ -444,16 +457,14 @@ class Trabalhos(Funcs):
         lb_tipo_sessao = Label(separador3, text="tipo da Sessão", font=self.lb_style)
         lb_tipo_sessao.grid(column=1, row=0, sticky="W", padx=self.paddingx)
         cb_tipo_sessao = Entry(separador3, font=self.entry_style, width=20, state=DISABLED)
-        # cb_tipo_sessao = ttk.Combobox(separador1, font=self.entry_style, width=15, values=tipos_possiveis, state="readonly")
-        # cb_tipo_sessao.set("Ativo")
+        self.insert_entry_desabilitado(cb_tipo_sessao, trabalho[4])
         cb_tipo_sessao.grid(column=1, row=1, padx=self.paddingx, sticky="W")
         self.entry_tipo = cb_tipo_sessao
 
         lb_plano = Label(separador3, text="Plano", font=self.lb_style)
         lb_plano.grid(column=3, row=0, sticky="W", padx=self.paddingx)
         cb_plano = Entry(separador3, font=self.entry_style, width=20, state=DISABLED)
-        # cb_plano = ttk.Combobox(separador1, font=self.entry_style, width=15, values=planos_possiveis, state="readonly")
-        # cb_plano.set("Ativo")
+        self.insert_entry_desabilitado(cb_plano, trabalho[6])
         cb_plano.grid(column=3, row=1, padx=self.paddingx, sticky="W")
         self.entry_plano = cb_plano
 
@@ -477,29 +488,31 @@ class Trabalhos(Funcs):
         lb_condicao_pagamento_numero1.grid(column=0, row=1, padx=self.paddingx, pady=self.paddingy)
         cb_condicao_pagamento1 = Combobox(separador4, font=self.entry_style, width=10, values=opcoes_pagamento,
                                           state="readonly")
-        cb_condicao_pagamento1.set("DINHEIRO")
+        cb_condicao_pagamento1.set(trabalho[11])
         cb_condicao_pagamento1.grid(column=1, row=1, padx=self.paddingx, pady=self.paddingy)
         entry_valor1 = Entry(separador4, font=self.entry_style, width=10)
         entry_valor1.grid(column=3, row=1, padx=self.paddingx, pady=self.paddingy)
+        entry_valor1.insert(END, trabalho[12])
 
         lb_condicao_pagamento_numero2 = Label(separador4, text="2º", font=self.lb_style)
         lb_condicao_pagamento_numero2.grid(column=0, row=2, padx=self.paddingx, pady=self.paddingy)
         cb_condicao_pagamento2 = Combobox(separador4, font=self.entry_style, width=10, values=opcoes_pagamento,
                                           state="readonly")
-        cb_condicao_pagamento2.set("DINHEIRO")
+        cb_condicao_pagamento2.set(trabalho[13])
         cb_condicao_pagamento2.grid(column=1, row=2, padx=self.paddingx, pady=self.paddingy)
         entry_valor2 = Entry(separador4, font=self.entry_style, width=10)
         entry_valor2.grid(column=3, row=2, padx=self.paddingx, pady=self.paddingy)
+        entry_valor2.insert(END, trabalho[14])
 
         lb_condicao_pagamento_numero3 = Label(separador4, text="3º", font=self.lb_style)
         lb_condicao_pagamento_numero3.grid(column=0, row=3, padx=self.paddingx, pady=self.paddingy)
         cb_condicao_pagamento3 = Combobox(separador4, font=self.entry_style, width=10, values=opcoes_pagamento,
                                           state="readonly")
-        cb_condicao_pagamento3.set("DINHEIRO")
+        cb_condicao_pagamento3.set(trabalho[15])
         cb_condicao_pagamento3.grid(column=1, row=3, padx=self.paddingx, pady=self.paddingy)
         entry_valor3 = Entry(separador4, font=self.entry_style, width=10)
         entry_valor3.grid(column=3, row=3, padx=self.paddingx, pady=self.paddingy)
-
+        entry_valor3.insert(END, trabalho[16])
         def soma_condicao_pagamento(event):
             try:
                 valor1 = entry_valor1.get().replace(",", ".")
@@ -538,6 +551,7 @@ class Trabalhos(Funcs):
         entry_valor3.bind("<FocusOut>", soma_condicao_pagamento)
 
         entry_total.grid(column=5, row=3, padx=self.paddingx, pady=self.paddingy)
+        self.insert_entry_desabilitado(entry_total, trabalho[17])
 
         separador5 = Separator(janela, orient="horizontal")
         separador5.pack(fill="x", padx=self.paddingx, pady=self.paddingy)
@@ -546,7 +560,7 @@ class Trabalhos(Funcs):
         lb_observacoes.grid(column=0, row=0, padx=self.paddingx, pady=self.paddingy, sticky="W")
         textarea_observacoes = Text(separador5, font=self.entry_style, height=6)
         textarea_observacoes.grid(column=0, row=1, padx=self.paddingx, pady=self.paddingy, sticky="W")
-
+        self.set_textarea(textarea_observacoes, trabalho[18])
         def coleta_argumentos():
             argumentos = []
             argumentos.append(entry_codigo.get())
@@ -604,7 +618,7 @@ class Trabalhos(Funcs):
             self.insert_entry_desabilitado(entry_total, self.argumentos[11])
             self.set_textarea(textarea_observacoes, self.argumentos[12])
 
-        def grava_db_trabalho_args():
+        def altera_db_trabalho_args():
             if self.nome_pessoa_trabalho is None:
                 self.lb_aviso_erro['text'] = "Nome é obrigatório"
             elif self.nome_tipo_trabalho is None:
@@ -614,7 +628,7 @@ class Trabalhos(Funcs):
             elif len(self.valores_pagamento) == 0:
                 self.lb_aviso_erro['text'] = "Insira ao menos uma forma de pagamento"
             else:
-                grava_db_trabalhos(entry_codigo.get, entry_cadastro.get, entry_data_sessao.get,
+                altera_db_trabalhos(entry_codigo.get, entry_cadastro.get, entry_data_sessao.get,
                                    self.entry_horario_sessao.get, self.codigo_pessoa_trabalho, entry_nome.get,
                                    cb_tipo_sessao.get, self.codigo_tipo_trabalho, cb_plano.get,
                                    self.codigo_plano_trabalho, cb_condicao_pagamento1.get, self.valores_pagamento[0],
@@ -625,7 +639,7 @@ class Trabalhos(Funcs):
                 self.janela_trabalhos_var.destroy()
                 self.janela_trabalhos()
 
-        grava = Button(separador9, text="GRAVA", font=self.lb_style, command=grava_db_trabalho_args)
+        grava = Button(separador9, text="GRAVA", font=self.lb_style, command=altera_db_trabalho_args)
         grava.grid(column=0, row=0, sticky="WS")
 
         def cancelar():

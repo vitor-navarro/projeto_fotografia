@@ -201,6 +201,34 @@ def grava_db_trabalhos(entry_codigo,entry_cadastro,entry_data_sessao,entry_horar
     banco.commit()
 
     desconecta_db(banco)
+
+def altera_db_trabalhos(entry_codigo,entry_cadastro,entry_data_sessao,entry_horario_sessao,codigo_pessoa_trabalho,entry_nome,cb_tipo_sessao,codigo_tipo_trabalho,cb_plano,codigo_plano_trabalho,pagamento1,entry_valor1,pagamento2,entry_valor2,pagamento3,entry_valor3,entry_total,textarea_observacoes):
+    id = int(entry_codigo())
+    entry_cadastro = entry_cadastro()
+    entry_data_sessao = entry_data_sessao()
+    entry_horario_sessao = entry_horario_sessao()
+    codigo_pessoa_trabalho = int(codigo_pessoa_trabalho)
+    entry_nome = entry_nome()
+    cb_tipo_sessao = cb_tipo_sessao()
+    codigo_tipo_trabalho = int(codigo_tipo_trabalho)
+    cb_plano = cb_plano()
+    codigo_plano_trabalho = int(codigo_plano_trabalho)
+    pagamento1 = pagamento1()
+    entry_valor1 = float(entry_valor1)
+    pagamento2 = pagamento2()
+    entry_valor2 = float(entry_valor2)
+    pagamento3 = pagamento3()
+    entry_valor3 = float(entry_valor3)
+    entry_total = float(entry_total())
+    textarea_observacoes = textarea_observacoes("1.0","end-1c")
+
+
+    banco, cursor = conecta_db()
+    cursor.execute(f"UPDATE sessoes SET pessoa_sessao = ?,nome_pessoa = ?, id_tipo=?, tipo = ?, plano_contratado=?,plano_nome=?, data=?,hora=?, pagamento1=?, valor_pagamento1=?, pagamento2=?, valor_pagamento2=?,pagamento3=?, valor_pagamento3=?, total_pagamentos=?, observasoes=?,data_cadastro=? WHERE id = ?",(codigo_pessoa_trabalho,entry_nome,codigo_tipo_trabalho,cb_tipo_sessao,codigo_plano_trabalho,cb_plano,entry_data_sessao,entry_horario_sessao,pagamento1,entry_valor1,pagamento2,entry_valor2,pagamento3,entry_valor3,entry_total,textarea_observacoes,entry_cadastro,id))
+    cursor.execute("select * from sessoes")
+    banco.commit()
+
+    desconecta_db(banco)
 def pega_um_item_trabalho(item):
     banco, cursor = conecta_db()
 

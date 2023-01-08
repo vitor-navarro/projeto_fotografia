@@ -413,7 +413,6 @@ class Pessoas(Funcs):
 
         cancela = Button(separador9, text="CANCELA", font=self.lb_style)
         cancela.grid(column=1, row=0, sticky="WS")
-        pass
 
     def exclui_cadastro_pessoa(self):
         pessoa = self.seleciona_item_pessoas()
