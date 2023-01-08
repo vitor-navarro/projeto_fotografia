@@ -4,6 +4,7 @@ from modulos.database import pega_ultimo_id, grava_db_trabalhos, pega_todas_trab
 
 from tkinter import Toplevel, LEFT, Button, Label, Entry, DISABLED, END, Text, StringVar, Radiobutton, BOTTOM
 from tkinter.ttk import Separator, Combobox, Treeview, Scrollbar
+from functools import partial
 
 from telinhas.pessoas import Pessoas
 from telinhas.tipos import Tipos
@@ -31,6 +32,17 @@ class Trabalhos(Funcs):
         self.valores_pagamento = []
         self.event_ultimo_caractere_digitrado = None
         self.argumentos = None
+
+    def on_closing(self,janela):
+        '''
+        essa função deve ser executada quando o usuário clicar para fechar a janela.
+        adicione na função:
+        janela.protocol("WM_DELETE_WINDOW", functools.partial(self.on_closing, janela))
+        '''
+        self.retorna_variaveis_none_trabalhos()
+        janela.destroy()
+        return
+
     def retorna_variaveis_none_trabalhos(self):
         self.argumentos = None
         self.codigo_pessoa_trabalho = None
@@ -134,7 +146,7 @@ class Trabalhos(Funcs):
     def novo_cadastro_trabalho(self):
         janela = Toplevel()
         janela.focus_force()
-
+        janela.protocol("WM_DELETE_WINDOW", partial(self.on_closing, janela))
         janela.title("Cadastro Trabalho")
 
         self.configurar_janela_auxiliar(janela)
@@ -393,6 +405,7 @@ class Trabalhos(Funcs):
 
         janela = Toplevel()
         janela.focus_force()
+        janela.protocol("WM_DELETE_WINDOW", partial(self.on_closing, janela))
 
         janela.title("Cadastro Trabalho")
 
