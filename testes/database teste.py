@@ -98,6 +98,8 @@ cursor.execute("CREATE TABLE sessoes (id INTEGER PRIMARY KEY,"
                "total_pagamentos text,"
                "observasoes text,"
                "data_cadastro text,"
+               "quantidade_foto_extra text,"
+               "valor_foto_extra text,"
                "FOREIGN KEY (pessoa_sessao) REFERENCES pessoas(id),"
                "FOREIGN KEY (id_tipo) REFERENCES tipos(id),"
                "FOREIGN KEY (plano_contratado) REFERENCES planos(id))")

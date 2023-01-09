@@ -34,6 +34,7 @@ class Trabalhos(Funcs):
         self.entry_valor1 = None
         self.entry_valor2 = None
         self.entry_valor3 = None
+        self.entry_quantidade_fotos = None
         self.entry_valor_foto_extra = None
         self.argumentos = None
 
@@ -340,6 +341,8 @@ class Trabalhos(Funcs):
             argumentos.append(self.entry_valor3.get())
             argumentos.append(self.entry_total.get())
             argumentos.append(textarea_observacoes.get("1.0","end-1c"))
+            argumentos.append(self.entry_quantidade_fotos.get())
+            argumentos.append(self.entry_valor_foto_extra.get())
             self.argumentos = argumentos
         def buscar_pessoa_trabalho_args():
             coleta_argumentos()
@@ -378,6 +381,8 @@ class Trabalhos(Funcs):
             self.set_text_entry(self.entry_valor3,self.argumentos[10])
             self.insert_entry_desabilitado(self.entry_total,self.argumentos[11])
             self.set_textarea(textarea_observacoes,self.argumentos[12])
+            self.set_text_entry(self.entry_quantidade_fotos, self.argumentos[13])
+            self.set_text_entry(self.entry_valor_foto_extra, self.argumentos[14])
         def grava_db_trabalho_args():
             if self.nome_pessoa_trabalho is None:
                 self.lb_aviso_erro['text'] = "Nome é obrigatório"
@@ -388,7 +393,7 @@ class Trabalhos(Funcs):
             elif len(self.valores_pagamento) == 0:
                 self.lb_aviso_erro['text'] = "Insira ao menos uma forma de pagamento"
             else:
-                grava_db_trabalhos(entry_codigo.get,entry_cadastro.get,entry_data_sessao.get,self.entry_horario_sessao.get,self.codigo_pessoa_trabalho,entry_nome.get,cb_tipo_sessao.get,self.codigo_tipo_trabalho,cb_plano.get,self.codigo_plano_trabalho,cb_condicao_pagamento1.get,self.valores_pagamento[0],cb_condicao_pagamento2.get,self.valores_pagamento[1],cb_condicao_pagamento3.get,self.valores_pagamento[2],self.entry_total.get,textarea_observacoes.get)
+                grava_db_trabalhos(entry_codigo.get,entry_cadastro.get,entry_data_sessao.get,self.entry_horario_sessao.get,self.codigo_pessoa_trabalho,entry_nome.get,cb_tipo_sessao.get,self.codigo_tipo_trabalho,cb_plano.get,self.codigo_plano_trabalho,cb_condicao_pagamento1.get,self.valores_pagamento[0],cb_condicao_pagamento2.get,self.valores_pagamento[1],cb_condicao_pagamento3.get,self.valores_pagamento[2],self.entry_total.get,textarea_observacoes.get,self.entry_quantidade_fotos.get,self.entry_valor_foto_extra.get)
                 self.retorna_variaveis_none_trabalhos()
                 janela.destroy()
                 self.janela_trabalhos_var.destroy()
@@ -504,11 +509,13 @@ class Trabalhos(Funcs):
         lb_quantidade_fotos.grid(column=4, row=0, sticky="W", padx=self.paddingx)
         self.entry_quantidade_fotos = Entry(separador3, font=self.entry_style, width=20)
         self.entry_quantidade_fotos.grid(column=4, row=1, padx=self.paddingx, sticky="W")
+        self.set_text_entry(self.entry_quantidade_fotos,trabalho[20])
 
         lb_valor_foto_extra = Label(separador3, text="Valor_foto_extra", font=self.lb_style)
         lb_valor_foto_extra.grid(column=5, row=0, sticky="W", padx=self.paddingx)
         self.entry_valor_foto_extra = Entry(separador3, font=self.entry_style, width=12)
         self.entry_valor_foto_extra.grid(column=5, row=1, padx=self.paddingx, sticky="W")
+        self.set_text_entry(self.entry_valor_foto_extra,trabalho[21])
 
         separador4 = Separator(janela, orient="horizontal")
         separador4.pack(fill="x", padx=self.paddingx, pady=self.paddingy)
@@ -618,6 +625,8 @@ class Trabalhos(Funcs):
             argumentos.append(entry_valor3.get())
             argumentos.append(entry_total.get())
             argumentos.append(textarea_observacoes.get("1.0", "end-1c"))
+            argumentos.append(self.entry_quantidade_fotos.get())
+            argumentos.append(self.entry_valor_foto_extra.get())
             self.argumentos = argumentos
 
         def buscar_pessoa_trabalho_args():
@@ -659,6 +668,8 @@ class Trabalhos(Funcs):
             self.set_text_entry(entry_valor3, self.argumentos[10])
             self.insert_entry_desabilitado(entry_total, self.argumentos[11])
             self.set_textarea(textarea_observacoes, self.argumentos[12])
+            self.set_text_entry(self.entry_quantidade_fotos, self.argumentos[13])
+            self.set_text_entry(self.entry_valor_foto_extra, self.argumentos[14])
 
         def altera_db_trabalho_args():
             if self.nome_pessoa_trabalho is None:
@@ -675,7 +686,7 @@ class Trabalhos(Funcs):
                                    cb_tipo_sessao.get, self.codigo_tipo_trabalho, cb_plano.get,
                                    self.codigo_plano_trabalho, cb_condicao_pagamento1.get, self.valores_pagamento[0],
                                    cb_condicao_pagamento2.get, self.valores_pagamento[1], cb_condicao_pagamento3.get,
-                                   self.valores_pagamento[2], entry_total.get, textarea_observacoes.get)
+                                   self.valores_pagamento[2], entry_total.get, textarea_observacoes.get,self.entry_quantidade_fotos.get,self.entry_valor_foto_extra.get)
                 self.retorna_variaveis_none_trabalhos()
                 janela.destroy()
                 self.janela_trabalhos_var.destroy()

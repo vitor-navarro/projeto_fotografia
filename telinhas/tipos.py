@@ -54,9 +54,12 @@ class Tipos(Funcs):
 
         separador5 = Separator(janela, orient="horizontal")
         separador5.pack(fill="x", padx=self.paddingx, pady=self.paddingy, side=BOTTOM)
+        def grava_db_pessoa_args():
+            grava_db_tipos(entry_codigo.get, entry_cadastro.get, entry_nome.get,entry_descricao.get)
+            self.janela_tipos_var = None
+            janela.destroy()
+            self.janela_tipos()
 
-        grava_db_pessoa_args = partial(grava_db_tipos, entry_codigo.get, entry_cadastro.get, entry_nome.get,
-                                       entry_descricao.get)
         grava = Button(separador5, text="GRAVA", font=self.lb_style, command=grava_db_pessoa_args)
         grava.grid(column=0, row=0, sticky="WS")
 

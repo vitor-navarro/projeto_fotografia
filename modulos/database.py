@@ -54,7 +54,6 @@ def grava_db_pessoa(entry_codigo_valor,entry_cadastro_valor,cb_status_valor,cb_t
 
     banco, cursor = conecta_db()
 
-
     cursor.execute(f"INSERT INTO pessoas (data_cadastro, nome_razao_social, status, tipo,cpf_cnpj, apelido_fantasia,rg_inscricao_estadual, data_nascimento, endereco, numero_casa, complemento,bairro, cidade, cep, uf,fone1, operadora1, fone2, operadora2, fone3, operadora3, email) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",(cadastro_valor,nome_valor,status_valor,tipo_valor,cpf_cnpj_valor,apelido_valor,rg_inscricao_valor,nascimento_valor,endereco_valor,numero_casa_valor,complemento_valor,bairro_valor,nome_cidade_valor,cep_valor,uf_valor,fone1_valor,operadora1_valor,fone2_valor,operadora2_valor,fone3_valor,operadora3_valor,email_valor))
     cursor.execute("select * from pessoas")
     print(cursor.fetchall())
@@ -172,7 +171,7 @@ def pega_todos_planos_sessoes_lista():
 
     return lista
 
-def grava_db_trabalhos(entry_codigo,entry_cadastro,entry_data_sessao,entry_horario_sessao,codigo_pessoa_trabalho,entry_nome,cb_tipo_sessao,codigo_tipo_trabalho,cb_plano,codigo_plano_trabalho,pagamento1,entry_valor1,pagamento2,entry_valor2,pagamento3,entry_valor3,entry_total,textarea_observacoes):
+def grava_db_trabalhos(entry_codigo,entry_cadastro,entry_data_sessao,entry_horario_sessao,codigo_pessoa_trabalho,entry_nome,cb_tipo_sessao,codigo_tipo_trabalho,cb_plano,codigo_plano_trabalho,pagamento1,entry_valor1,pagamento2,entry_valor2,pagamento3,entry_valor3,entry_total,textarea_observacoes,entry_quantidade_foto_extra,entry_valor_foto_extra):
     entry_codigo = int(entry_codigo())
     entry_cadastro = entry_cadastro()
     entry_data_sessao = entry_data_sessao()
@@ -191,18 +190,20 @@ def grava_db_trabalhos(entry_codigo,entry_cadastro,entry_data_sessao,entry_horar
     entry_valor3 = float(entry_valor3)
     entry_total = float(entry_total())
     textarea_observacoes = textarea_observacoes("1.0","end-1c")
+    quantidade_foto_extra = entry_quantidade_foto_extra()
+    valor_foto_extra = entry_valor_foto_extra()
 
 
     banco, cursor = conecta_db()
 #obs ao dar o return, mandar a informação self.argumentos = None
-    cursor.execute(f"INSERT INTO sessoes (pessoa_sessao,nome_pessoa,id_tipo,tipo,plano_contratado,plano_nome,data,hora,pagamento1,valor_pagamento1,pagamento2,valor_pagamento2,pagamento3,valor_pagamento3,total_pagamentos,observasoes,data_cadastro) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",(codigo_pessoa_trabalho,entry_nome,codigo_tipo_trabalho,cb_tipo_sessao,codigo_plano_trabalho,cb_plano,entry_data_sessao,entry_horario_sessao,pagamento1,entry_valor1,pagamento2,entry_valor2,pagamento3,entry_valor3,entry_total,textarea_observacoes,entry_cadastro))
+    cursor.execute(f"INSERT INTO sessoes (pessoa_sessao,nome_pessoa,id_tipo,tipo,plano_contratado,plano_nome,data,hora,pagamento1,valor_pagamento1,pagamento2,valor_pagamento2,pagamento3,valor_pagamento3,total_pagamentos,observasoes,data_cadastro,quantidade_foto_extra,valor_foto_extra) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",(codigo_pessoa_trabalho,entry_nome,codigo_tipo_trabalho,cb_tipo_sessao,codigo_plano_trabalho,cb_plano,entry_data_sessao,entry_horario_sessao,pagamento1,entry_valor1,pagamento2,entry_valor2,pagamento3,entry_valor3,entry_total,textarea_observacoes,entry_cadastro,quantidade_foto_extra,valor_foto_extra))
     cursor.execute("select * from sessoes")
     print(cursor.fetchall())
     banco.commit()
 
     desconecta_db(banco)
 
-def altera_db_trabalhos(entry_codigo,entry_cadastro,entry_data_sessao,entry_horario_sessao,codigo_pessoa_trabalho,entry_nome,cb_tipo_sessao,codigo_tipo_trabalho,cb_plano,codigo_plano_trabalho,pagamento1,entry_valor1,pagamento2,entry_valor2,pagamento3,entry_valor3,entry_total,textarea_observacoes):
+def altera_db_trabalhos(entry_codigo,entry_cadastro,entry_data_sessao,entry_horario_sessao,codigo_pessoa_trabalho,entry_nome,cb_tipo_sessao,codigo_tipo_trabalho,cb_plano,codigo_plano_trabalho,pagamento1,entry_valor1,pagamento2,entry_valor2,pagamento3,entry_valor3,entry_total,textarea_observacoes,entry_quantidade_foto_extra,entry_valor_foto_extra):
     id = int(entry_codigo())
     entry_cadastro = entry_cadastro()
     entry_data_sessao = entry_data_sessao()
@@ -221,10 +222,12 @@ def altera_db_trabalhos(entry_codigo,entry_cadastro,entry_data_sessao,entry_hora
     entry_valor3 = float(entry_valor3)
     entry_total = float(entry_total())
     textarea_observacoes = textarea_observacoes("1.0","end-1c")
+    quantidade_foto_extra = entry_quantidade_foto_extra()
+    valor_foto_extra = entry_valor_foto_extra()
 
 
     banco, cursor = conecta_db()
-    cursor.execute(f"UPDATE sessoes SET pessoa_sessao = ?,nome_pessoa = ?, id_tipo=?, tipo = ?, plano_contratado=?,plano_nome=?, data=?,hora=?, pagamento1=?, valor_pagamento1=?, pagamento2=?, valor_pagamento2=?,pagamento3=?, valor_pagamento3=?, total_pagamentos=?, observasoes=?,data_cadastro=? WHERE id = ?",(codigo_pessoa_trabalho,entry_nome,codigo_tipo_trabalho,cb_tipo_sessao,codigo_plano_trabalho,cb_plano,entry_data_sessao,entry_horario_sessao,pagamento1,entry_valor1,pagamento2,entry_valor2,pagamento3,entry_valor3,entry_total,textarea_observacoes,entry_cadastro,id))
+    cursor.execute(f"UPDATE sessoes SET pessoa_sessao = ?,nome_pessoa = ?, id_tipo=?, tipo = ?, plano_contratado=?,plano_nome=?, data=?,hora=?, pagamento1=?, valor_pagamento1=?, pagamento2=?, valor_pagamento2=?,pagamento3=?, valor_pagamento3=?, total_pagamentos=?, observasoes=?,data_cadastro=?,quantidade_foto_extra = ?, valor_foto_extra = ?  WHERE id = ?",(codigo_pessoa_trabalho,entry_nome,codigo_tipo_trabalho,cb_tipo_sessao,codigo_plano_trabalho,cb_plano,entry_data_sessao,entry_horario_sessao,pagamento1,entry_valor1,pagamento2,entry_valor2,pagamento3,entry_valor3,entry_total,textarea_observacoes,entry_cadastro,quantidade_foto_extra, valor_foto_extra, id))
     cursor.execute("select * from sessoes")
     banco.commit()
 
@@ -267,7 +270,7 @@ def grava_db_planos(entry_codigo,entry_cadastro,entry_nome,entry_descricao,entry
 
     banco, cursor = conecta_db()
 
-    cursor.execute(f"UPDATE INTO planos (nome_plano, quantidade_fotos, valor, valor_foto_extra,descricao, data_criacao) VALUES (?,?,?,?,?,?)",(entry_nome,entry_quantidade_fotos,entry_valor_base,entry_valor_foto_extra,entry_descricao,entry_cadastro))
+    cursor.execute(f"INSERT INTO planos (nome_plano, quantidade_fotos, valor, valor_foto_extra,descricao, data_criacao) VALUES (?,?,?,?,?,?)",(entry_nome,entry_quantidade_fotos,entry_valor_base,entry_valor_foto_extra,entry_descricao,entry_cadastro))
     cursor.execute("select * from planos")
     banco.commit()
 
