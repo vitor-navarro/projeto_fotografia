@@ -31,6 +31,10 @@ class Trabalhos(Funcs):
         self.nome_plano_trabalho = None
         self.valores_pagamento = []
         self.event_ultimo_caractere_digitrado = None
+        self.entry_valor1 = None
+        self.entry_valor2 = None
+        self.entry_valor3 = None
+        self.entry_valor_foto_extra = None
         self.argumentos = None
 
     def on_closing(self,janela):
@@ -61,19 +65,23 @@ class Trabalhos(Funcs):
     def set_entry_horario_text(self, texto_entry):
         self.entry_horario_sessao.delete(0,END)
         self.entry_horario_sessao.insert(0,texto_entry)
-    def set_codigo_nome_trabalho(self,codigo,nome):
+    def set_argumentos_nome_trabalho(self, codigo, nome):
         self.insert_entry_desabilitado(entry=self.entry_nome, valor=nome)
         self.nome_pessoa_trabalho = nome
         self.codigo_pessoa_trabalho = codigo
 
-    def set_codigo_tipo_trabalho(self,codigo,tipo):
+    def set_argumentos_tipo_trabalho(self, codigo, tipo):
         self.insert_entry_desabilitado(entry=self.entry_tipo, valor=tipo)
         self.codigo_tipo_trabalho = codigo
         self.nome_tipo_trabalho = tipo
-    def set_codigo_plano_trabalho(self,codigo,plano):
+    def set_argumentos_plano_trabalho(self, codigo, plano, quantidade_fotos, valor, valor_foto_extra):
         self.insert_entry_desabilitado(entry=self.entry_plano, valor=plano)
         self.codigo_plano_trabalho = codigo
         self.nome_plano_trabalho = plano
+        self.set_text_entry(self.entry_quantidade_fotos, quantidade_fotos)
+        self.set_text_entry(self.entry_valor1, valor)
+        self.set_text_entry(self.entry_valor_foto_extra, valor_foto_extra)
+        self.soma_condicao_pagamento(event=None)
     def buscar_pessoa_trabalho(self,janela_trabalhos):
         self.class_pessoas.janela_pessoas(btn_grava_escolhe = "escolhe")
 
@@ -83,6 +91,40 @@ class Trabalhos(Funcs):
             record = item['values']
             trabalho = pega_um_item_trabalho(record[0])
             return trabalho
+    def soma_condicao_pagamento(self, event):
+        try:
+            valor1 = self.entry_valor1.get().replace(",", ".")
+            valor2 = self.entry_valor2.get().replace(",", ".")
+            valor3 = self.entry_valor3.get().replace(",", ".")
+            self.lb_aviso_erro['text'] = "."
+            self.valores_pagamento = []
+
+            if valor1 == '':
+                valor1 = "0"
+                valor1 = float(valor1)
+            else:
+                valor1 = float(valor1)
+            if valor2 == '':
+                valor2 = "0"
+                valor2 = float(valor2)
+            else:
+                valor2 = float(valor2)
+            if valor3 == '':
+                valor3 = "0"
+                valor3 = float(valor3)
+            else:
+                valor3 = float(valor3)
+
+            total = str(valor1 + valor2 + valor3)
+            self.valores_pagamento.append(valor1)
+            self.valores_pagamento.append(valor2)
+            self.valores_pagamento.append(valor3)
+            self.insert_entry_desabilitado(self.entry_total, total, 0)
+            return
+        except ValueError:
+            self.lb_aviso_erro['text'] = "VERIFIQUE OS VALORES DO PAGAMENTO"
+        except AttributeError:
+            pass
     def barra_filtros_opcoes_trabalho(self,barra_filtros):
         # opções 1
         barra_filtro_opcoes = Separator(barra_filtros, orient="vertical")
@@ -219,6 +261,16 @@ class Trabalhos(Funcs):
         cb_plano.grid(column=3, row=1, padx=self.paddingx,sticky="W")
         self.entry_plano = cb_plano
 
+        lb_quantidade_fotos = Label(separador3, text="Quantidade de Fotos", font=self.lb_style)
+        lb_quantidade_fotos.grid(column=4, row=0, sticky="W", padx=self.paddingx)
+        self.entry_quantidade_fotos = Entry(separador3, font=self.entry_style, width=20)
+        self.entry_quantidade_fotos.grid(column=4, row=1, padx=self.paddingx, sticky="W")
+
+        lb_valor_foto_extra = Label(separador3, text="Valor_foto_extra", font=self.lb_style)
+        lb_valor_foto_extra.grid(column=5, row=0, sticky="W", padx=self.paddingx)
+        self.entry_valor_foto_extra = Entry(separador3, font=self.entry_style, width=12)
+        self.entry_valor_foto_extra.grid(column=5, row=1, padx=self.paddingx, sticky="W")
+
         separador4 = Separator(janela, orient="horizontal")
         separador4.pack(fill="x", padx=self.paddingx, pady=self.paddingy)
 
@@ -233,70 +285,37 @@ class Trabalhos(Funcs):
         lb_total = Label(separador4, text="Total", font=self.lb_style)
         lb_total.grid(column=5, row=0, sticky="W", padx=self.paddingx)
 
-        entry_total = Entry(separador4, font=self.entry_style, width=10,state=DISABLED)
+        self.entry_total = Entry(separador4, font=self.entry_style, width=10,state=DISABLED)
 
         lb_condicao_pagamento_numero1 = Label(separador4, text="1º", font=self.lb_style)
         lb_condicao_pagamento_numero1.grid(column=0, row=1, padx=self.paddingx,pady=self.paddingy)
         cb_condicao_pagamento1 = Combobox(separador4, font=self.entry_style, width=10, values=opcoes_pagamento, state="readonly")
         cb_condicao_pagamento1.set("DINHEIRO")
         cb_condicao_pagamento1.grid(column=1, row=1, padx=self.paddingx,pady=self.paddingy)
-        entry_valor1 = Entry(separador4, font=self.entry_style, width=10)
-        entry_valor1.grid(column=3, row=1, padx=self.paddingx,pady=self.paddingy)
+        self.entry_valor1 = Entry(separador4, font=self.entry_style, width=10)
+        self.entry_valor1.grid(column=3, row=1, padx=self.paddingx,pady=self.paddingy)
 
         lb_condicao_pagamento_numero2 = Label(separador4, text="2º", font=self.lb_style)
         lb_condicao_pagamento_numero2.grid(column=0, row=2, padx=self.paddingx,pady=self.paddingy)
         cb_condicao_pagamento2 = Combobox(separador4, font=self.entry_style, width=10, values=opcoes_pagamento, state="readonly")
         cb_condicao_pagamento2.set("DINHEIRO")
         cb_condicao_pagamento2.grid(column=1, row=2, padx=self.paddingx,pady=self.paddingy)
-        entry_valor2 = Entry(separador4, font=self.entry_style, width=10)
-        entry_valor2.grid(column=3, row=2, padx=self.paddingx,pady=self.paddingy)
+        self.entry_valor2 = Entry(separador4, font=self.entry_style, width=10)
+        self.entry_valor2.grid(column=3, row=2, padx=self.paddingx,pady=self.paddingy)
 
         lb_condicao_pagamento_numero3 = Label(separador4, text="3º", font=self.lb_style)
         lb_condicao_pagamento_numero3.grid(column=0, row=3, padx=self.paddingx,pady=self.paddingy)
         cb_condicao_pagamento3 = Combobox(separador4, font=self.entry_style, width=10, values=opcoes_pagamento, state="readonly")
         cb_condicao_pagamento3.set("DINHEIRO")
         cb_condicao_pagamento3.grid(column=1, row=3, padx=self.paddingx,pady= self.paddingy)
-        entry_valor3 = Entry(separador4, font=self.entry_style, width=10)
-        entry_valor3.grid(column=3, row=3, padx=self.paddingx,pady=self.paddingy)
+        self.entry_valor3 = Entry(separador4, font=self.entry_style, width=10)
+        self.entry_valor3.grid(column=3, row=3, padx=self.paddingx,pady=self.paddingy)
 
-        def soma_condicao_pagamento(event):
-            try:
-                valor1 = entry_valor1.get().replace(",",".")
-                valor2 = entry_valor2.get().replace(",",".")
-                valor3 = entry_valor3.get().replace(",",".")
-                self.lb_aviso_erro['text'] = "."
-                self.valores_pagamento = []
+        self.entry_valor1.bind("<FocusOut>",self.soma_condicao_pagamento)
+        self.entry_valor2.bind("<FocusOut>",self.soma_condicao_pagamento)
+        self.entry_valor3.bind("<FocusOut>",self.soma_condicao_pagamento)
 
-                if valor1 == '':
-                    valor1 = "0"
-                    valor1=float(valor1)
-                else:
-                    valor1=float(valor1)
-                if valor2 == '':
-                    valor2 = "0"
-                    valor2=float(valor2)
-                else:
-                    valor2=float(valor2)
-                if valor3 == '':
-                    valor3 = "0"
-                    valor3=float(valor3)
-                else:
-                    valor3=float(valor3)
-
-                total = str(valor1+valor2+valor3)
-                self.valores_pagamento.append(valor1)
-                self.valores_pagamento.append(valor2)
-                self.valores_pagamento.append(valor3)
-                self.insert_entry_desabilitado(entry_total, total, 0)
-                return
-            except ValueError:
-                self.lb_aviso_erro['text'] = "VERIFIQUE OS VALORES DO PAGAMENTO"
-
-        entry_valor1.bind("<FocusOut>",soma_condicao_pagamento)
-        entry_valor2.bind("<FocusOut>",soma_condicao_pagamento)
-        entry_valor3.bind("<FocusOut>",soma_condicao_pagamento)
-
-        entry_total.grid(column=5, row=3, padx=self.paddingx,pady=self.paddingy)
+        self.entry_total.grid(column=5, row=3, padx=self.paddingx,pady=self.paddingy)
 
         separador5 = Separator(janela, orient="horizontal")
         separador5.pack(fill="x", padx=self.paddingx, pady=self.paddingy)
@@ -316,10 +335,10 @@ class Trabalhos(Funcs):
             argumentos.append(self.codigo_pessoa_trabalho)
             argumentos.append(cb_tipo_sessao.get())
             argumentos.append(cb_plano.get())
-            argumentos.append(entry_valor1.get())
-            argumentos.append(entry_valor2.get())
-            argumentos.append(entry_valor3.get())
-            argumentos.append(entry_total.get())
+            argumentos.append(self.entry_valor1.get())
+            argumentos.append(self.entry_valor2.get())
+            argumentos.append(self.entry_valor3.get())
+            argumentos.append(self.entry_total.get())
             argumentos.append(textarea_observacoes.get("1.0","end-1c"))
             self.argumentos = argumentos
         def buscar_pessoa_trabalho_args():
@@ -354,10 +373,10 @@ class Trabalhos(Funcs):
             self.set_text_entry(entry_nome,self.nome_pessoa_trabalho)
             self.insert_entry_desabilitado(cb_tipo_sessao,self.nome_tipo_trabalho)
             self.insert_entry_desabilitado(cb_plano,self.nome_plano_trabalho)
-            self.set_text_entry(entry_valor1,self.argumentos[8])
-            self.set_text_entry(entry_valor2,self.argumentos[9])
-            self.set_text_entry(entry_valor3,self.argumentos[10])
-            self.insert_entry_desabilitado(entry_total,self.argumentos[11])
+            self.set_text_entry(self.entry_valor1,self.argumentos[8])
+            self.set_text_entry(self.entry_valor2,self.argumentos[9])
+            self.set_text_entry(self.entry_valor3,self.argumentos[10])
+            self.insert_entry_desabilitado(self.entry_total,self.argumentos[11])
             self.set_textarea(textarea_observacoes,self.argumentos[12])
         def grava_db_trabalho_args():
             if self.nome_pessoa_trabalho is None:
@@ -369,7 +388,7 @@ class Trabalhos(Funcs):
             elif len(self.valores_pagamento) == 0:
                 self.lb_aviso_erro['text'] = "Insira ao menos uma forma de pagamento"
             else:
-                grava_db_trabalhos(entry_codigo.get,entry_cadastro.get,entry_data_sessao.get,self.entry_horario_sessao.get,self.codigo_pessoa_trabalho,entry_nome.get,cb_tipo_sessao.get,self.codigo_tipo_trabalho,cb_plano.get,self.codigo_plano_trabalho,cb_condicao_pagamento1.get,self.valores_pagamento[0],cb_condicao_pagamento2.get,self.valores_pagamento[1],cb_condicao_pagamento3.get,self.valores_pagamento[2],entry_total.get,textarea_observacoes.get)
+                grava_db_trabalhos(entry_codigo.get,entry_cadastro.get,entry_data_sessao.get,self.entry_horario_sessao.get,self.codigo_pessoa_trabalho,entry_nome.get,cb_tipo_sessao.get,self.codigo_tipo_trabalho,cb_plano.get,self.codigo_plano_trabalho,cb_condicao_pagamento1.get,self.valores_pagamento[0],cb_condicao_pagamento2.get,self.valores_pagamento[1],cb_condicao_pagamento3.get,self.valores_pagamento[2],self.entry_total.get,textarea_observacoes.get)
                 self.retorna_variaveis_none_trabalhos()
                 janela.destroy()
                 self.janela_trabalhos_var.destroy()
@@ -481,6 +500,16 @@ class Trabalhos(Funcs):
         cb_plano.grid(column=3, row=1, padx=self.paddingx, sticky="W")
         self.entry_plano = cb_plano
 
+        lb_quantidade_fotos = Label(separador3, text="Quantidade de Fotos", font=self.lb_style)
+        lb_quantidade_fotos.grid(column=4, row=0, sticky="W", padx=self.paddingx)
+        self.entry_quantidade_fotos = Entry(separador3, font=self.entry_style, width=20)
+        self.entry_quantidade_fotos.grid(column=4, row=1, padx=self.paddingx, sticky="W")
+
+        lb_valor_foto_extra = Label(separador3, text="Valor_foto_extra", font=self.lb_style)
+        lb_valor_foto_extra.grid(column=5, row=0, sticky="W", padx=self.paddingx)
+        self.entry_valor_foto_extra = Entry(separador3, font=self.entry_style, width=12)
+        self.entry_valor_foto_extra.grid(column=5, row=1, padx=self.paddingx, sticky="W")
+
         separador4 = Separator(janela, orient="horizontal")
         separador4.pack(fill="x", padx=self.paddingx, pady=self.paddingy)
 
@@ -503,9 +532,9 @@ class Trabalhos(Funcs):
                                           state="readonly")
         cb_condicao_pagamento1.set(trabalho[11])
         cb_condicao_pagamento1.grid(column=1, row=1, padx=self.paddingx, pady=self.paddingy)
-        entry_valor1 = Entry(separador4, font=self.entry_style, width=10)
-        entry_valor1.grid(column=3, row=1, padx=self.paddingx, pady=self.paddingy)
-        entry_valor1.insert(END, trabalho[12])
+        self.entry_valor1 = Entry(separador4, font=self.entry_style, width=10)
+        self.entry_valor1.grid(column=3, row=1, padx=self.paddingx, pady=self.paddingy)
+        self.entry_valor1.insert(END, trabalho[12])
 
         lb_condicao_pagamento_numero2 = Label(separador4, text="2º", font=self.lb_style)
         lb_condicao_pagamento_numero2.grid(column=0, row=2, padx=self.paddingx, pady=self.paddingy)
@@ -528,7 +557,7 @@ class Trabalhos(Funcs):
         entry_valor3.insert(END, trabalho[16])
         def soma_condicao_pagamento(event):
             try:
-                valor1 = entry_valor1.get().replace(",", ".")
+                valor1 = self.entry_valor1.get().replace(",", ".")
                 valor2 = entry_valor2.get().replace(",", ".")
                 valor3 = entry_valor3.get().replace(",", ".")
                 self.lb_aviso_erro['text'] = "."
@@ -559,7 +588,7 @@ class Trabalhos(Funcs):
             except ValueError:
                 self.lb_aviso_erro['text'] = "VERIFIQUE OS VALORES DO PAGAMENTO"
 
-        entry_valor1.bind("<FocusOut>", soma_condicao_pagamento)
+        self.entry_valor1.bind("<FocusOut>", soma_condicao_pagamento)
         entry_valor2.bind("<FocusOut>", soma_condicao_pagamento)
         entry_valor3.bind("<FocusOut>", soma_condicao_pagamento)
 
@@ -584,7 +613,7 @@ class Trabalhos(Funcs):
             argumentos.append(self.codigo_pessoa_trabalho)
             argumentos.append(cb_tipo_sessao.get())
             argumentos.append(cb_plano.get())
-            argumentos.append(entry_valor1.get())
+            argumentos.append(self.entry_valor1.get())
             argumentos.append(entry_valor2.get())
             argumentos.append(entry_valor3.get())
             argumentos.append(entry_total.get())
@@ -625,7 +654,7 @@ class Trabalhos(Funcs):
             self.set_text_entry(entry_nome, self.nome_pessoa_trabalho)
             self.insert_entry_desabilitado(cb_tipo_sessao, self.nome_tipo_trabalho)
             self.insert_entry_desabilitado(cb_plano, self.nome_plano_trabalho)
-            self.set_text_entry(entry_valor1, self.argumentos[8])
+            self.set_text_entry(self.entry_valor1, self.argumentos[8])
             self.set_text_entry(entry_valor2, self.argumentos[9])
             self.set_text_entry(entry_valor3, self.argumentos[10])
             self.insert_entry_desabilitado(entry_total, self.argumentos[11])
@@ -836,7 +865,7 @@ class Trabalhos(Funcs):
                 for selected_item in self.lista_de_trabalhos.selection():
                     item = self.lista_de_trabalhos.item(selected_item, 'values')
                     trabalho = pega_um_item_trabalho(item[0])
-                    self.janela_trabalhos_var.set_codigo_nome_trabalho(trabalho[0][0],trabalho[0][2])
+                    self.janela_trabalhos_var.set_argumentos_nome_trabalho(trabalho[0][0], trabalho[0][2])
                     self.lista_de_trabalhos.destroy()
                     return
 

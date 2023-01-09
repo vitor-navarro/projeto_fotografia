@@ -250,6 +250,7 @@ def pega_um_item_plano(item):
 
     pessoa = cursor.execute('SELECT * FROM planos WHERE id = ?', (str(item),))
     pessoa = pessoa.fetchall()
+    print(pessoa)
     desconecta_db(banco)
     return pessoa
 
@@ -266,8 +267,35 @@ def grava_db_planos(entry_codigo,entry_cadastro,entry_nome,entry_descricao,entry
 
     banco, cursor = conecta_db()
 
-    cursor.execute(f"INSERT INTO planos (nome_plano, quantidade_fotos, valor, valor_foto_extra,descricao, data_criacao) VALUES (?,?,?,?,?,?)",(entry_nome,entry_quantidade_fotos,entry_valor_base,entry_valor_foto_extra,entry_descricao,entry_cadastro))
+    cursor.execute(f"UPDATE INTO planos (nome_plano, quantidade_fotos, valor, valor_foto_extra,descricao, data_criacao) VALUES (?,?,?,?,?,?)",(entry_nome,entry_quantidade_fotos,entry_valor_base,entry_valor_foto_extra,entry_descricao,entry_cadastro))
     cursor.execute("select * from planos")
+    banco.commit()
+
+    desconecta_db(banco)
+
+def altera_db_planos(entry_codigo,entry_cadastro,entry_nome,entry_descricao,entry_valor_base,entry_quantidade_fotos,entry_valor_foto_extra):
+    id = entry_codigo()
+    entry_cadastro= entry_cadastro()
+    entry_nome= entry_nome()
+    entry_descricao= entry_descricao()
+    entry_valor_base= float(entry_valor_base)
+    entry_quantidade_fotos= int(entry_quantidade_fotos)
+    entry_valor_foto_extra= float(entry_valor_foto_extra)
+
+    print(entry_codigo,entry_cadastro,entry_nome,entry_descricao,entry_valor_base,entry_quantidade_fotos,entry_valor_foto_extra)
+
+    banco, cursor = conecta_db()
+
+    cursor.execute(f"UPDATE planos SET nome_plano = ?, quantidade_fotos = ?, valor = ?, valor_foto_extra = ?,descricao = ?, data_criacao = ? WHERE id = ?",(entry_nome,entry_quantidade_fotos,entry_valor_base,entry_valor_foto_extra,entry_descricao,entry_cadastro, id))
+    cursor.execute("select * from planos")
+    banco.commit()
+
+    desconecta_db(banco)
+
+def deleta_db_plano(id):
+    banco, cursor = conecta_db()
+    cursor.execute(f"DELETE FROM planos WHERE id = ?", (str(id),))
+
     banco.commit()
 
     desconecta_db(banco)
@@ -284,6 +312,8 @@ def grava_db_tipos(entry_codigo,entry_cadastro,entry_nome,entry_descricao):
     banco.commit()
 
     desconecta_db(banco)
+
+
 def desconecta_db(banco):
     banco.close()
 
