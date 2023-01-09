@@ -114,7 +114,7 @@ class Tipos(Funcs):
                     item = self.lista_tipos.item(selected_item, 'values')
                     tipo = pega_um_item_tipo(item[0])
                     print(tipo)
-                    self.janela_trabalhos_var.set_codigo_tipo_trabalho(tipo[0][0],tipo[0][1])
+                    self.janela_trabalhos_var.set_argumentos_tipo_trabalho(tipo[0][0], tipo[0][1])
                     self.janela_tipos_var.destroy()
                     return
 

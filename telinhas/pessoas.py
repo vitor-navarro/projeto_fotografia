@@ -608,7 +608,7 @@ class Pessoas(Funcs):
                 for selected_item in self.lista_de_pessoas.selection():
                     item = self.lista_de_pessoas.item(selected_item, 'values')
                     pessoa = pega_um_item_pessoa(item[0])
-                    self.janela_trabalhos_var.set_codigo_nome_trabalho(pessoa[0][0],pessoa[0][2])
+                    self.janela_trabalhos_var.set_argumentos_nome_trabalho(pessoa[0][0], pessoa[0][2])
                     self.janela_pessoas_var.destroy()
                     return
 
