@@ -67,7 +67,56 @@ class Tipos(Funcs):
         cancela.grid(column=1, row=0, sticky="WS")
 
     def altera_cadastro_tipo(self):
-        pass
+        janela = Toplevel()
+        self.configurar_janela_auxiliar3(janela)
+        janela.title("Cadastro Tipos")
+
+        codigo = pega_ultimo_id("tipos")
+
+        separador1 = Separator(janela, orient="horizontal")
+        separador1.pack(fill="x", padx=self.paddingx, pady=self.paddingy)
+
+        lb_codigo = Label(separador1, text="Código", font=self.lb_style)
+        lb_codigo.grid(column=0, row=0, sticky="NW", padx=self.paddingx)
+        entry_codigo = Entry(separador1, font=self.entry_style, width=8, state=DISABLED)
+        entry_codigo.grid(column=0, row=1, padx=self.paddingx, sticky="NW")
+        self.insert_entry_desabilitado(entry_codigo, codigo)
+
+        lb_cadastro = Label(separador1, text="Cadastro", font=self.lb_style)
+        lb_cadastro.grid(column=1, row=0, sticky="W", padx=self.paddingx)
+        entry_cadastro = Entry(separador1, font=self.entry_style, width=10)
+        entry_cadastro.insert(END, self.data_sistema)
+        entry_cadastro.grid(column=1, row=1, padx=self.paddingx)
+
+        separador2 = Separator(janela, orient="horizontal")
+        separador2.pack(fill="x", padx=self.paddingx, pady=self.paddingy)
+
+        lb_nome = Label(separador2, text="Nome*", font=self.lb_style)
+        lb_nome.grid(column=0, row=0, sticky="W", padx=self.paddingx)
+        entry_nome = Entry(separador2, font=self.entry_style, width=89)
+        entry_nome.grid(column=0, row=1, padx=self.paddingx)
+
+        separador3 = Separator(janela, orient="horizontal")
+        separador3.pack(fill="x", padx=self.paddingx, pady=self.paddingy)
+
+        lb_descricao = Label(separador3, text="Descrição", font=self.lb_style)
+        lb_descricao.grid(column=0, row=0, sticky="W", padx=self.paddingx)
+        entry_descricao = Entry(separador3, font=self.entry_style, width=89)
+        entry_descricao.grid(column=0, row=1, padx=self.paddingx)
+
+        separador5 = Separator(janela, orient="horizontal")
+        separador5.pack(fill="x", padx=self.paddingx, pady=self.paddingy, side=BOTTOM)
+        def grava_db_pessoa_args():
+            grava_db_tipos(entry_codigo.get, entry_cadastro.get, entry_nome.get,entry_descricao.get)
+            self.janela_tipos_var = None
+            janela.destroy()
+            self.janela_tipos()
+
+        grava = Button(separador5, text="GRAVA", font=self.lb_style, command=grava_db_pessoa_args)
+        grava.grid(column=0, row=0, sticky="WS")
+
+        cancela = Button(separador5, text="CANCELA", font=self.lb_style)
+        cancela.grid(column=1, row=0, sticky="WS")
     def exclui_cadastro_tipo(self):
         pass
     def janela_tipos(self, tipo = None):

@@ -2,9 +2,9 @@ from tkinter import *
 from tkinter import ttk
 from datetime import date
 from modulos.auxiliares import Funcs
-from telinhas.financeiro import Financeiro
-from telinhas.pessoas import Pessoas
-from telinhas.trabalhos import Trabalhos
+from telas.financeiro import Financeiro
+from telas.pessoas import Pessoas
+from telas.trabalhos import Trabalhos
 
 
 class Aplicacao(Funcs):

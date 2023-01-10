@@ -6,9 +6,9 @@ from tkinter import Toplevel, LEFT, Button, Label, Entry, DISABLED, END, Text, S
 from tkinter.ttk import Separator, Combobox, Treeview, Scrollbar
 from functools import partial
 
-from telinhas.pessoas import Pessoas
-from telinhas.tipos import Tipos
-from telinhas.planos import Planos
+from telas.pessoas import Pessoas
+from telas.tipos import Tipos
+from telas.planos import Planos
 from modulos.validadores import Validadores
 
 class Trabalhos(Funcs):
@@ -511,11 +511,12 @@ class Trabalhos(Funcs):
         self.entry_quantidade_fotos.grid(column=4, row=1, padx=self.paddingx, sticky="W")
         self.set_text_entry(self.entry_quantidade_fotos,trabalho[20])
 
-        lb_valor_foto_extra = Label(separador3, text="Valor_foto_extra", font=self.lb_style)
+        lb_valor_foto_extra = Label(separador3, text="Valor foto extra", font=self.lb_style)
         lb_valor_foto_extra.grid(column=5, row=0, sticky="W", padx=self.paddingx)
         self.entry_valor_foto_extra = Entry(separador3, font=self.entry_style, width=12)
         self.entry_valor_foto_extra.grid(column=5, row=1, padx=self.paddingx, sticky="W")
         self.set_text_entry(self.entry_valor_foto_extra,trabalho[21])
+
 
         separador4 = Separator(janela, orient="horizontal")
         separador4.pack(fill="x", padx=self.paddingx, pady=self.paddingy)
