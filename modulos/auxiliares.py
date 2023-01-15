@@ -13,7 +13,8 @@ class Funcs():
         self.entry_style = ("monospace", 14)
         self.btn_style = ("monospace", 12)
         self.data_sistema = date.today().strftime('%d/%m/%Y')
-
+    def next_focus(self,event):
+        event.widget.tk_focusNext().focus()
     def sem_comando(self):
         print("Tela ainda não cadastrada")
 

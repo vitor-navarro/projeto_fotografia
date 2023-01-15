@@ -188,6 +188,7 @@ class Trabalhos(Funcs):
         rb_ativo.select()
     def novo_cadastro_trabalho(self):
         janela = Toplevel()
+        janela.bind("<Return>", self.next_focus)
         janela.focus_force()
         janela.protocol("WM_DELETE_WINDOW", partial(self.on_closing, janela))
         janela.title("Cadastro Trabalho")
@@ -428,6 +429,7 @@ class Trabalhos(Funcs):
             return
 
         janela = Toplevel()
+        janela.bind("<Return>", self.next_focus)
         janela.focus_force()
         janela.protocol("WM_DELETE_WINDOW", partial(self.on_closing, janela))
 

@@ -16,23 +16,27 @@ banco.close()
 '''
 
 import tkinter as tk
-
+def on_return(event):
+    event.widget.tk_focusNext().focus()
 
 window = tk.Tk()
 
-saldo_atual = tk.Label(window, text="0.00", padx=10, pady=10, borderwidth=2, relief="groove", font=("Helvetica", 20))
-a_pagar = tk.Label(window, text="0.00", padx=10, pady=10, borderwidth=2, relief="groove", font=("Helvetica", 20))
-a_receber = tk.Label(window, text="0.00", padx=10, pady=10, borderwidth=2, relief="groove", font=("Helvetica", 20))
-saldo_projetado = tk.Label(window, text="0.00", padx=10, pady=10, borderwidth=2, relief="groove", font=("Helvetica", 20))
+entry1 = tk.Entry(window)
+entry1.pack()
+entry1.focus()
+entry2 = tk.Entry(window)
+entry2.pack()
+entry3 = tk.Entry(window)
+entry3.pack()
+entry4 = tk.Entry(window)
+entry4.pack()
+entry5 = tk.Entry(window)
+entry5.pack()
 
-saldo_atual.grid(row=0, column=0)
-a_pagar.grid(row=0, column=1)
-a_receber.grid(row=0, column=2)
-saldo_projetado.grid(row=0, column=3)
+window.bind("<Return>", on_return)
 
 window.mainloop()
 
-window.mainloop()
 
 
 

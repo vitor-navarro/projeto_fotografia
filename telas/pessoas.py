@@ -16,7 +16,7 @@ class Pessoas(Funcs):
 
     def novo_cadastro_pessoa(self):
         janela = Toplevel()
-
+        janela.bind("<Return>", self.next_focus)
         variavel_upercase = StringVar()
 
         janela.title("Cadastro Pessoas")
@@ -209,6 +209,7 @@ class Pessoas(Funcs):
             return
 
         janela = Toplevel()
+        janela.bind("<Return>", self.next_focus)
         variavel_upercase = StringVar()
 
         janela.title("Cadastro Pessoas")

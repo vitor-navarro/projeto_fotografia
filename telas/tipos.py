@@ -18,7 +18,7 @@ class Tipos(Funcs):
         janela = Toplevel()
         self.configurar_janela_auxiliar3(janela)
         janela.title("Cadastro Tipos")
-
+        janela.bind("<Return>", self.next_focus)
         codigo = pega_ultimo_id("tipos")
 
         separador1 = Separator(janela, orient="horizontal")
@@ -68,6 +68,7 @@ class Tipos(Funcs):
 
     def altera_cadastro_tipo(self):
         janela = Toplevel()
+        janela.bind("<Return>", self.next_focus)
         self.configurar_janela_auxiliar3(janela)
         janela.title("Cadastro Tipos")
 

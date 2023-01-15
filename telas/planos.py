@@ -26,6 +26,7 @@ class Planos(Funcs,Validadores):
             return plano
     def novo_cadastro_plano(self):
         janela = Toplevel()
+        janela.bind("<Return>", self.next_focus)
         self.configurar_janela_auxiliar3(janela)
         janela.title("Cadastro Plano")
 
@@ -134,6 +135,7 @@ class Planos(Funcs,Validadores):
         plano = self.seleciona_item_plano()[0]
 
         janela = Toplevel()
+        janela.bind("<Return>", self.next_focus)
         self.configurar_janela_auxiliar3(janela)
         janela.title("Cadastro Plano")
 

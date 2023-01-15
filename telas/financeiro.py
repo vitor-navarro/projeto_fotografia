@@ -33,6 +33,7 @@ class Financeiro(Funcs):
     #modificar assim que tiver as informações do que colocar
     def novo_financeiro(self):
         janela = Toplevel()
+        janela.bind("<Return>", self.next_focus)
 
         janela.title("Cadastro Financeiro")
 

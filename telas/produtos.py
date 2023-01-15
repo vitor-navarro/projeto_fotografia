@@ -1,5 +1,4 @@
 from modulos.auxiliares import Funcs
-from modulos.database import
 
 from tkinter import Toplevel
 from tkinter.ttk import Separator
