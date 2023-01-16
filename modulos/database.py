@@ -128,30 +128,11 @@ def pega_um_item_pessoa(item):
     desconecta_db(banco)
     return pessoa
 
-def pega_um_item_tipo(item):
-    banco, cursor = conecta_db()
-
-    item = str(item)
-    tipo = cursor.execute('SELECT * FROM tipos WHERE id = ?', (str(item),))
-    tipo = tipo.fetchall()
-    desconecta_db(banco)
-    return tipo
 def pega_todas_trabalhos_lista():
 
     banco, cursor = conecta_db()
     #retorna em ordem alfabética, modificar isso com as filtragens
     lista_db = cursor.execute("SELECT id, data,hora,nome_pessoa,tipo,plano_nome,etapa_atual FROM sessoes ORDER BY pessoa_sessao DESC")
-    lista = []
-    for i in lista_db:
-        lista.append(i)
-
-    desconecta_db(banco)
-
-    return lista
-def pega_todos_tipos_sessoes_lista():
-    banco, cursor = conecta_db()
-    #retorna em ordem alfabética, modificar isso com as filtragens
-    lista_db = cursor.execute("SELECT id, nome_tipo FROM tipos ORDER BY id")
     lista = []
     for i in lista_db:
         lista.append(i)
@@ -285,8 +266,6 @@ def altera_db_planos(entry_codigo,entry_cadastro,entry_nome,entry_descricao,entr
     entry_quantidade_fotos= int(entry_quantidade_fotos)
     entry_valor_foto_extra= float(entry_valor_foto_extra)
 
-    print(entry_codigo,entry_cadastro,entry_nome,entry_descricao,entry_valor_base,entry_quantidade_fotos,entry_valor_foto_extra)
-
     banco, cursor = conecta_db()
 
     cursor.execute(f"UPDATE planos SET nome_plano = ?, quantidade_fotos = ?, valor = ?, valor_foto_extra = ?,descricao = ?, data_criacao = ? WHERE id = ?",(entry_nome,entry_quantidade_fotos,entry_valor_base,entry_valor_foto_extra,entry_descricao,entry_cadastro, id))
@@ -315,6 +294,47 @@ def grava_db_tipos(entry_codigo,entry_cadastro,entry_nome,entry_descricao):
     banco.commit()
 
     desconecta_db(banco)
+
+def altera_db_tipos(entry_codigo,entry_cadastro,entry_nome,entry_descricao):
+    id = entry_codigo()
+    entry_cadastro = entry_cadastro()
+    entry_nome= entry_nome()
+    entry_descricao= entry_descricao()
+
+    banco, cursor = conecta_db()
+
+    cursor.execute(f"UPDATE tipos SET nome_tipo = ?, descricao = ?, data_criacao = ? WHERE id = ?",(entry_nome,entry_descricao,entry_cadastro, id))
+    cursor.execute("select * from tipos")
+    banco.commit()
+
+    desconecta_db(banco)
+
+def deleta_db_tipo(id):
+    banco, cursor = conecta_db()
+    cursor.execute(f"DELETE FROM tipos WHERE id = ?", (str(id),))
+
+    banco.commit()
+
+    desconecta_db(banco)
+
+def pega_um_item_tipo(item):
+    banco, cursor = conecta_db()
+    item = str(item)
+    tipo = cursor.execute('SELECT * FROM tipos WHERE id = ?', (str(item),))
+    tipo = tipo.fetchall()
+    desconecta_db(banco)
+    return tipo
+def pega_todos_tipos_sessoes_lista():
+    banco, cursor = conecta_db()
+    #retorna em ordem alfabética, modificar isso com as filtragens
+    lista_db = cursor.execute("SELECT id, nome_tipo FROM tipos ORDER BY id")
+    lista = []
+    for i in lista_db:
+        lista.append(i)
+
+    desconecta_db(banco)
+
+    return lista
 
 
 def desconecta_db(banco):

@@ -134,6 +134,9 @@ class Planos(Funcs,Validadores):
     def altera_cadastro_plano(self):
         plano = self.seleciona_item_plano()[0]
 
+        if plano is None:
+            return
+
         janela = Toplevel()
         janela.bind("<Return>", self.next_focus)
         self.configurar_janela_auxiliar3(janela)
@@ -234,6 +237,7 @@ class Planos(Funcs,Validadores):
                 valor_base = self.replace_virgula_ponto(entry_valor_base.get())
 
                 altera_db_planos(entry_codigo.get,entry_cadastro.get,entry_nome_plano.get,entry_descricao.get,valor_base,quantidade_fotos,valor_fotos_extra)
+
                 janela.destroy()
                 self.janela_planos_var.destroy()
                 self.janela_planos()

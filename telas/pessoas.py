@@ -185,16 +185,17 @@ class Pessoas(Funcs):
         separador9.pack(fill="x", pady=10, padx=10)
 
         def grava_db_pessoa_args():
-            grava_db_pessoa(entry_codigo.get, entry_cadastro.get, cb_status.get, cb_tipo.get, entry_cpf_cnpj.get,
-                            entry_rg_inscricao.get, entry_nascimento.get, entry_nome.get, entry_apelido.get,
-                            entry_endereco.get, entry_complemento.get, entry_bairro.get, entry_nome_cidade.get,
-                            entry_uf.get, entry_cep.get, entry_fone1.get, entry_fone2.get, entry_fone3.get,
-                            entry_operadora1.get, entry_operadora2.get, entry_operadora3.get, entry_email.get,
-                            entry_numero.get)
+            if self.confirmacao_salvamento(janela):
+                grava_db_pessoa(entry_codigo.get, entry_cadastro.get, cb_status.get, cb_tipo.get, entry_cpf_cnpj.get,
+                                entry_rg_inscricao.get, entry_nascimento.get, entry_nome.get, entry_apelido.get,
+                                entry_endereco.get, entry_complemento.get, entry_bairro.get, entry_nome_cidade.get,
+                                entry_uf.get, entry_cep.get, entry_fone1.get, entry_fone2.get, entry_fone3.get,
+                                entry_operadora1.get, entry_operadora2.get, entry_operadora3.get, entry_email.get,
+                                entry_numero.get)
 
-            janela.destroy()
-            self.janela_pessoas_var.destroy()
-            self.janela_pessoas()
+                janela.destroy()
+                self.janela_pessoas_var.destroy()
+                self.janela_pessoas()
 
         grava = Button(separador9, text="GRAVA", font=self.lb_style, command=grava_db_pessoa_args)
         grava.grid(column=0, row=0, sticky="WS")
@@ -402,12 +403,12 @@ class Pessoas(Funcs):
         separador9 = Separator(janela, orient="horizontal")
         separador9.pack(fill="x", pady=10, padx=10)
         def altera_db_pessoa_args():
+            if self.confirmacao_salvamento(janela):
+                altera_db_pessoa(entry_codigo.get, entry_cadastro.get, cb_status.get,cb_tipo.get, entry_cpf_cnpj.get, entry_rg_inscricao.get, entry_nascimento.get,entry_nome.get, entry_apelido.get, entry_endereco.get, entry_complemento.get,entry_bairro.get, entry_nome_cidade.get, entry_uf.get,entry_cep.get, entry_fone1.get, entry_fone2.get, entry_fone3.get,entry_operadora1.get, entry_operadora2.get,entry_operadora3.get, entry_email.get, entry_numero.get)
 
-            altera_db_pessoa(entry_codigo.get, entry_cadastro.get, cb_status.get,cb_tipo.get, entry_cpf_cnpj.get, entry_rg_inscricao.get, entry_nascimento.get,entry_nome.get, entry_apelido.get, entry_endereco.get, entry_complemento.get,entry_bairro.get, entry_nome_cidade.get, entry_uf.get,entry_cep.get, entry_fone1.get, entry_fone2.get, entry_fone3.get,entry_operadora1.get, entry_operadora2.get,entry_operadora3.get, entry_email.get, entry_numero.get)
-
-            janela.destroy()
-            self.janela_pessoas_var.destroy()
-            self.janela_pessoas()
+                janela.destroy()
+                self.janela_pessoas_var.destroy()
+                self.janela_pessoas()
 
         grava = Button(separador9, text="GRAVA", font=self.lb_style, command=altera_db_pessoa_args)
         grava.grid(column=0, row=0, sticky="WS")

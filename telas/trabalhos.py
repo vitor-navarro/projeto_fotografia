@@ -394,11 +394,12 @@ class Trabalhos(Funcs):
             elif len(self.valores_pagamento) == 0:
                 self.lb_aviso_erro['text'] = "Insira ao menos uma forma de pagamento"
             else:
-                grava_db_trabalhos(entry_codigo.get,entry_cadastro.get,entry_data_sessao.get,self.entry_horario_sessao.get,self.codigo_pessoa_trabalho,entry_nome.get,cb_tipo_sessao.get,self.codigo_tipo_trabalho,cb_plano.get,self.codigo_plano_trabalho,cb_condicao_pagamento1.get,self.valores_pagamento[0],cb_condicao_pagamento2.get,self.valores_pagamento[1],cb_condicao_pagamento3.get,self.valores_pagamento[2],self.entry_total.get,textarea_observacoes.get,self.entry_quantidade_fotos.get,self.entry_valor_foto_extra.get)
-                self.retorna_variaveis_none_trabalhos()
-                janela.destroy()
-                self.janela_trabalhos_var.destroy()
-                self.janela_trabalhos()
+                if self.confirmacao_salvamento(janela):
+                    grava_db_trabalhos(entry_codigo.get,entry_cadastro.get,entry_data_sessao.get,self.entry_horario_sessao.get,self.codigo_pessoa_trabalho,entry_nome.get,cb_tipo_sessao.get,self.codigo_tipo_trabalho,cb_plano.get,self.codigo_plano_trabalho,cb_condicao_pagamento1.get,self.valores_pagamento[0],cb_condicao_pagamento2.get,self.valores_pagamento[1],cb_condicao_pagamento3.get,self.valores_pagamento[2],self.entry_total.get,textarea_observacoes.get,self.entry_quantidade_fotos.get,self.entry_valor_foto_extra.get)
+                    self.retorna_variaveis_none_trabalhos()
+                    janela.destroy()
+                    self.janela_trabalhos_var.destroy()
+                    self.janela_trabalhos()
 
         grava = Button(separador9, text="GRAVA", font=self.lb_style, command=grava_db_trabalho_args)
         grava.grid(column=0, row=0, sticky="WS")
@@ -684,16 +685,17 @@ class Trabalhos(Funcs):
             elif len(self.valores_pagamento) == 0:
                 self.lb_aviso_erro['text'] = "Insira ao menos uma forma de pagamento"
             else:
-                altera_db_trabalhos(entry_codigo.get, entry_cadastro.get, entry_data_sessao.get,
-                                   self.entry_horario_sessao.get, self.codigo_pessoa_trabalho, entry_nome.get,
-                                   cb_tipo_sessao.get, self.codigo_tipo_trabalho, cb_plano.get,
-                                   self.codigo_plano_trabalho, cb_condicao_pagamento1.get, self.valores_pagamento[0],
-                                   cb_condicao_pagamento2.get, self.valores_pagamento[1], cb_condicao_pagamento3.get,
-                                   self.valores_pagamento[2], entry_total.get, textarea_observacoes.get,self.entry_quantidade_fotos.get,self.entry_valor_foto_extra.get)
-                self.retorna_variaveis_none_trabalhos()
-                janela.destroy()
-                self.janela_trabalhos_var.destroy()
-                self.janela_trabalhos()
+                if self.confirmacao_salvamento(janela):
+                    altera_db_trabalhos(entry_codigo.get, entry_cadastro.get, entry_data_sessao.get,
+                                       self.entry_horario_sessao.get, self.codigo_pessoa_trabalho, entry_nome.get,
+                                       cb_tipo_sessao.get, self.codigo_tipo_trabalho, cb_plano.get,
+                                       self.codigo_plano_trabalho, cb_condicao_pagamento1.get, self.valores_pagamento[0],
+                                       cb_condicao_pagamento2.get, self.valores_pagamento[1], cb_condicao_pagamento3.get,
+                                       self.valores_pagamento[2], entry_total.get, textarea_observacoes.get,self.entry_quantidade_fotos.get,self.entry_valor_foto_extra.get)
+                    self.retorna_variaveis_none_trabalhos()
+                    janela.destroy()
+                    self.janela_trabalhos_var.destroy()
+                    self.janela_trabalhos()
 
         grava = Button(separador9, text="GRAVA", font=self.lb_style, command=altera_db_trabalho_args)
         grava.grid(column=0, row=0, sticky="WS")
@@ -711,7 +713,7 @@ class Trabalhos(Funcs):
         deleta_db_trabalho(id)
         self.janela_trabalhos_var.destroy()
         self.janela_trabalhos()
-    def barra_filtros_opcoes_trabalho(self,barra_filtros):
+    def barra_filtros_opcoes_trabalho_dois(self,barra_filtros):
         # opções 1
         barra_filtro_opcoes = Separator(barra_filtros, orient="vertical")
         barra_filtro_opcoes.grid(column=0, row=0, sticky="W")
@@ -748,7 +750,7 @@ class Trabalhos(Funcs):
 
         rb_nome_pessoa_extra.select()
 
-    def barra_filtros_status_trabalho(self, barra_filtros):
+    def barra_filtros_status_trabalho_dois(self, barra_filtros):
         barra_filtro_opcoes2 = Separator(barra_filtros, orient="vertical")
         barra_filtro_opcoes2.grid(column=1, row=0, sticky="W")
 
@@ -848,7 +850,10 @@ class Trabalhos(Funcs):
         barra_alteracoes = self.barra_alteracoes(janela_trabalhos,funcoes)
 
         bt_planos = Button(barra_alteracoes, text="Planos",padx=5,pady=10,font=("monospace", 10), command=self.class_planos.janela_planos)
-        bt_planos.pack(side = LEFT, padx=self.paddingx+20)
+        bt_planos.pack(side = LEFT, padx=(20,5))
+
+        bt_tipos = Button(barra_alteracoes, text="Tipos",padx=5,pady=10,font=("monospace", 10), command=self.class_tipos.janela_tipos)
+        bt_tipos.pack(side = LEFT)
 
         barra_filtros = Separator(janela_trabalhos, orient="horizontal")
         barra_filtros.pack(fill="x")

@@ -1,5 +1,5 @@
 from datetime import date
-from tkinter import END, Button, LEFT, StringVar, Label, Radiobutton, Entry
+from tkinter import END, Button, LEFT, StringVar, Label, Radiobutton, Entry, messagebox
 from tkinter.ttk import Separator
 
 from modulos.validadores import Validadores
@@ -13,6 +13,10 @@ class Funcs():
         self.entry_style = ("monospace", 14)
         self.btn_style = ("monospace", 12)
         self.data_sistema = date.today().strftime('%d/%m/%Y')
+
+    def confirmacao_salvamento(self,janela_principal):
+        resultado = messagebox.askyesno("Confirmação", "Deseja realmente salvar?", parent=janela_principal)
+        return resultado
     def next_focus(self,event):
         event.widget.tk_focusNext().focus()
     def sem_comando(self):
