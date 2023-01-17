@@ -69,7 +69,13 @@ class Tipos(Funcs):
         grava = Button(separador5, text="GRAVA", font=self.lb_style, command=grava_db_tipo_args)
         grava.grid(column=0, row=0, sticky="WS")
 
-        cancela = Button(separador5, text="CANCELA", font=self.lb_style)
+        def cancelar():
+            if self.confirmacao_cancelamento(janela):
+                self.janela_tipos_var.destroy()
+                janela.destroy()
+                self.janela_tipos()
+
+        cancela = Button(separador5, text="CANCELA", font=self.lb_style, command=cancelar)
         cancela.grid(column=1, row=0, sticky="WS")
 
     def altera_cadastro_tipo(self):
@@ -131,15 +137,22 @@ class Tipos(Funcs):
         grava = Button(separador5, text="GRAVA", font=self.lb_style, command=altera_db_tipo_args)
         grava.grid(column=0, row=0, sticky="WS")
         grava.bind("<Return>", altera_db_tipo_args)
+        def cancelar():
+            if self.confirmacao_cancelamento(janela):
+                self.janela_tipos_var.destroy()
+                janela.destroy()
+                self.janela_tipos()
 
-        cancela = Button(separador5, text="CANCELA", font=self.lb_style)
+        cancela = Button(separador5, text="CANCELA", font=self.lb_style, command=cancelar)
         cancela.grid(column=1, row=0, sticky="WS")
     def exclui_cadastro_tipo(self):
         tipo = self.seleciona_item_tipo()
         id = tipo[0][0]
-        deleta_db_tipo(id)
-        self.janela_tipos_var.destroy()
-        self.janela_tipos()
+
+        if self.confirmacao_exclusao(frase="O tipo", valor=tipo[0][1], janela_principal=self.janela_tipos_var):
+            deleta_db_tipo(id)
+            self.janela_tipos_var.destroy()
+            self.janela_tipos()
     def janela_tipos(self, tipo = None):
         janela = Toplevel()
         self.configurar_janela_auxiliar2(janela)

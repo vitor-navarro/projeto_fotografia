@@ -17,6 +17,13 @@ class Funcs():
     def confirmacao_salvamento(self,janela_principal):
         resultado = messagebox.askyesno("Confirmação", "Deseja realmente salvar?", parent=janela_principal)
         return resultado
+    def confirmacao_cancelamento(self,janela_principal):
+        resultado = messagebox.askyesno("Confirmação", "Deseja realmente cancelar os dados?", parent=janela_principal)
+        return resultado
+
+    def confirmacao_exclusao(self,frase = "", valor = "", janela_principal = None):
+        resultado = messagebox.askyesno("Confirmação", f"Deseja realmente excluir {frase} {valor}?", parent=janela_principal)
+        return resultado
     def next_focus(self,event):
         event.widget.tk_focusNext().focus()
     def sem_comando(self):

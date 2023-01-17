@@ -199,8 +199,13 @@ class Pessoas(Funcs):
 
         grava = Button(separador9, text="GRAVA", font=self.lb_style, command=grava_db_pessoa_args)
         grava.grid(column=0, row=0, sticky="WS")
+        def cancelar():
+            if self.confirmacao_cancelamento(janela):
+                janela.destroy()
+                self.janela_pessoas_var.destroy()
+                self.janela_pessoas()
 
-        cancela = Button(separador9, text="CANCELA", font=self.lb_style, command= janela.destroy)
+        cancela = Button(separador9, text="CANCELA", font=self.lb_style, command= cancelar)
         cancela.grid(column=1, row=0, sticky="WS")
 
     def altera_cadastro_pessoa(self):
@@ -412,16 +417,24 @@ class Pessoas(Funcs):
 
         grava = Button(separador9, text="GRAVA", font=self.lb_style, command=altera_db_pessoa_args)
         grava.grid(column=0, row=0, sticky="WS")
+        def cancelar():
+            if self.confirmacao_cancelamento(janela):
+                janela.destroy()
+                self.janela_pessoas_var.destroy()
+                self.janela_pessoas()
 
-        cancela = Button(separador9, text="CANCELA", font=self.lb_style, command= janela.destroy)
+        cancela = Button(separador9, text="CANCELA", font=self.lb_style, command= cancelar)
         cancela.grid(column=1, row=0, sticky="WS")
 
     def exclui_cadastro_pessoa(self):
         pessoa = self.seleciona_item_pessoas()
         id = pessoa[0][0]
-        deleta_db_pessoa(id)
-        self.janela_pessoas_var.destroy()
-        self.janela_pessoas()
+
+        if self.confirmacao_exclusao(frase="", valor=pessoa[0][2], janela_principal=self.janela_pessoas_var):
+
+            deleta_db_pessoa(id)
+            self.janela_pessoas_var.destroy()
+            self.janela_pessoas()
 
     def seleciona_item_pessoas(self):
         for selected_item in self.lista_de_pessoas.selection():

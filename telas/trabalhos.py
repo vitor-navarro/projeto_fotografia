@@ -384,6 +384,7 @@ class Trabalhos(Funcs):
             self.set_textarea(textarea_observacoes,self.argumentos[12])
             self.set_text_entry(self.entry_quantidade_fotos, self.argumentos[13])
             self.set_text_entry(self.entry_valor_foto_extra, self.argumentos[14])
+
         def grava_db_trabalho_args():
             if self.nome_pessoa_trabalho is None:
                 self.lb_aviso_erro['text'] = "Nome é obrigatório"
@@ -405,8 +406,11 @@ class Trabalhos(Funcs):
         grava.grid(column=0, row=0, sticky="WS")
 
         def cancelar():
-            self.retorna_variaveis_none_trabalhos()
-            janela.destroy()
+            if self.confirmacao_cancelamento(janela):
+                self.retorna_variaveis_none_trabalhos()
+                janela.destroy()
+                self.janela_trabalhos_var.destroy()
+                self.janela_trabalhos()
 
 
         cancela = Button(separador9, text="CANCELA", font=self.lb_style, command=cancelar)
@@ -701,8 +705,11 @@ class Trabalhos(Funcs):
         grava.grid(column=0, row=0, sticky="WS")
 
         def cancelar():
-            self.retorna_variaveis_none_trabalhos()
-            janela.destroy()
+            if self.confirmacao_cancelamento(janela):
+                self.retorna_variaveis_none_trabalhos()
+                janela.destroy()
+                self.janela_trabalhos_var.destroy()
+                self.janela_trabalhos()
 
         cancela = Button(separador9, text="CANCELA", font=self.lb_style, command=cancelar)
         cancela.grid(column=1, row=0, sticky="WS")
@@ -710,9 +717,11 @@ class Trabalhos(Funcs):
     def exclui_cadastro_trabalho(self):
         trabalho = self.seleciona_item_trabalhos()
         id = trabalho[0][0]
-        deleta_db_trabalho(id)
-        self.janela_trabalhos_var.destroy()
-        self.janela_trabalhos()
+
+        if self.confirmacao_exclusao(frase=f"a sessão id {id} de", valor=trabalho[0][2], janela_principal=self.janela_trabalhos_var):
+            deleta_db_trabalho(id)
+            self.janela_trabalhos_var.destroy()
+            self.janela_trabalhos()
     def barra_filtros_opcoes_trabalho_dois(self,barra_filtros):
         # opções 1
         barra_filtro_opcoes = Separator(barra_filtros, orient="vertical")
