@@ -48,7 +48,8 @@ cursor.execute("CREATE TABLE planos(id INTEGER PRIMARY KEY,"
                "valor REAL,"
                "valor_foto_extra REAL,"
                "descricao text,"
-               "data_criacao text)")
+               "data_criacao text,"
+               "status text)")
 
 # OBS produto extra será um objeto produto com valor e descricao ou até mesmo fará referencia a outra tabela
 
@@ -59,7 +60,8 @@ print(cursor.fetchall())
 cursor.execute("CREATE TABLE tipos(id INTEGER PRIMARY KEY,"
                "nome_tipo text,"
                "descricao text,"
-               "data_criacao text)")
+               "data_criacao text,"
+               "status text)")
 
 cursor.execute("INSERT INTO tipos (nome_tipo, descricao) VAlUES ('Gestante','plano para gestantes')")
 cursor.execute("SELECT * FROM tipos")
@@ -71,6 +73,7 @@ cursor.execute("CREATE TABLE pagamentos (id INTEGER PRIMARY KEY,"
                "tipo_pagamento text,"
                "descricao_extra text,"
                "data_pagamento text,"
+               "status text,"
                "FOREIGN KEY (pessoa) REFERENCES pessoas(id))")
 
 cursor.execute("INSERT INTO pagamentos (pessoa,valor_pago,tipo_pagamento,descricao_extra,data_pagamento) VAlUES (1,199.00,'cartao','teste','27/10/2022')")
@@ -100,6 +103,7 @@ cursor.execute("CREATE TABLE sessoes (id INTEGER PRIMARY KEY,"
                "data_cadastro text,"
                "quantidade_foto_extra text,"
                "valor_foto_extra text,"
+               "status text,"
                "FOREIGN KEY (pessoa_sessao) REFERENCES pessoas(id),"
                "FOREIGN KEY (id_tipo) REFERENCES tipos(id),"
                "FOREIGN KEY (plano_contratado) REFERENCES planos(id))")
