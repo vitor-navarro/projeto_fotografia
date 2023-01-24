@@ -101,20 +101,20 @@ class Funcs():
 
     def barra_filtros_pesquisa(self, barra_filtros):
 
-        barra_filtro_opcoes3 = Separator(barra_filtros, orient="horizontal")
+        barra_filtro_opcoes3 = Separator(barra_filtros, orient="vertical")
         barra_filtro_opcoes3.grid(column=2, row=0, sticky="NE")
 
         self.filtro_pesquisa = StringVar(barra_filtro_opcoes3)
 
         label_opcoes3 = Label(barra_filtro_opcoes3, text="Pesquisa")
-        label_opcoes3.grid(column=0, row=0, sticky="N")
+        label_opcoes3.grid(column=0, row=0, sticky="W")
 
         rb_inicio = Radiobutton(barra_filtro_opcoes3, text="Inicio", value="inicio", variable=self.filtro_pesquisa)
-        rb_inicio.grid(column=0, row=1, sticky="E")
+        rb_inicio.grid(column=0, row=1, sticky="W")
 
         rb_aproximacao = Radiobutton(barra_filtro_opcoes3, text="Aproximação", value="aproximacao",
                                      variable=self.filtro_pesquisa)
-        rb_aproximacao.grid(column=1, row=1, sticky="E")
+        rb_aproximacao.grid(column=0, row=2, sticky="W")
 
         #rb_qualquer_parte = Radiobutton(barra_filtro_opcoes3, text="Qualquer parte", value="qualquer_parte",variable=self.filtro_pesquisa)
         #rb_qualquer_parte.grid(column=2, row=1, sticky="E")

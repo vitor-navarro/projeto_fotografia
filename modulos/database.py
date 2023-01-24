@@ -119,19 +119,20 @@ def pega_todas_pessoas_lista():
 
     return lista
 
-def filtro_database(filtro):
+def filtro_database(search_data,filtro):
     banco, cursor = conecta_db()
     filtro = filtro.get()
 
     if filtro == "TODOS":
-        lista_db = cursor.execute("SELECT id, nome_razao_social,cpf_cnpj,cidade FROM pessoas")
+        lista_db = cursor.execute("SELECT id, nome_razao_social,cpf_cnpj,cidade FROM pessoas WHERE nome_razao_social LIKE ?", (f'%{search_data}%',))
         lista = []
         for i in lista_db:
             lista.append(i)
     else:
-        lista_db = cursor.execute("SELECT id, nome_razao_social,cpf_cnpj,cidade FROM pessoas WHERE status = ?", (filtro,))
+        lista_db = cursor.execute("SELECT id, nome_razao_social,cpf_cnpj,cidade FROM pessoas WHERE status = ? AND nome_razao_social LIKE ?", (filtro,f'%{search_data}%',))
         lista = []
         for i in lista_db:
+            print(i)
             lista.append(i)
 
     desconecta_db(banco)

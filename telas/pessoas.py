@@ -16,9 +16,14 @@ class Pessoas(Funcs):
         self.filtro_opcoes = None
         self.filtro_status = None
         self.filtro_pesquisa = None
+        self.search_var = None
+        self.search_entry = None
+    def callback_pesquisa(self, event = None):
+        self.janela_pessoas_var.after(200, self._executa_filtro)
 
-    def callback_pesquisa(self):
-        retorno = filtro_database(self.filtro_status)
+    def _executa_filtro(self):
+        search_data = self.search_var.get()
+        retorno = filtro_database(search_data=search_data, filtro=self.filtro_status)
         self.update_treeview(retorno)
     def update_treeview(self, retorno):
         print(retorno)
@@ -493,14 +498,15 @@ class Pessoas(Funcs):
     def barra_de_pesquisa(self, barra_filtros):
 
         barra_pesquisa = Separator(barra_filtros, orient="vertical")
-        barra_pesquisa.grid(column=2, row=0, sticky="W")
+        barra_pesquisa.grid(column=3, row=0, sticky="NW")
 
-        search_label = Label(barra_pesquisa, text="Pesquisa:")
+        search_label = Label(barra_pesquisa, text="Pesquisa:", font=self.lb_style)
         search_label.grid(column=0, row=0, sticky="W")
 
         self.search_var = StringVar()
-        search_entry = Entry(barra_pesquisa, textvariable=self.search_var)
-        search_entry.grid(column=0, row=1, sticky="W")
+        self.search_entry = Entry(barra_pesquisa, textvariable=self.search_var, font=('monospace', 16), width=50)
+        self.search_entry.grid(column=0, row=1, sticky="W")
+        self.search_entry.bind("<Key>", self.callback_pesquisa)
 
     def cria_lista_de_pessoas(self,janela):
         lista = pega_todas_pessoas_lista()
