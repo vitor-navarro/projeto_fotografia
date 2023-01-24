@@ -119,20 +119,28 @@ def pega_todas_pessoas_lista():
 
     return lista
 
-def filtro_database(search_data,filtro):
+def filtro_database_pessoas(search_data, filtro_status, filtro_opcoes, filtro_tipo_pesquisa):
     banco, cursor = conecta_db()
-    filtro = filtro.get()
+    filtro_status = filtro_status.get()
+    filtro_opcoes = filtro_opcoes.get()
+    filtro_tipo_pesquisa = filtro_tipo_pesquisa.get()
+    #para segurança, adicionar um lista de colunas validas para a clausula, codigo, nome, fantasia etc
 
-    if filtro == "TODOS":
-        lista_db = cursor.execute("SELECT id, nome_razao_social,cpf_cnpj,cidade FROM pessoas WHERE nome_razao_social LIKE ?", (f'%{search_data}%',))
+    if filtro_tipo_pesquisa == "aproximacao":
+        search_data = f'%{search_data.replace(" ","%")}%'
+
+    elif filtro_tipo_pesquisa == "inicio":
+        search_data = f'{search_data.replace(" ","%")}%'
+
+    if filtro_status == "TODOS":
+        lista_db = cursor.execute("SELECT id, nome_razao_social,cpf_cnpj,cidade FROM pessoas WHERE nome_razao_social LIKE ? ORDER BY ?", (search_data, filtro_opcoes,))
         lista = []
         for i in lista_db:
             lista.append(i)
     else:
-        lista_db = cursor.execute("SELECT id, nome_razao_social,cpf_cnpj,cidade FROM pessoas WHERE status = ? AND nome_razao_social LIKE ?", (filtro,f'%{search_data}%',))
+        lista_db = cursor.execute("SELECT id, nome_razao_social,cpf_cnpj,cidade FROM pessoas WHERE status = ? AND nome_razao_social LIKE ? ORDER BY ?", (filtro_status, search_data, filtro_opcoes,))
         lista = []
         for i in lista_db:
-            print(i)
             lista.append(i)
 
     desconecta_db(banco)

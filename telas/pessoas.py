@@ -1,6 +1,6 @@
 from modulos.auxiliares import Funcs
 from modulos.database import pega_um_item_pessoa, pega_ultimo_id, grava_db_pessoa, altera_db_pessoa, deleta_db_pessoa, \
-    pega_todas_pessoas_lista, filtro_database
+    pega_todas_pessoas_lista, filtro_database_pessoas
 
 from tkinter import Toplevel, StringVar, Entry, Label, DISABLED, END, RIGHT, NW, Button, Radiobutton, LEFT, BOTTOM
 from tkinter.ttk import Separator, Combobox, Treeview, Scrollbar
@@ -23,7 +23,7 @@ class Pessoas(Funcs):
 
     def _executa_filtro(self):
         search_data = self.search_var.get()
-        retorno = filtro_database(search_data=search_data, filtro=self.filtro_status)
+        retorno = filtro_database_pessoas(search_data=search_data, filtro_status=self.filtro_status, filtro_opcoes = self.filtro_opcoes, filtro_tipo_pesquisa=self.filtro_pesquisa)
         self.update_treeview(retorno)
     def update_treeview(self, retorno):
         print(retorno)
@@ -463,37 +463,44 @@ class Pessoas(Funcs):
         barra_filtro_opcoes = Separator(barra_filtros, orient="vertical")
         barra_filtro_opcoes.grid(column=0, row=0, sticky="W")
 
-        varaivel_opcoes = StringVar(barra_filtro_opcoes)
+        self.filtro_opcoes = StringVar(barra_filtro_opcoes)
 
         label_opcoes = Label(barra_filtro_opcoes, text="Filtros")
         label_opcoes.grid(column=0, row=0, columnspan=2, sticky="W")
 
-        rb_codigo = Radiobutton(barra_filtro_opcoes, text="Código", value="codigo", variable=varaivel_opcoes)
+        rb_codigo = Radiobutton(barra_filtro_opcoes, text="Código", value="id", variable=self.filtro_opcoes)
         rb_codigo.grid(column=0, row=1, sticky="W")
+        rb_codigo.bind("<Button-1>", self.callback_pesquisa)
 
-        rb_nome_fantasia = Radiobutton(barra_filtro_opcoes, text="nome/fantasia", value="nome_fantasia",
-                                       variable=varaivel_opcoes)
-        rb_nome_fantasia.grid(column=0, row=2, sticky="W")
+        #rb_nome_fantasia = Radiobutton(barra_filtro_opcoes, text="nome/fantasia", value="nome_razao_social AND",
+        #                              variable=self.filtro_opcoes)
+        #rb_nome_fantasia.grid(column=0, row=2, sticky="W")
 
-        rb_nome = Radiobutton(barra_filtro_opcoes, text="nome", value="nome", variable=varaivel_opcoes)
-        rb_nome.grid(column=0, row=3, sticky="W")
+        rb_nome = Radiobutton(barra_filtro_opcoes, text="nome", value="nome_razao_social", variable=self.filtro_opcoes)
+        rb_nome.grid(column=0, row=2, sticky="W")
+        rb_nome.bind("<Button-1>", self.callback_pesquisa)
 
-        rb_fantasia = Radiobutton(barra_filtro_opcoes, text="fantasia", value="fantasia", variable=varaivel_opcoes)
-        rb_fantasia.grid(column=0, row=4, sticky="W")
+        rb_fantasia = Radiobutton(barra_filtro_opcoes, text="fantasia", value="apelido_fantasia", variable=self.filtro_opcoes)
+        rb_fantasia.grid(column=0, row=3, sticky="W")
+        rb_fantasia.bind("<Button-1>", self.callback_pesquisa)
 
-        rb_cidade = Radiobutton(barra_filtro_opcoes, text="cidade", value="cidade", variable=varaivel_opcoes)
-        rb_cidade.grid(column=1, row=1, sticky="W")
+        rb_cidade = Radiobutton(barra_filtro_opcoes, text="cidade", value="cidade", variable=self.filtro_opcoes)
+        rb_cidade.grid(column=0, row=4, sticky="W")
+        rb_cidade.bind("<Button-1>", self.callback_pesquisa)
 
-        rb_endereco = Radiobutton(barra_filtro_opcoes, text="endereco", value="endereco", variable=varaivel_opcoes)
-        rb_endereco.grid(column=1, row=2, sticky="W")
+        rb_endereco = Radiobutton(barra_filtro_opcoes, text="endereco", value="endereco", variable=self.filtro_opcoes)
+        rb_endereco.grid(column=1, row=1, sticky="W")
+        rb_endereco.bind("<Button-1>", self.callback_pesquisa)
 
-        rb_cpf_cnpj = Radiobutton(barra_filtro_opcoes, text="cpf/cnpj", value="cpf_cnpj", variable=varaivel_opcoes)
-        rb_cpf_cnpj.grid(column=1, row=3, sticky="W")
+        rb_cpf_cnpj = Radiobutton(barra_filtro_opcoes, text="cpf/cnpj", value="cpf_cnpj", variable=self.filtro_opcoes)
+        rb_cpf_cnpj.grid(column=1, row=2, sticky="W")
+        rb_cpf_cnpj.bind("<Button-1>", self.callback_pesquisa)
 
-        rb_bairro = Radiobutton(barra_filtro_opcoes, text="bairro", value="bairro", variable=varaivel_opcoes)
-        rb_bairro.grid(column=1, row=4, sticky="W")
+        rb_bairro = Radiobutton(barra_filtro_opcoes, text="bairro", value="bairro", variable=self.filtro_opcoes)
+        rb_bairro.grid(column=1, row=3, sticky="W")
+        rb_bairro.bind("<Button-1>", self.callback_pesquisa)
 
-        rb_nome_fantasia.select()
+        rb_codigo.select()
 
     def barra_de_pesquisa(self, barra_filtros):
 

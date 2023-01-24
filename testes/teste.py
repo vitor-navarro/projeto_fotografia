@@ -11,11 +11,11 @@ banco.commit()
 banco.close()
 '''
 
-from modulos.database import filtro_database
+from modulos.database import filtro_database_pessoas
 
 filtro = "ATIV"
 
-print(filtro_database(filtro))
+print(filtro_database_pessoas(filtro))
 
 
 
