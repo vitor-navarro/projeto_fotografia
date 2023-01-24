@@ -35,12 +35,6 @@ cursor.execute("CREATE TABLE pessoas (id INTEGER PRIMARY KEY,"
                "familia_conjuge text,"
                "emprego text)")
 
-cursor.execute("INSERT INTO pessoas (nome_razao_social,endereco,numero_casa,cpf_cnpj,fone1) VALUES ('vitor','rua osvaldo marcondes barbosa','869','09186144901','(44)988389141')")
-cursor.execute("INSERT INTO pessoas (nome_razao_social,endereco,numero_casa,cpf_cnpj,fone1) VALUES ('TESTE','Testea','869','09186144901','(44)988389141')")
-cursor.execute("SELECT * FROM pessoas")
-print(cursor.fetchall())
-
-
 #tabela planos
 cursor.execute("CREATE TABLE planos(id INTEGER PRIMARY KEY,"
                "nome_plano text,"
@@ -51,21 +45,12 @@ cursor.execute("CREATE TABLE planos(id INTEGER PRIMARY KEY,"
                "data_criacao text,"
                "status text)")
 
-# OBS produto extra será um objeto produto com valor e descricao ou até mesmo fará referencia a outra tabela
-
-cursor.execute("INSERT INTO planos (nome_plano, quantidade_fotos,valor,valor_foto_extra,descricao) VAlUES ('plano B',20,299.99,20.00,'plano Intemediario')")
-cursor.execute("SELECT * FROM planos")
-print(cursor.fetchall())
-
 cursor.execute("CREATE TABLE tipos(id INTEGER PRIMARY KEY,"
                "nome_tipo text,"
                "descricao text,"
                "data_criacao text,"
                "status text)")
 
-cursor.execute("INSERT INTO tipos (nome_tipo, descricao) VAlUES ('Gestante','plano para gestantes')")
-cursor.execute("SELECT * FROM tipos")
-print(cursor.fetchall())
 #tabela pagamentos
 cursor.execute("CREATE TABLE pagamentos (id INTEGER PRIMARY KEY,"
                "pessoa INTEGER,"
@@ -75,10 +60,6 @@ cursor.execute("CREATE TABLE pagamentos (id INTEGER PRIMARY KEY,"
                "data_pagamento text,"
                "status text,"
                "FOREIGN KEY (pessoa) REFERENCES pessoas(id))")
-
-cursor.execute("INSERT INTO pagamentos (pessoa,valor_pago,tipo_pagamento,descricao_extra,data_pagamento) VAlUES (1,199.00,'cartao','teste','27/10/2022')")
-cursor.execute("SELECT * FROM pagamentos")
-print(cursor.fetchall())
 
 #tabela sessoes
 cursor.execute("CREATE TABLE sessoes (id INTEGER PRIMARY KEY,"
@@ -110,9 +91,6 @@ cursor.execute("CREATE TABLE sessoes (id INTEGER PRIMARY KEY,"
 #OBS pagamentos vai ter que mudar o jeito que está sendo construido, tem de ser uma lista de referencias a pagamentos, o sqlite não suporta isso
 #OBS2 Quando for aparecera a condicao de parcelamento vai aparecer como a vista dinheiro,a vista debito, 12x credito, a vista credito
 
-
-cursor.execute("SELECT * FROM pessoas")
-print(cursor.fetchall())
 banco.commit()
 
 banco.close()

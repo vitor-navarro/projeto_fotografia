@@ -1,6 +1,6 @@
 from modulos.auxiliares import Funcs
 from modulos.database import pega_um_item_pessoa, pega_ultimo_id, grava_db_pessoa, altera_db_pessoa, deleta_db_pessoa, \
-    pega_todas_pessoas_lista
+    pega_todas_pessoas_lista, filtro_database
 
 from tkinter import Toplevel, StringVar, Entry, Label, DISABLED, END, RIGHT, NW, Button, Radiobutton, LEFT, BOTTOM
 from tkinter.ttk import Separator, Combobox, Treeview, Scrollbar
@@ -13,6 +13,19 @@ class Pessoas(Funcs):
         self.lista_de_pessoas = None
         self.argumentos = None
         self.janela_trabalhos_var = janela_trabalhos
+        self.filtro_opcoes = None
+        self.filtro_status = None
+        self.filtro_pesquisa = None
+
+    def callback_pesquisa(self):
+        retorno = filtro_database(self.filtro_status)
+        self.update_treeview(retorno)
+    def update_treeview(self, retorno):
+        print(retorno)
+        for child in self.lista_de_pessoas.get_children():
+            self.lista_de_pessoas.delete(child)
+        for item in retorno:
+            self.lista_de_pessoas.insert("", "end", values=item)
 
     def novo_cadastro_pessoa(self):
         janela = Toplevel()
@@ -40,14 +53,14 @@ class Pessoas(Funcs):
         entry_cadastro.insert(END, self.data_sistema)
         entry_cadastro.grid(column=1, row=1, padx=self.paddingx)
 
-        status_possiveis = ["Ativo", "Inativo"]
+        status_possiveis = ["ATIVO", "INATIVO"]
         tipos_possiveis_pessoas = ["Física", "Jurídica"]
 
         # mudar para opções
         lb_status = Label(separador1, text="Status", font=self.lb_style)
         lb_status.grid(column=2, row=0, sticky="W", padx=self.paddingx)
         cb_status = Combobox(separador1, font=self.entry_style, width=15, values=status_possiveis, state="readonly")
-        cb_status.set("Ativo")
+        cb_status.set("ATIVO")
         cb_status.grid(column=2, row=1, padx=self.paddingx)
 
         # mudar para opções
@@ -210,7 +223,6 @@ class Pessoas(Funcs):
 
     def altera_cadastro_pessoa(self):
         pessoa = self.seleciona_item_pessoas()
-
         if pessoa is None:
             return
 
@@ -234,19 +246,17 @@ class Pessoas(Funcs):
         lb_cadastro = Label(separador1, text="Cadastro", font=self.lb_style)
         lb_cadastro.grid(column=1, row=0, sticky="W", padx=self.paddingx)
         entry_cadastro = Entry(separador1, font=self.entry_style, width=10)
-        entry_cadastro.insert(END, self.data_sistema)
         entry_cadastro.grid(column=1, row=1, padx=self.paddingx)
-        entry_cadastro.delete(0, END)
-        entry_cadastro.insert(END,pessoa[0][1])
+        self. set_text_entry(entry_cadastro, pessoa[0][1])
 
-        status_possiveis = ["Ativo", "Inativo"]
+        status_possiveis = ["ATIVO", "INATIVO"]
         tipos_possiveis_pessoas = ["Física", "Jurídica"]
 
         # mudar para opções
         lb_status = Label(separador1, text="Status", font=self.lb_style)
         lb_status.grid(column=2, row=0, sticky="W", padx=self.paddingx)
         cb_status = Combobox(separador1, font=self.entry_style, width=15, values=status_possiveis, state="readonly")
-        cb_status.set(pessoa[0][3])
+        cb_status.current(status_possiveis.index(pessoa[0][3]))
         cb_status.grid(column=2, row=1, padx=self.paddingx)
 
         # mudar para opções
@@ -480,57 +490,42 @@ class Pessoas(Funcs):
 
         rb_nome_fantasia.select()
 
-    def barra_filtros_status_pessoas(self, barra_filtros):
-        barra_filtro_opcoes2 = Separator(barra_filtros, orient="vertical")
-        barra_filtro_opcoes2.grid(column=1, row=0, sticky="W")
+    def barra_de_pesquisa(self, barra_filtros):
 
-        varaivel_opcoes2 = StringVar(barra_filtro_opcoes2, value="nome_fantasia")
+        barra_pesquisa = Separator(barra_filtros, orient="vertical")
+        barra_pesquisa.grid(column=2, row=0, sticky="W")
 
-        label_opcoes2 = Label(barra_filtro_opcoes2, text="Status")
-        label_opcoes2.grid(column=0, row=0, columnspan=2, sticky="W")
+        search_label = Label(barra_pesquisa, text="Pesquisa:")
+        search_label.grid(column=0, row=0, sticky="W")
 
-        rb_ativo = Radiobutton(barra_filtro_opcoes2, text="ativos", value="ativo", variable=varaivel_opcoes2)
-        rb_ativo.grid(column=0, row=1, sticky="W")
-
-        rb_terminado = Radiobutton(barra_filtro_opcoes2, text="Terminados", value="terminado",
-                                   variable=varaivel_opcoes2)
-        rb_terminado.grid(column=0, row=2, sticky="W")
-
-        rb_todos = Radiobutton(barra_filtro_opcoes2, text="Todos", value="todos", variable=varaivel_opcoes2)
-        rb_todos.grid(column=0, row=3, sticky="W")
-
-        label_vazio = Label(barra_filtro_opcoes2, text="")
-        label_vazio.grid(column=0, row=4, sticky="W")
-
-        rb_ativo.select()
+        self.search_var = StringVar()
+        search_entry = Entry(barra_pesquisa, textvariable=self.search_var)
+        search_entry.grid(column=0, row=1, sticky="W")
 
     def cria_lista_de_pessoas(self,janela):
         lista = pega_todas_pessoas_lista()
 
-        lista_pessoas = Treeview(janela, columns=("col0","col1", "col2", "col3"))
-        lista_pessoas.heading("#0", text="")
-        lista_pessoas.heading("#1", text="Cod")
-        lista_pessoas.heading("#2", text="Nome")
-        lista_pessoas.heading("#3", text="CPF/CNPJ")
-        lista_pessoas.heading("#4", text="Cidade")
+        self.lista_de_pessoas = Treeview(janela, columns=("col0","col1", "col2", "col3"))
+        self.lista_de_pessoas.heading("#0", text="")
+        self.lista_de_pessoas.heading("#1", text="Cod")
+        self.lista_de_pessoas.heading("#2", text="Nome")
+        self.lista_de_pessoas.heading("#3", text="CPF/CNPJ")
+        self.lista_de_pessoas.heading("#4", text="Cidade")
 
-        lista_pessoas.column("#0", width=0)
-        lista_pessoas.column("#1", width=50)
-        lista_pessoas.column("#2", width=450)
-        lista_pessoas.column("#3", width=204)
-        lista_pessoas.column("#4", width=300)
+        self.lista_de_pessoas.column("#0", width=0)
+        self.lista_de_pessoas.column("#1", width=50)
+        self.lista_de_pessoas.column("#2", width=450)
+        self.lista_de_pessoas.column("#3", width=204)
+        self.lista_de_pessoas.column("#4", width=300)
 
         for i in lista:
-            lista_pessoas.insert("",END,values=i)
+            self.lista_de_pessoas.insert("",END,values=i)
 
-
-        lista_pessoas.grid(column=0, row=0, sticky="WSNE")
+        self.lista_de_pessoas.grid(column=0, row=0, sticky="WSNE")
 
         barra_rolagem = Scrollbar(janela, orient="vertical")
-        lista_pessoas.configure(yscrollcommand=barra_rolagem)
+        self.lista_de_pessoas.configure(yscrollcommand=barra_rolagem)
         barra_rolagem.grid(column=1, row=0, sticky="WSNE")
-
-        self.lista_de_pessoas = lista_pessoas
 
     def informacoes_adicionais_pessoas(self,janela, pessoa = None):
         separador1 = Separator(janela, orient="horizontal")
@@ -597,8 +592,9 @@ class Pessoas(Funcs):
         listagem_pessoas.pack(fill="x")
 
         self.barra_filtros_opcoes_pessoas(barra_filtros)
-        self.barra_filtros_status_pessoas(barra_filtros)
+        self.barra_filtros_status(barra_filtros, self.callback_pesquisa)
         self.barra_filtros_pesquisa(barra_filtros)
+        self.barra_de_pesquisa(barra_filtros)
         self.cria_lista_de_pessoas(listagem_pessoas)
         entry_nome_razao, entry_fantasia_apelido, entry_fone1, entry_fone2, entry_fone3,entry_endereco,entry_numero = self.informacoes_adicionais_pessoas(janela_pessoas)
 

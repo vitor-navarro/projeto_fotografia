@@ -100,30 +100,53 @@ class Funcs():
         return barra_alteracoes
 
     def barra_filtros_pesquisa(self, barra_filtros):
+
         barra_filtro_opcoes3 = Separator(barra_filtros, orient="horizontal")
         barra_filtro_opcoes3.grid(column=2, row=0, sticky="NE")
 
-        varaivel_opcoes3 = StringVar(barra_filtro_opcoes3)
+        self.filtro_pesquisa = StringVar(barra_filtro_opcoes3)
 
         label_opcoes3 = Label(barra_filtro_opcoes3, text="Pesquisa")
         label_opcoes3.grid(column=0, row=0, sticky="N")
 
-        rb_inicio = Radiobutton(barra_filtro_opcoes3, text="Inicio", value="inicio", variable=varaivel_opcoes3)
+        rb_inicio = Radiobutton(barra_filtro_opcoes3, text="Inicio", value="inicio", variable=self.filtro_pesquisa)
         rb_inicio.grid(column=0, row=1, sticky="E")
 
         rb_aproximacao = Radiobutton(barra_filtro_opcoes3, text="Aproximação", value="aproximacao",
-                                     variable=varaivel_opcoes3)
+                                     variable=self.filtro_pesquisa)
         rb_aproximacao.grid(column=1, row=1, sticky="E")
 
-        rb_qualquer_parte = Radiobutton(barra_filtro_opcoes3, text="Qualquer parte", value="qualquer_parte",
-                                        variable=varaivel_opcoes3)
-        rb_qualquer_parte.grid(column=2, row=1, sticky="E")
+        #rb_qualquer_parte = Radiobutton(barra_filtro_opcoes3, text="Qualquer parte", value="qualquer_parte",variable=self.filtro_pesquisa)
+        #rb_qualquer_parte.grid(column=2, row=1, sticky="E")
 
-        rb_exato = Radiobutton(barra_filtro_opcoes3, text="Exato", value="exato", variable=varaivel_opcoes3)
-        rb_exato.grid(column=3, row=1, sticky="E")
+        #rb_exato = Radiobutton(barra_filtro_opcoes3, text="Exato", value="exato", variable=varaivel_opcoes3)
+        #rb_exato.grid(column=3, row=1, sticky="E")
 
         rb_aproximacao.select()
 
+    def barra_filtros_status(self, barra_filtros, callback_func):
+
+        barra_filtro_opcoes2 = Separator(barra_filtros, orient="vertical")
+        barra_filtro_opcoes2.grid(column=1, row=0, sticky="W")
+
+        self.filtro_status = StringVar(barra_filtro_opcoes2)
+
+        label_opcoes2 = Label(barra_filtro_opcoes2, text="Status")
+        label_opcoes2.grid(column=0, row=0, columnspan=2, sticky="W")
+
+        rb_ativo = Radiobutton(barra_filtro_opcoes2, text="ATIVO", value="ATIVO", variable=self.filtro_status, command=callback_func)
+        rb_ativo.grid(column=0, row=1, sticky="W")
+
+        rb_finalizado = Radiobutton(barra_filtro_opcoes2, text="INATIVO", value="INATIVO",variable=self.filtro_status, command=callback_func)
+        rb_finalizado.grid(column=0, row=2, sticky="W")
+
+        rb_todos = Radiobutton(barra_filtro_opcoes2, text="TODOS", value="TODOS", variable=self.filtro_status, command=callback_func)
+        rb_todos.grid(column=0, row=3, sticky="W")
+
+        label_vazio = Label(barra_filtro_opcoes2, text="")
+        label_vazio.grid(column=0, row=4, sticky="W")
+
+        rb_ativo.select()
     def replace_virgula_ponto(self, valor):
         valor = valor.replace(",", ".")
         return valor

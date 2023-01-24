@@ -119,6 +119,25 @@ def pega_todas_pessoas_lista():
 
     return lista
 
+def filtro_database(filtro):
+    banco, cursor = conecta_db()
+    filtro = filtro.get()
+
+    if filtro == "TODOS":
+        lista_db = cursor.execute("SELECT id, nome_razao_social,cpf_cnpj,cidade FROM pessoas")
+        lista = []
+        for i in lista_db:
+            lista.append(i)
+    else:
+        lista_db = cursor.execute("SELECT id, nome_razao_social,cpf_cnpj,cidade FROM pessoas WHERE status = ?", (filtro,))
+        lista = []
+        for i in lista_db:
+            lista.append(i)
+
+    desconecta_db(banco)
+
+    return lista
+
 def pega_um_item_pessoa(item):
     banco, cursor = conecta_db()
 
