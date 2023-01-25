@@ -19,7 +19,7 @@ class Tipos(Funcs):
 
     def _executa_filtro(self):
         search_data = self.search_var.get()
-        retorno = filtro_database_tipos(search_data=search_data, filtro_status=self.filtro_status, filtro_opcoes = self.filtro_opcoes, filtro_tipo_pesquisa=self.filtro_pesquisa)
+        retorno = filtro_database_tipos(search_data=search_data)
         self.update_treeview(retorno)
     def update_treeview(self, retorno):
         print(retorno)
@@ -178,7 +178,8 @@ class Tipos(Funcs):
 
         funcoes = [self.novo_cadastro_tipo, self.altera_cadastro_tipo,self.exclui_cadastro_tipo]
 
-        barra_alteracoes = self.barra_alteracoes(separador1, funcoes)
+        barra_alteracoes = self.barra_alteracoes_grid(separador1, funcoes)
+        self.barra_de_pesquisa(barra_filtros=barra_alteracoes,callback_pesquisa=self.callback_pesquisa, tamanho_pequeno=True)
 
         separador2 = Separator(janela, orient="horizontal")
         separador2.pack(fill="x")

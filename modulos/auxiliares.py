@@ -98,17 +98,40 @@ class Funcs():
         excluir.pack(side=LEFT)
 
         return barra_alteracoes
+    def barra_alteracoes_grid(self,janela, funcoes):
+        barra_alteracoes = Separator(janela, orient="horizontal")
+        barra_alteracoes.grid(column=0,row=0)
 
-    def barra_de_pesquisa(self, barra_filtros,callback_pesquisa):
+        novo = Button(barra_alteracoes, text="Novo", font=("monospace", 10), command=funcoes[0], padx=5,
+                      pady=10)
+        novo.grid(column=0,row=0)
+
+        alterar = Button(barra_alteracoes, text="Alterar", font=("monospace", 10), command=funcoes[1], padx=5,
+                         pady=10)
+        alterar.grid(column=1,row=0)
+
+        excluir = Button(barra_alteracoes, text="Excluir", font=("monospace", 10), command=funcoes[2], padx=5,
+                         pady=10)
+        excluir.grid(column=2,row=0)
+
+        return barra_alteracoes
+
+    def barra_de_pesquisa(self, barra_filtros,callback_pesquisa, tamanho_pequeno = False):
+        if not tamanho_pequeno:
+            font = ('monospace', 16)
+            width = 50
+        else:
+            font = ('monospace', 12)
+            width = 30
 
         barra_pesquisa = Separator(barra_filtros, orient="vertical")
-        barra_pesquisa.grid(column=3, row=0, sticky="NW")
+        barra_pesquisa.grid(column=3, row=0, sticky="NW",padx=self.paddingx, pady=self.paddingy)
 
         search_label = Label(barra_pesquisa, text="Pesquisa:", font=self.lb_style)
         search_label.grid(column=0, row=0, sticky="W")
 
         self.search_var = StringVar()
-        self.search_entry = Entry(barra_pesquisa, textvariable=self.search_var, font=('monospace', 16), width=50)
+        self.search_entry = Entry(barra_pesquisa, textvariable=self.search_var, font=font, width=width)
         self.search_entry.grid(column=0, row=1, sticky="W")
         self.search_entry.bind("<Key>", callback_pesquisa)
 

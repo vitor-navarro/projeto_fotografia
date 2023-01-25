@@ -1,6 +1,6 @@
 from modulos.auxiliares import Funcs
 from modulos.database import pega_ultimo_id, grava_db_planos, pega_todos_planos_sessoes_lista, pega_um_item_plano, \
-    altera_db_planos, deleta_db_plano
+    altera_db_planos, deleta_db_plano,filtro_database_planos
 
 from tkinter import Toplevel, DISABLED, Entry, END, Label, Button, BOTTOM, StringVar
 from tkinter.ttk import Separator, Scrollbar,Treeview
@@ -20,18 +20,18 @@ class Planos(Funcs,Validadores):
         self.lista_de_planos = None
 
     def callback_pesquisa(self, event = None):
-        self.janela_pessoas_var.after(200, self._executa_filtro)
+        self.janela_planos_var.after(200, self._executa_filtro)
 
     def _executa_filtro(self):
         search_data = self.search_var.get()
-        retorno = filtro_database_pessoas(search_data=search_data, filtro_status=self.filtro_status, filtro_opcoes = self.filtro_opcoes, filtro_tipo_pesquisa=self.filtro_pesquisa)
+        retorno = filtro_database_planos(search_data=search_data)
         self.update_treeview(retorno)
     def update_treeview(self, retorno):
         print(retorno)
-        for child in self.lista_de_pessoas.get_children():
-            self.lista_de_pessoas.delete(child)
+        for child in self.lista_de_planos.get_children():
+            self.lista_de_planos.delete(child)
         for item in retorno:
-            self.lista_de_pessoas.insert("", "end", values=item)
+            self.lista_de_planos.insert("", "end", values=item)
 
     def seleciona_item_plano(self):
         for selected_item in self.lista_de_planos.selection():
@@ -279,7 +279,8 @@ class Planos(Funcs,Validadores):
 
         funcoes = [self.novo_cadastro_plano, self.altera_cadastro_plano, self.exclui_cadastro_plano]
 
-        barra_alteracoes = self.barra_alteracoes(separador1, funcoes)
+        barra_alteracoes = self.barra_alteracoes_grid(separador1, funcoes)
+        self.barra_de_pesquisa(barra_filtros=barra_alteracoes,callback_pesquisa=self.callback_pesquisa, tamanho_pequeno=True)
 
         separador2 = Separator(janela, orient="horizontal")
         separador2.pack(fill="x")

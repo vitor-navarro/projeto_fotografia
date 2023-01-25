@@ -168,17 +168,6 @@ def pega_todas_trabalhos_lista():
     desconecta_db(banco)
 
     return lista
-def pega_todos_planos_sessoes_lista():
-    banco, cursor = conecta_db()
-    #retorna em ordem alfabética, modificar isso com as filtragens
-    lista_db = cursor.execute("SELECT id, nome_plano FROM planos ORDER BY id")
-    lista = []
-    for i in lista_db:
-        lista.append(i)
-
-    desconecta_db(banco)
-
-    return lista
 
 def grava_db_trabalhos(entry_codigo,entry_cadastro,entry_data_sessao,entry_horario_sessao,codigo_pessoa_trabalho,entry_nome,cb_tipo_sessao,codigo_tipo_trabalho,cb_plano,codigo_plano_trabalho,pagamento1,entry_valor1,pagamento2,entry_valor2,pagamento3,entry_valor3,entry_total,textarea_observacoes,entry_quantidade_foto_extra,entry_valor_foto_extra):
     entry_codigo = int(entry_codigo())
@@ -295,6 +284,18 @@ def pega_um_item_plano(item):
     desconecta_db(banco)
     return pessoa
 
+def pega_todos_planos_sessoes_lista():
+    banco, cursor = conecta_db()
+    #retorna em ordem alfabética, modificar isso com as filtragens
+    lista_db = cursor.execute("SELECT id, nome_plano FROM planos ORDER BY id")
+    lista = []
+    for i in lista_db:
+        lista.append(i)
+
+    desconecta_db(banco)
+
+    return lista
+
 def grava_db_planos(entry_codigo,entry_cadastro,entry_nome,entry_descricao,entry_valor_base,entry_quantidade_fotos,entry_valor_foto_extra):
     entry_codigo = entry_codigo()
     entry_cadastro= entry_cadastro()
@@ -330,7 +331,20 @@ def altera_db_planos(entry_codigo,entry_cadastro,entry_nome,entry_descricao,entr
     banco.commit()
 
     desconecta_db(banco)
+def filtro_database_planos(search_data):
+    banco, cursor = conecta_db()
+    #para segurança, adicionar um lista de colunas validas para a clausula, codigo, nome, fantasia etc
 
+    search_data = f'%{search_data.replace(" ","%")}%'
+
+    lista_db = cursor.execute("SELECT id, nome_plano FROM planos WHERE nome_plano LIKE ?", (search_data,))
+    lista = []
+    for i in lista_db:
+        lista.append(i)
+
+    desconecta_db(banco)
+
+    return lista
 def deleta_db_plano(id):
     banco, cursor = conecta_db()
     cursor.execute(f"DELETE FROM planos WHERE id = ?", (str(id),))
@@ -365,6 +379,21 @@ def altera_db_tipos(entry_codigo,entry_cadastro,entry_nome,entry_descricao):
     banco.commit()
 
     desconecta_db(banco)
+
+def filtro_database_tipos(search_data):
+    banco, cursor = conecta_db()
+    #para segurança, adicionar um lista de colunas validas para a clausula, codigo, nome, fantasia etc
+
+    search_data = f'%{search_data.replace(" ","%")}%'
+
+    lista_db = cursor.execute("SELECT id, nome_tipo FROM tipos WHERE nome_tipo LIKE ?", (search_data,))
+    lista = []
+    for i in lista_db:
+        lista.append(i)
+
+    desconecta_db(banco)
+
+    return lista
 
 def deleta_db_tipo(id):
     banco, cursor = conecta_db()
