@@ -1,6 +1,7 @@
 from modulos.auxiliares import Funcs
 from modulos.database import pega_ultimo_id, grava_db_tipos, pega_um_item_tipo, pega_todos_tipos_sessoes_lista, \
-    altera_db_tipos, deleta_db_tipo
+    altera_db_tipos, deleta_db_tipo,filtro_database_tipos
+
 from tkinter import Toplevel, DISABLED, Entry, END, Label, Button, BOTTOM, StringVar, messagebox
 from tkinter.ttk import Separator, Treeview, Scrollbar
 
@@ -12,6 +13,20 @@ class Tipos(Funcs):
         self.janela_tipos_var = None
         self.lista_de_tipos = None
         self.janela_trabalhos_var = janela_trabalhos
+
+    def callback_pesquisa(self, event = None):
+        self.janela_tipos_var.after(200, self._executa_filtro)
+
+    def _executa_filtro(self):
+        search_data = self.search_var.get()
+        retorno = filtro_database_tipos(search_data=search_data, filtro_status=self.filtro_status, filtro_opcoes = self.filtro_opcoes, filtro_tipo_pesquisa=self.filtro_pesquisa)
+        self.update_treeview(retorno)
+    def update_treeview(self, retorno):
+        print(retorno)
+        for child in self.lista_de_tipos.get_children():
+            self.lista_de_tipos.delete(child)
+        for item in retorno:
+            self.lista_de_tipos.insert("", "end", values=item)
     def seleciona_item_tipo(self):
         for selected_item in self.lista_de_tipos.selection():
             item = self.lista_de_tipos.item(selected_item)

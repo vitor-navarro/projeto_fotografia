@@ -160,7 +160,7 @@ def pega_todas_trabalhos_lista():
 
     banco, cursor = conecta_db()
     #retorna em ordem alfabética, modificar isso com as filtragens
-    lista_db = cursor.execute("SELECT id, data,hora,nome_pessoa,tipo,plano_nome,etapa_atual FROM sessoes ORDER BY pessoa_sessao DESC")
+    lista_db = cursor.execute("SELECT id,data,hora,nome_pessoa,tipo,plano_nome,etapa_atual FROM sessoes ORDER BY pessoa_sessao DESC")
     lista = []
     for i in lista_db:
         lista.append(i)
@@ -241,6 +241,35 @@ def altera_db_trabalhos(entry_codigo,entry_cadastro,entry_data_sessao,entry_hora
     banco.commit()
 
     desconecta_db(banco)
+
+def filtro_database_trabalho(search_data, filtro_status, filtro_opcoes, filtro_tipo_pesquisa):
+    banco, cursor = conecta_db()
+    filtro_status = filtro_status.get()
+    filtro_opcoes = filtro_opcoes.get()
+    filtro_tipo_pesquisa = filtro_tipo_pesquisa.get()
+    #para segurança, adicionar um lista de colunas validas para a clausula, codigo, nome, fantasia etc
+    print(filtro_opcoes,filtro_tipo_pesquisa,filtro_status,search_data)
+    #filtro de status não está funcionando ainda
+    if filtro_tipo_pesquisa == "aproximacao":
+        search_data = f'%{search_data.replace(" ","%")}%'
+
+    elif filtro_tipo_pesquisa == "inicio":
+        search_data = f'{search_data.replace(" ","%")}%'
+
+    if filtro_status == "TODOS":
+        lista_db = cursor.execute("SELECT id,data,hora,nome_pessoa,tipo,plano_nome,etapa_atual FROM sessoes WHERE nome_pessoa LIKE ? ORDER BY ?", (search_data, filtro_opcoes,))
+        lista = []
+        for i in lista_db:
+            lista.append(i)
+    else:
+        lista_db = cursor.execute("SELECT id,data,hora,nome_pessoa,tipo,plano_nome,etapa_atual FROM sessoes WHERE nome_pessoa LIKE ? ORDER BY ?", (search_data, filtro_opcoes,))
+        lista = []
+        for i in lista_db:
+            lista.append(i)
+
+    desconecta_db(banco)
+
+    return lista
 
 def deleta_db_trabalho(id):
     banco, cursor = conecta_db()

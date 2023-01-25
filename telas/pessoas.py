@@ -26,7 +26,6 @@ class Pessoas(Funcs):
         retorno = filtro_database_pessoas(search_data=search_data, filtro_status=self.filtro_status, filtro_opcoes = self.filtro_opcoes, filtro_tipo_pesquisa=self.filtro_pesquisa)
         self.update_treeview(retorno)
     def update_treeview(self, retorno):
-        print(retorno)
         for child in self.lista_de_pessoas.get_children():
             self.lista_de_pessoas.delete(child)
         for item in retorno:
@@ -502,19 +501,6 @@ class Pessoas(Funcs):
 
         rb_codigo.select()
 
-    def barra_de_pesquisa(self, barra_filtros):
-
-        barra_pesquisa = Separator(barra_filtros, orient="vertical")
-        barra_pesquisa.grid(column=3, row=0, sticky="NW")
-
-        search_label = Label(barra_pesquisa, text="Pesquisa:", font=self.lb_style)
-        search_label.grid(column=0, row=0, sticky="W")
-
-        self.search_var = StringVar()
-        self.search_entry = Entry(barra_pesquisa, textvariable=self.search_var, font=('monospace', 16), width=50)
-        self.search_entry.grid(column=0, row=1, sticky="W")
-        self.search_entry.bind("<Key>", self.callback_pesquisa)
-
     def cria_lista_de_pessoas(self,janela):
         lista = pega_todas_pessoas_lista()
 
@@ -607,7 +593,7 @@ class Pessoas(Funcs):
         self.barra_filtros_opcoes_pessoas(barra_filtros)
         self.barra_filtros_status(barra_filtros, self.callback_pesquisa)
         self.barra_filtros_pesquisa(barra_filtros)
-        self.barra_de_pesquisa(barra_filtros)
+        self.barra_de_pesquisa(barra_filtros, self.callback_pesquisa)
         self.cria_lista_de_pessoas(listagem_pessoas)
         entry_nome_razao, entry_fantasia_apelido, entry_fone1, entry_fone2, entry_fone3,entry_endereco,entry_numero = self.informacoes_adicionais_pessoas(janela_pessoas)
 

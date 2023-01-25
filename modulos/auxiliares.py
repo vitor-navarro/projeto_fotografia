@@ -99,6 +99,19 @@ class Funcs():
 
         return barra_alteracoes
 
+    def barra_de_pesquisa(self, barra_filtros,callback_pesquisa):
+
+        barra_pesquisa = Separator(barra_filtros, orient="vertical")
+        barra_pesquisa.grid(column=3, row=0, sticky="NW")
+
+        search_label = Label(barra_pesquisa, text="Pesquisa:", font=self.lb_style)
+        search_label.grid(column=0, row=0, sticky="W")
+
+        self.search_var = StringVar()
+        self.search_entry = Entry(barra_pesquisa, textvariable=self.search_var, font=('monospace', 16), width=50)
+        self.search_entry.grid(column=0, row=1, sticky="W")
+        self.search_entry.bind("<Key>", callback_pesquisa)
+
     def barra_filtros_pesquisa(self, barra_filtros):
 
         barra_filtro_opcoes3 = Separator(barra_filtros, orient="vertical")
@@ -134,13 +147,13 @@ class Funcs():
         label_opcoes2 = Label(barra_filtro_opcoes2, text="Status")
         label_opcoes2.grid(column=0, row=0, columnspan=2, sticky="W")
 
-        rb_ativo = Radiobutton(barra_filtro_opcoes2, text="ATIVO", value="ATIVO", variable=self.filtro_status, command=callback_func)
+        rb_ativo = Radiobutton(barra_filtro_opcoes2, text="Ativo", value="ATIVO", variable=self.filtro_status, command=callback_func)
         rb_ativo.grid(column=0, row=1, sticky="W")
 
-        rb_finalizado = Radiobutton(barra_filtro_opcoes2, text="INATIVO", value="INATIVO",variable=self.filtro_status, command=callback_func)
+        rb_finalizado = Radiobutton(barra_filtro_opcoes2, text="Inativo", value="INATIVO",variable=self.filtro_status, command=callback_func)
         rb_finalizado.grid(column=0, row=2, sticky="W")
 
-        rb_todos = Radiobutton(barra_filtro_opcoes2, text="TODOS", value="TODOS", variable=self.filtro_status, command=callback_func)
+        rb_todos = Radiobutton(barra_filtro_opcoes2, text="Todos", value="TODOS", variable=self.filtro_status, command=callback_func)
         rb_todos.grid(column=0, row=3, sticky="W")
 
         label_vazio = Label(barra_filtro_opcoes2, text="")

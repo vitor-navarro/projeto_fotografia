@@ -1,6 +1,6 @@
 from modulos.auxiliares import Funcs
 from modulos.database import pega_ultimo_id, grava_db_trabalhos, pega_todas_trabalhos_lista, pega_um_item_trabalho, \
-    altera_db_trabalhos, deleta_db_trabalho
+    altera_db_trabalhos, deleta_db_trabalho, filtro_database_trabalho
 
 from tkinter import Toplevel, LEFT, Button, Label, Entry, DISABLED, END, Text, StringVar, Radiobutton, BOTTOM
 from tkinter.ttk import Separator, Combobox, Treeview, Scrollbar
@@ -37,7 +37,23 @@ class Trabalhos(Funcs):
         self.entry_quantidade_fotos = None
         self.entry_valor_foto_extra = None
         self.argumentos = None
+        self.filtro_opcoes = None
+        self.filtro_status = None
+        self.filtro_pesquisa = None
+        self.search_var = None
+        self.search_entry = None
+    def callback_pesquisa(self, event = None):
+        self.janela_trabalhos_var.after(200, self._executa_filtro)
 
+    def _executa_filtro(self):
+        search_data = self.search_var.get()
+        retorno = filtro_database_trabalho(search_data=search_data, filtro_status=self.filtro_status, filtro_opcoes = self.filtro_opcoes, filtro_tipo_pesquisa=self.filtro_pesquisa)
+        self.update_treeview(retorno)
+    def update_treeview(self, retorno):
+        for child in self.lista_de_trabalhos.get_children():
+            self.lista_de_trabalhos.delete(child)
+        for item in retorno:
+            self.lista_de_trabalhos.insert("", "end", values=item)
     def on_closing(self,janela):
         '''
         essa função deve ser executada quando o usuário clicar para fechar a janela.
@@ -727,37 +743,37 @@ class Trabalhos(Funcs):
         barra_filtro_opcoes = Separator(barra_filtros, orient="vertical")
         barra_filtro_opcoes.grid(column=0, row=0, sticky="W")
 
-        varaivel_opcoes = StringVar(barra_filtro_opcoes)
+        self.filtro_opcoes = StringVar(barra_filtro_opcoes)
 
         label_opcoes = Label(barra_filtro_opcoes, text="Filtros")
         label_opcoes.grid(column=0, row=0, columnspan=2, sticky="W")
 
-        rb_codigo = Radiobutton(barra_filtro_opcoes, text="Código", value="codigo", variable=varaivel_opcoes)
+        rb_codigo = Radiobutton(barra_filtro_opcoes, text="Código", value="id", variable=self.filtro_opcoes)
         rb_codigo.grid(column=0, row=1, sticky="W")
 
-        rb_nome_pessoa_extra = Radiobutton(barra_filtro_opcoes, text="Nome/Pessoa extra", value="nome_pessoa_extra",
-                                       variable=varaivel_opcoes)
-        rb_nome_pessoa_extra.grid(column=0, row=2, sticky="W")
+        #rb_nome_pessoa_extra = Radiobutton(barra_filtro_opcoes, text="Nome/Pessoa extra", value="nome_pessoa_extra",
+        #                               variable=self.filtro_opcoes)
+        #rb_nome_pessoa_extra.grid(column=0, row=2, sticky="W")
 
-        rb_nome = Radiobutton(barra_filtro_opcoes, text="Nome", value="nome", variable=varaivel_opcoes)
-        rb_nome.grid(column=0, row=3, sticky="W")
+        rb_nome = Radiobutton(barra_filtro_opcoes, text="Nome", value="nome_pessoa", variable=self.filtro_opcoes)
+        rb_nome.grid(column=0, row=2, sticky="W")
 
-        rb_pessoa_extra = Radiobutton(barra_filtro_opcoes, text="Pessoa extra", value="pessoa_extra", variable=varaivel_opcoes)
-        rb_pessoa_extra.grid(column=0, row=4, sticky="W")
+        rb_pessoa_extra = Radiobutton(barra_filtro_opcoes, text="Hora", value="hora", variable=self.filtro_opcoes)
+        rb_pessoa_extra.grid(column=0, row=3, sticky="W")
 
-        rb_cidade = Radiobutton(barra_filtro_opcoes, text="cidade", value="cidade", variable=varaivel_opcoes)
-        rb_cidade.grid(column=1, row=1, sticky="W")
+        rb_cidade = Radiobutton(barra_filtro_opcoes, text="Data", value="data", variable=self.filtro_opcoes)
+        rb_cidade.grid(column=0, row=4, sticky="W")
 
-        rb_endereco = Radiobutton(barra_filtro_opcoes, text="endereco", value="endereco", variable=varaivel_opcoes)
-        rb_endereco.grid(column=1, row=2, sticky="W")
+        rb_lote = Radiobutton(barra_filtro_opcoes, text="Tipo", value="tipo", variable=self.filtro_opcoes)
+        rb_lote.grid(column=1, row=1, sticky="W")
 
-        rb_cpf_cnpj = Radiobutton(barra_filtro_opcoes, text="cpf/cnpj", value="cpf_cnpj", variable=varaivel_opcoes)
-        rb_cpf_cnpj.grid(column=1, row=3, sticky="W")
+        rb_lote = Radiobutton(barra_filtro_opcoes, text="Plano", value="plano_nome", variable=self.filtro_opcoes)
+        rb_lote.grid(column=1, row=2, sticky="W")
 
-        rb_lote = Radiobutton(barra_filtro_opcoes, text="Lote", value="lote", variable=varaivel_opcoes)
-        rb_lote.grid(column=1, row=4, sticky="W")
+        rb_lote = Radiobutton(barra_filtro_opcoes, text="Etapa", value="etapa_atual", variable=self.filtro_opcoes)
+        rb_lote.grid(column=1, row=3, sticky="W")
 
-        rb_nome_pessoa_extra.select()
+        rb_codigo.select()
 
     def barra_filtros_status_trabalho_dois(self, barra_filtros):
         barra_filtro_opcoes2 = Separator(barra_filtros, orient="vertical")
@@ -870,9 +886,11 @@ class Trabalhos(Funcs):
         listagem_trabalhos = Separator(janela_trabalhos, orient="horizontal")
         listagem_trabalhos.pack(fill="x")
 
-        self.barra_filtros_opcoes_trabalho(barra_filtros)
-        self.barra_filtros_status_trabalho(barra_filtros)
+        self.barra_filtros_opcoes_trabalho_dois(barra_filtros)
+        #self.barra_filtros_status_trabalho(barra_filtros)
+        self.barra_filtros_status(barra_filtros, self.callback_pesquisa)
         self.barra_filtros_pesquisa(barra_filtros)
+        self.barra_de_pesquisa(barra_filtros, self.callback_pesquisa)
         self.lista_de_trabalho(listagem_trabalhos)
         entry_observacoes, entry_valor, entry_pago, entry_devendo = self.informacoes_adicionais_trabalho(janela_trabalhos)
 
